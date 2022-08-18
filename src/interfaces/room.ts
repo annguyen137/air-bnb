@@ -31,6 +31,6 @@ export interface LocationID {
   image: string;
 }
 
-export interface GetRoomParams {
+export interface RoomAPIParams {
   locationId?: string;
 }

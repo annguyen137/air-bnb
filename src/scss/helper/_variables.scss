@@ -1,0 +1,33 @@
+// color
+$header-brand-color: #ff385c;
+$color-white: #ffffff;
+
+// font size
+$fs-1: 12px;
+$fs-2: 14px;
+$fs-3: 15px;
+$fs-4: 16px;
+
+// Padding
+$pd-1: 4px;
+$pd-2: 10px;
+$pd-3: 14px;
+$pd-4: 20px;
+$pd-5: 24px;
+$pd-6: 40px;
+$pd-7: 80px;
+
+// Margin
+$mg-1: 30px;
+$mg-2: 25px;
+$mg-3: 70px;
+$mg-4: 60px;
+
+// responsive
+$breakpoints: (
+  "sm": 375px,
+  "md": 744px,
+  "lg": 950px,
+  "xl": 1128px,
+  "2xl": 1440px,
+);

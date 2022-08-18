@@ -3,13 +3,13 @@ import { Location } from "interfaces/location";
 import locationAPI from "services/locationAPI";
 
 interface LocationsState {
-  data: Location[];
+  locationsData: Location[];
   isLoading: boolean;
   error: string;
 }
 
 const initialState: LocationsState = {
-  data: [],
+  locationsData: [],
   isLoading: false,
   error: "",
 };
@@ -29,7 +29,11 @@ const locationsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getLocationList.pending, (state) => ({ ...state, isLoading: true }));
-    builder.addCase(getLocationList.fulfilled, (state, { payload }) => ({ ...state, isLoading: false, data: payload }));
+    builder.addCase(getLocationList.fulfilled, (state, { payload }) => ({
+      ...state,
+      isLoading: false,
+      locationsData: payload,
+    }));
     builder.addCase(getLocationList.rejected, (state, { error }) => ({
       ...state,
       isLoading: false,
