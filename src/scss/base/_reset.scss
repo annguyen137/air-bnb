@@ -1,0 +1,31 @@
+* {
+  box-sizing: border-box !important;
+}
+
+span {
+  font-size: $fs-2;
+}
+
+@include responsive("sm") {
+  header,
+  footer {
+    padding: 0 $pd-5;
+    width: 100%;
+  }
+}
+
+@include responsive("md") {
+  header,
+  footer {
+    padding: 0 $pd-6;
+    width: 100%;
+  }
+}
+
+@include responsive("xl") {
+  header,
+  footer {
+    padding: 0 $pd-7;
+    width: 100%;
+  }
+}

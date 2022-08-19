@@ -1,22 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GetRoomParams, Room } from "interfaces/room";
+import { RoomAPIParams, Room } from "interfaces/room";
 import roomAPI from "services/roomAPI";
 
 interface RoomsState {
-  data: Room[];
+  roomsData: Room[];
   isLoading: boolean;
   error: string;
 }
 
 const initialState: RoomsState = {
-  data: [],
+  roomsData: [],
   isLoading: false,
   error: "",
 };
 
 export const getRoomListByLocation = createAsyncThunk(
   "rooms/getRoomListByLocation",
-  async (locationId: GetRoomParams) => {
+  async (locationId?: RoomAPIParams) => {
     try {
       const data = await roomAPI.getRoomListByLocation(locationId);
       return data;
@@ -35,7 +35,7 @@ const roomsSlice = createSlice({
       return { ...state, isLoading: true };
     });
     builder.addCase(getRoomListByLocation.fulfilled, (state, { payload }) => {
-      return { ...state, isLoading: false, data: payload };
+      return { ...state, isLoading: false, roomsData: payload };
     });
     builder.addCase(getRoomListByLocation.rejected, (state, { error }) => {
       return { ...state, isLoading: false, error: error.message as string };

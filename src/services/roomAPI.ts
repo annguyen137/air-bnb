@@ -1,9 +1,9 @@
-import { GetRoomParams, Room } from "interfaces/room";
 import axiosConfig from "./axiosConfig";
+import { RoomAPIParams, Room } from "interfaces/room";
 
 const roomAPI = {
-  getRoomListByLocation: (locationId: GetRoomParams) => {
-    return axiosConfig.get<unknown, Room[]>("rooms", { params: { locationId } });
+  getRoomListByLocation: (locationId?: RoomAPIParams) => {
+    return axiosConfig.get<unknown, Room[]>("rooms", { params: { locationId: locationId } });
   },
 };
 

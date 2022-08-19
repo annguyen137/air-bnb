@@ -6,6 +6,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@fontsource/roboto": "^4.5.8",
+    "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.10.0",
     "@reduxjs/toolkit": "^1.8.4",
     "@testing-library/jest-dom": "^5.16.5",
@@ -51,6 +52,9 @@
     ]
   },
   "devDependencies": {
-    "sass": "^1.54.4"
+    "autoprefixer": "^10.4.8",
+    "postcss": "^8.4.16",
+    "sass": "^1.54.4",
+    "tailwindcss": "^3.1.8"
   }
 }
