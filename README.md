@@ -1,5 +1,5 @@
 ## DOMAIN:
-`https://air-bnb-peach.vercel.app/`
+https://air-bnb-peach.vercel.app/
 
 ## Available Scripts
 
