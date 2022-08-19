@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { Box } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { useDispatch, useSelector } from "react-redux";
 import { getLocationList } from "redux/slices/locationsSlice";
 import { getRoomListByLocation } from "redux/slices/roomsSlice";
@@ -15,11 +17,18 @@ const RoomList = () => {
   }, []);
 
   return (
-    <div>
+    <Grid container spacing={{ md: 2 }}>
       {roomsData.map((room) => {
-        return <p key={room._id}>{room.name}</p>;
+        return (
+          <Grid item key={room._id} md={3}>
+            <Box>
+              <img src={room.image} alt="" className="max-w-full" />
+              <p>{room.name}</p>
+            </Box>
+          </Grid>
+        );
       })}
-    </div>
+    </Grid>
   );
 };
 

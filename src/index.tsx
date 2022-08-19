@@ -8,16 +8,31 @@ import "@fontsource/roboto/700.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import { CssBaseline } from "@mui/material";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 375,
+      md: 744,
+      lg: 950,
+      xl: 1128,
+    },
+  },
+});
+
 root.render(
   <Provider store={store}>
     <BrowserRouter>
+      {/* <ThemeProvider theme={theme}> */}
       <CssBaseline />
       <App />
+      {/* </ThemeProvider> */}
     </BrowserRouter>
   </Provider>
 );

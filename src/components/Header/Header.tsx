@@ -1,15 +1,36 @@
 import React from "react";
-import { Button } from "@mui/material";
+import { Avatar, Box, Button, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 
 import styles from "./Header.module.scss";
 
 const Header = () => {
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const menuItems = ["Sign Up", "Account", "Dashboard", "Logout"];
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
   return (
     <header className={`${styles["main-header"]} border-b fixed top-0 w-full border-gray-200 shadow-sm bg-white`}>
-      <div className={`${styles["nav-bar"]}`}>
-        <div className={`${styles["nav-bar-brand"]}`}>
+      <Box className={`${styles["nav-bar"]}`}>
+        <Box className={`${styles["nav-bar-brand"]}`}>
           <Link to="/" className="flex">
             <svg width="102" height="32">
               <path
@@ -22,8 +43,8 @@ const Header = () => {
               ></path>
             </svg>
           </Link>
-        </div>
-        <div
+        </Box>
+        <Box
           className={`${styles["nav-bar-search"]} border border-gray-300 rounded-3xl flex items-center hover:shadow-md hover:shadow-gray-300 duration-300`}
         >
           <div>
@@ -31,22 +52,67 @@ const Header = () => {
               <span className="lowercase first-letter:uppercase">Anywhere</span>
             </Button>
           </div>
+          <span className="bg-gray-300"></span>
           <div>
             <Button color="inherit" size="small" variant="text">
               <span className="lowercase first-letter:uppercase">Any week</span>
             </Button>
           </div>
+          <span className="bg-gray-300"></span>
           <div>
             <Button color="inherit" size="small" variant="text" className="flex">
-              <span className="lowercase first-letter:uppercase font-light mr-2">Add guest</span>
+              <span className="lowercase first-letter:uppercase font-light">Add guests</span>
 
               <div className={`${styles["search-icon"]}`}>
                 <SearchIcon fontSize="small" />
               </div>
             </Button>
           </div>
-        </div>
-      </div>
+        </Box>
+        <Box className={`${styles["nav-bar-right"]}`}>
+          <div className="flex items-center">
+            <div>
+              <Button color="inherit" size="small" variant="text">
+                <span className="lowercase first-letter:uppercase"> Become a Host</span>
+              </Button>
+            </div>
+            <div className={`${styles["language-icon"]}`}>
+              <Button color="inherit" size="small" variant="text">
+                <LanguageIcon fontSize="small" />
+              </Button>
+            </div>
+            <Box className={`${styles["nav-bar-menu"]}`}>
+              <Tooltip title="Open settings">
+                <Button size="small" onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="" src="" />
+                </Button>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {menuItems.map((setting, index) => (
+                  <MenuItem key={index} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </div>
+        </Box>
+      </Box>
     </header>
   );
 };
