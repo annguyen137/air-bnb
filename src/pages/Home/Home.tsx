@@ -4,7 +4,7 @@ import RoomList from "./RoomList/RoomList";
 
 const Home = () => {
   return (
-    <section>
+    <section style={{ marginTop: "80px", marginBottom: "49px" }}>
       <FilterTabs />
       <RoomList />
     </section>
