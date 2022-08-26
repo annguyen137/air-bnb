@@ -55,6 +55,7 @@
     }
 
     .nav-bar-right {
+      display: flex;
       height: 48px;
 
       > div {
@@ -68,7 +69,7 @@
         }
       }
 
-      .langeuage-icon {
+      .language-icon {
       }
 
       .nav-bar-menu {
