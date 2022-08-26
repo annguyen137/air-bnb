@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getLocationList } from "redux/slices/locationsSlice";
 import { getRoomListByLocation } from "redux/slices/roomsSlice";
 import { RootState, AppDispatch } from "redux/store";
+import RoomItem from "./RoomItem/RoomItem";
 
-const RoomList = () => {
+const RoomList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { roomsData, error, isLoading } = useSelector((state: RootState) => state.rooms);
@@ -17,14 +18,11 @@ const RoomList = () => {
   }, []);
 
   return (
-    <Grid container spacing={{ md: 2 }}>
+    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xl: 10 }}>
       {roomsData.map((room) => {
         return (
-          <Grid item key={room._id} md={3}>
-            <Box>
-              <img src={room.image} alt="" className="max-w-full" />
-              <p>{room.name}</p>
-            </Box>
+          <Grid item key={room._id} xs={6} md={4} lg={3} xl={2}>
+            <RoomItem room={room} />
           </Grid>
         );
       })}
