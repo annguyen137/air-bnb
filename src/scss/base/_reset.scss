@@ -1,31 +1,31 @@
 * {
   box-sizing: border-box !important;
+  padding: 0;
+  margin: 0;
 }
 
-span {
+span,
+p {
   font-size: $fs-2;
+  color: $color-text-primary;
+  line-height: 18px;
 }
 
-@include responsive("sm") {
-  header,
-  footer {
-    padding: 0 $pd-5;
-    width: 100%;
-  }
+button {
+  text-transform: capitalize !important;
+  font-size: $fs-2 !important;
+  line-height: 18px !important;
+  color: $color-text-primary !important;
 }
 
-@include responsive("md") {
-  header,
-  footer {
-    padding: 0 $pd-6;
-    width: 100%;
-  }
+a {
+  text-decoration: none;
 }
 
-@include responsive("xl") {
-  header,
-  footer {
-    padding: 0 $pd-7;
-    width: 100%;
-  }
+a:active {
+  color: unset;
+}
+
+a:visited {
+  color: unset;
 }
