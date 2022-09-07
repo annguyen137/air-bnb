@@ -15,13 +15,34 @@ import store from "./redux/store";
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 375,
-      md: 744,
-      lg: 950,
-      xl: 1128,
+  components: {
+    MuiContainer: {
+      defaultProps: {
+        maxWidth: false,
+        disableGutters: true,
+      },
+      styleOverrides: {
+        root: {
+          maxWidth: "1760px",
+          paddingRight: "80px",
+          paddingLeft: "80px",
+        },
+      },
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+        disableTouchRipple: true,
+        focusRipple: true,
+
+        sx: {
+          minWidth: "unset !important",
+          background: "unset",
+          "&:hover": {
+            background: "unset !important",
+          },
+        },
+      },
     },
   },
 });
@@ -29,10 +50,10 @@ const theme = createTheme({
 root.render(
   <Provider store={store}>
     <BrowserRouter>
-      {/* <ThemeProvider theme={theme}> */}
-      <CssBaseline />
-      <App />
-      {/* </ThemeProvider> */}
+      <ThemeProvider theme={theme}>
+        {/* <CssBaseline /> */}
+        <App />
+      </ThemeProvider>
     </BrowserRouter>
   </Provider>
 );
