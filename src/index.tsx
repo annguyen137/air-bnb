@@ -1,10 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
@@ -15,17 +11,34 @@ import store from "./redux/store";
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 744,
+      md: 950,
+      lg: 1128,
+      xl: 1440,
+    },
+  },
   components: {
     MuiContainer: {
       defaultProps: {
         maxWidth: false,
-        disableGutters: true,
       },
+
       styleOverrides: {
         root: {
           maxWidth: "1760px",
-          paddingRight: "80px",
-          paddingLeft: "80px",
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          "@media (min-width: 744px)": {
+            paddingLeft: "40px",
+            paddingRight: "40px",
+          },
+          "@media (min-width: 1128px)": {
+            paddingLeft: "80px",
+            paddingRight: "80px",
+          },
         },
       },
     },
@@ -33,13 +46,13 @@ const theme = createTheme({
       defaultProps: {
         disableRipple: true,
         disableTouchRipple: true,
-        focusRipple: true,
-
-        sx: {
+        focusRipple: false,
+      },
+      styleOverrides: {
+        root: {
           minWidth: "unset !important",
-          background: "unset",
           "&:hover": {
-            background: "unset !important",
+            backgroundColor: "unset !important",
           },
         },
       },
@@ -51,7 +64,7 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        {/* <CssBaseline /> */}
+        <CssBaseline />
         <App />
       </ThemeProvider>
     </BrowserRouter>

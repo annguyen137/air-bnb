@@ -1,0 +1,35 @@
+// @use "/src/scss/style.scss" as style;
+
+.room-list {
+  display: grid;
+  gap: 40px 24px;
+}
+
+@media screen and (max-width: 549px) {
+  .room-list {
+    grid-template-columns: 1fr;
+  }
+}
+@media screen and (min-width: 550px) {
+  .room-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@include style.responsive("md") {
+  .room-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@include style.responsive("lg") {
+  .room-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@include style.responsive("xl") {
+  .room-list {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}

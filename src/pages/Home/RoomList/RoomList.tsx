@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getLocationList } from "redux/slices/locationsSlice";
 import { getRoomListByLocation } from "redux/slices/roomsSlice";
 import { RootState, AppDispatch } from "redux/store";
-import RoomItem from "./RoomItem/RoomItem";
+import RoomItem from "components/RoomItem/RoomItem";
+
+import styles from "./RoomList.module.scss";
+import { Container } from "@mui/system";
 
 const RoomList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,15 +21,19 @@ const RoomList: React.FC = () => {
   }, []);
 
   return (
-    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xl: 10 }}>
-      {roomsData.map((room) => {
-        return (
-          <Grid item key={room._id} xs={6} md={4} lg={3} xl={2}>
-            <RoomItem room={room} />
-          </Grid>
-        );
-      })}
-    </Grid>
+    <Box className="inner">
+      <Container>
+        <Box className={`${styles["room-list"]}`}>
+          {roomsData.map((room) => {
+            return (
+              <Box key={room._id}>
+                <RoomItem room={room} />
+              </Box>
+            );
+          })}
+        </Box>
+      </Container>
+    </Box>
   );
 };
 
