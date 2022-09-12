@@ -1,17 +1,19 @@
-@import "/src/scss/style.scss";
+// @use "/src/scss/style.scss" as style;
 
-.main-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 48px;
-  background-color: $color-white-1;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-
-  .footer-inner {
-    display: flex;
+footer {
+  .footer-home {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     height: 48px;
-    justify-content: space-between;
-    align-items: center;
+    background-color: style.$color-white-1;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+    .footer-inner {
+      display: flex;
+      height: 48px;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 }

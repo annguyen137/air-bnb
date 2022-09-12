@@ -5,6 +5,9 @@ const roomAPI = {
   getRoomListByLocation: (locationId?: RoomAPIParams) => {
     return axiosConfig.get<unknown, Room[]>("rooms", { params: { locationId: locationId } });
   },
+  getRoomDetail: (roomId: Room["_id"]) => {
+    return axiosConfig.get<unknown, Room>(`rooms/${roomId}`);
+  },
 };
 
 export default roomAPI;

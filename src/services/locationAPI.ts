@@ -1,9 +1,12 @@
 import axiosConfig from "./axiosConfig";
-import { Location } from "interfaces/location";
+import { LocationId } from "interfaces/location";
 
 const locationAPI = {
   getLocationList: () => {
-    return axiosConfig.get<unknown, Location[]>("locations");
+    return axiosConfig.get<unknown, LocationId[]>("locations");
+  },
+  getLocationDetail: (locationId: LocationId["_id"]) => {
+    return axiosConfig.get<unknown, LocationId>(`locations/${locationId}`);
   },
 };
 

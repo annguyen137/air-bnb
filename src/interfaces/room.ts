@@ -1,3 +1,5 @@
+import { LocationId } from "./location";
+
 export interface Room {
   deleteAt: boolean;
   _id: string;
@@ -19,18 +21,9 @@ export interface Room {
   cableTV: boolean;
   __v: number;
   image: string;
-  locationId: LocationID;
-}
-
-export interface LocationID {
-  deleteAt: boolean;
-  name: string;
-  province: string;
-  country: string;
-  valueate: number;
-  image: string;
+  locationId?: LocationId;
 }
 
 export interface RoomAPIParams {
-  locationId?: string;
+  locationId?: LocationId["_id"];
 }
