@@ -1,7 +1,7 @@
+import React from "react";
 import { Typography } from "@mui/material";
 import Footer from "components/Footer/Footer";
 import Header from "components/Header/Header";
-import React from "react";
 import { Outlet } from "react-router-dom";
 
 const HomeTemplate = () => {
@@ -9,7 +9,7 @@ const HomeTemplate = () => {
     <>
       <Header />
       <Outlet />
-      <Footer />
+      <Footer variant="home" />
     </>
   );
 };

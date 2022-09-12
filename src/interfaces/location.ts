@@ -1,4 +1,4 @@
-export interface Location {
+export interface LocationId {
   deleteAt: boolean;
   _id: string;
   name: string;

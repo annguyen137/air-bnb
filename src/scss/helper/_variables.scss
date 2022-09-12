@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap");
+
 // color
 $header-brand-color: #ff385c;
 $color-white-1: #ffffff;
@@ -21,6 +23,7 @@ $pd-6: 40px;
 $pd-7: 80px;
 
 // Margin
+$mg-0: 12px;
 $mg-1: 30px;
 $mg-2: 25px;
 $mg-3: 70px;
@@ -28,12 +31,12 @@ $mg-4: 60px;
 
 // radius:
 $rd-1: 40px;
+$rd-2: 10px;
 
 // responsive
 $breakpoints: (
-  "sm": 375px,
-  "md": 744px,
-  "lg": 950px,
-  "xl": 1128px,
-  "2xl": 1440px,
+  "sm": 744px,
+  "md": 950px,
+  "lg": 1128px,
+  "xl": 1440px,
 );

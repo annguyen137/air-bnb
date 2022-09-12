@@ -3,26 +3,25 @@ import { Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Tooltip, Ty
 import SearchIcon from "@mui/icons-material/Search";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import LanguageIcon from "@mui/icons-material/Language";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import styles from "./Header.module.scss";
 
 const Header = () => {
   const logoRef = React.useRef<HTMLDivElement>(null);
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  const menuItems = ["Sign Up", "Account", "Dashboard", "Logout"];
+  const menuItems = [
+    { title: "Sign Up", path: "/signup" },
+    { title: "Login", path: "/login" },
+    { title: "Host your home", path: "" },
+    { title: "Host an experience", path: "" },
+    { title: "Help", path: "" },
+  ];
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -70,7 +69,7 @@ const Header = () => {
               </Button>
             </div>
           </Box>
-          <Box className={`${styles["nav-bar-right"]}`}>
+          <Box className={`${styles["nav-bar-auth"]}`}>
             <div className={`${styles["bca-host"]}`}>
               <Button color="inherit" size="small" variant="text">
                 Become a Host
@@ -82,13 +81,10 @@ const Header = () => {
               </Button>
             </div>
             <Box className={`${styles["nav-bar-menu"]}`}>
-              <Tooltip title="Open settings">
-                <Button size="small" onClick={handleOpenUserMenu} sx={{ p: 0, border: "1px solid #dddddd" }}>
-                  <DensityMediumIcon fontSize="small" />
-
-                  <Avatar alt="" src="" sx={{ width: "30px", height: "30px", marginLeft: "12px" }} />
-                </Button>
-              </Tooltip>
+              <Button size="small" onClick={handleOpenUserMenu} sx={{ p: 0, border: "1px solid #dddddd" }}>
+                <DensityMediumIcon fontSize="small" />
+                <Avatar alt="" src="" sx={{ width: "30px", height: "30px", marginLeft: "12px" }} />
+              </Button>
               <Menu
                 sx={{ mt: "45px" }}
                 id="menu-appbar"
@@ -107,8 +103,14 @@ const Header = () => {
                 onClose={handleCloseUserMenu}
               >
                 {menuItems.map((setting, index) => (
-                  <MenuItem key={index} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
+                  <MenuItem
+                    key={index}
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate(`${setting.path}`);
+                    }}
+                  >
+                    <Typography textAlign="center">{setting.title}</Typography>
                   </MenuItem>
                 ))}
               </Menu>

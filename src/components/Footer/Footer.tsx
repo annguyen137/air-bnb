@@ -1,21 +1,39 @@
 import React from "react";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 import styles from "./Footer.module.scss";
 
-const Footer = () => {
-  return (
-    <footer className={`${styles["main-footer"]}`}>
-      <Container>
-        <div className={`${styles["footer-inner"]}`}>
-          <div className="flex items-center">
-            <div>
+type footerProps = {
+  variant: string;
+};
+
+const Footer = ({ variant }: footerProps) => {
+  return variant === "home" ? (
+    <footer>
+      <Box className={`${styles["footer-home"]}`}>
+        <Container>
+          <Box className={`${styles["footer-inner"]}`}>
+            <Box>
               <p>© 2022 Airbnb, Inc.</p>
-            </div>
-          </div>
-        </div>
-      </Container>
+            </Box>
+          </Box>
+        </Container>
+      </Box>
     </footer>
+  ) : variant === "detail" ? (
+    <footer>
+      <Box className={`${styles["footer-detail"]}`}>
+        <Container>
+          <Box className={`${styles["footer-inner"]}`}>
+            <Box>
+              <p>© 2022 Airbnb, Inc.</p>
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+    </footer>
+  ) : (
+    <footer></footer>
   );
 };
 

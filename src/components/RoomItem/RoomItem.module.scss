@@ -1,0 +1,24 @@
+// @use "/src/scss/style.scss" as style;
+
+.room-card {
+  .room-img {
+    border-radius: style.$rd-2;
+    object-fit: fill;
+    margin-bottom: style.$mg-0;
+    overflow: hidden;
+  }
+
+  .room-name {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .room-price {
+    font-size: 15px;
+    font-weight: 500;
+    span {
+      font-weight: 600;
+    }
+  }
+}
