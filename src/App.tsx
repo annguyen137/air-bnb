@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import HomeTemplate from "./templates/HomeTemplate/HomeTemplate";
 import "./App.css";
+import "./scss/style.scss";
 import Home from "pages/Home/Home";
 import RoomDetail from "pages/RoomDetail/RoomDetail";
 import Login from "pages/Login/Login";
