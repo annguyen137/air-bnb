@@ -1,10 +1,11 @@
-// @use "/src/scss/style.scss" as style;
+// @use "/src/scss/style";
+@use "/src/scss/helper/variables";
 
 .room-card {
   .room-img {
-    border-radius: style.$rd-2;
+    border-radius: variables.$rd-2;
     object-fit: fill;
-    margin-bottom: style.$mg-0;
+    margin-bottom: variables.$mg-0;
     overflow: hidden;
   }
 

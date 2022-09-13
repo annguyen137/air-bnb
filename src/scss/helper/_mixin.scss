@@ -1,7 +1,9 @@
+@use "/src/scss/helper/variables";
+
 @mixin responsive($screen) {
-  @if (map-has-key($map: $breakpoints, $key: $screen)) {
+  @if (map-has-key($map: variables.$breakpoints, $key: $screen)) {
     $value: map-get(
-      $map: $breakpoints,
+      $map: variables.$breakpoints,
       $key: $screen,
     );
     @media screen and (min-width: $value) {

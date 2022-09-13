@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
@@ -10,7 +10,7 @@ import styles from "./Header.module.scss";
 const Header = () => {
   const logoRef = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const menuItems = [
     { title: "Sign Up", path: "/signup" },

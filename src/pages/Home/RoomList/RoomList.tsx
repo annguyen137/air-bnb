@@ -9,6 +9,7 @@ import RoomItem from "components/RoomItem/RoomItem";
 
 import styles from "./RoomList.module.scss";
 import { Container } from "@mui/system";
+import { Room } from "interfaces/room";
 
 const RoomList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

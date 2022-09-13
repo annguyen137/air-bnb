@@ -1,14 +1,16 @@
+@use "../helper/variables";
+@use "../helper/mixin";
+
 * {
   box-sizing: border-box !important;
   padding: 0;
   margin: 0;
-  // font-family: "Montserrat", sans-serif;
   font-family: "Noto Sans", sans-serif;
 }
 
 span,
 p {
-  color: $color-text-primary;
+  color: variables.$color-text-primary;
   line-height: 18px;
 }
 
@@ -20,9 +22,9 @@ img {
 
 button {
   text-transform: capitalize !important;
-  font-size: $fs-2 !important;
+  font-size: variables.$fs-2 !important;
   line-height: 18px !important;
-  color: $color-text-primary !important;
+  color: variables.$color-text-primary !important;
 }
 
 a {
@@ -37,6 +39,6 @@ a:visited {
   color: unset;
 }
 
-.inner {
+div.inner {
   margin-top: 50px;
 }
