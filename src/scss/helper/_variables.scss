@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
 
 // color
 $header-brand-color: #ff385c;
@@ -6,12 +6,16 @@ $color-white-1: #ffffff;
 $color-gray-1: #dddddd;
 $color-gray-2: #717171;
 $color-text-primary: #222222;
+$color-black: #000000;
+$color-black-2: #222222;
 
 // font size
 $fs-1: 12px;
 $fs-2: 14px;
 $fs-3: 15px;
 $fs-4: 16px;
+$fs-5: 26px;
+$fs-6: 22px;
 
 // Padding
 $pd-1: 4px;
@@ -28,10 +32,16 @@ $mg-1: 30px;
 $mg-2: 25px;
 $mg-3: 70px;
 $mg-4: 60px;
+$mg-5: 48px;
 
 // radius:
 $rd-1: 40px;
 $rd-2: 10px;
+
+// line height
+$lh-1: 19px;
+$lh-2: 30px;
+$lh-3: 26px;
 
 // responsive
 $breakpoints: (

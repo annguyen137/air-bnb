@@ -1,13 +1,15 @@
 import { Container } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import Banner from "./Banner/Banner";
 
 import RoomList from "./RoomList/RoomList";
 
 const Home = () => {
   return (
-    <section style={{ marginBottom: "48px" }}>
+    <>
+      <Banner />
       <RoomList />
-    </section>
+    </>
   );
 };
 

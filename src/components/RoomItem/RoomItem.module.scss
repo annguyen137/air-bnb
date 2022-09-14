@@ -1,12 +1,31 @@
-// @use "/src/scss/style";
-@use "/src/scss/helper/variables";
+@use "/src/scss/helper/variables" as *;
 
 .room-card {
+  overflow: hidden;
+  position: relative;
+
   .room-img {
-    border-radius: variables.$rd-2;
+    border-radius: $rd-2;
     object-fit: fill;
-    margin-bottom: variables.$mg-0;
+    margin-bottom: $mg-0;
     overflow: hidden;
+    background: linear-gradient(to top, $color-gray-2 10%, $color-gray-1);
+    width: 100%;
+    border-color: unset;
+    aspect-ratio: 1/0.9;
+
+    img {
+      height: 100%;
+      min-width: 100%;
+      border-radius: $rd-2;
+      transition: transform 0.3s ease-out;
+    }
+
+    &:hover {
+      img {
+        transform: scale(1.1);
+      }
+    }
   }
 
   .room-name {
@@ -17,9 +36,30 @@
 
   .room-price {
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 400;
     span {
       font-weight: 600;
+    }
+  }
+
+  .favourite {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    top: 5%;
+    right: 5%;
+    overflow: visible;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease-in;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+      transform: scale(1.1);
+      fill: $header-brand-color;
     }
   }
 }

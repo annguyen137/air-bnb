@@ -1,12 +1,26 @@
 @use "/src/scss/helper/variables";
 
-@mixin responsive($screen) {
+@mixin responsiveMin($screen) {
   @if (map-has-key($map: variables.$breakpoints, $key: $screen)) {
     $value: map-get(
       $map: variables.$breakpoints,
       $key: $screen,
     );
     @media screen and (min-width: $value) {
+      @content;
+    }
+  } @else {
+    @warn "Undefined Screen Width!";
+  }
+}
+
+@mixin responsiveMax($screen) {
+  @if (map-has-key($map: variables.$breakpoints, $key: $screen)) {
+    $value: map-get(
+      $map: variables.$breakpoints,
+      $key: $screen,
+    );
+    @media screen and (max-width: $value) {
       @content;
     }
   } @else {
