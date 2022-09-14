@@ -1,6 +1,5 @@
-// @use "/src/scss/style";
-@use "/src/scss/helper/variables";
-@use "/src/scss/helper/mixin";
+@use "/src/scss/helper/variables" as *;
+@use "/src/scss/helper/mixin" as *;
 
 .room-list {
   display: grid;
@@ -18,19 +17,19 @@
   }
 }
 
-@include mixin.responsive("md") {
+@include responsiveMin("md") {
   .room-list {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@include mixin.responsive("lg") {
+@include responsiveMin("lg") {
   .room-list {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@include mixin.responsive("xl") {
+@include responsiveMin("xl") {
   .room-list {
     grid-template-columns: repeat(5, 1fr);
   }

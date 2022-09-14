@@ -1,3 +1,117 @@
-.room-detail {
-  display: flex;
+@use "/src/scss/helper/variables" as *;
+@use "/src/scss/helper/mixin" as *;
+
+.detail {
+  max-width: 1120px;
+  min-height: 100vh;
+  margin: 0 auto;
+  color: $color-black-2;
+
+  .detail-title {
+    h1 {
+      font-size: $fs-5;
+      font-weight: 600;
+      line-height: $lh-2;
+      color: $color-text-primary;
+      margin-bottom: $mg-0 - 2;
+    }
+  }
+
+  .detail-content {
+    width: 100%;
+    display: flex;
+    // gap: 0 40px;
+    margin-bottom: $mg-5;
+
+    .img {
+      border-radius: $rd-2;
+      width: 60%;
+      overflow: hidden;
+      height: 300px;
+
+      img {
+        width: 80% !important;
+      }
+    }
+
+    .ticket {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: auto;
+
+      .book-ticket {
+        padding: $pd-5;
+        box-shadow: rgb(0 0 0 / 12%) 0px 6px 16px;
+        border: 1px solid $color-gray-1;
+        border-radius: $rd-2 + 2;
+
+        &.--sticky-ticket {
+          // position: fixed;
+          // top: 50%;
+          // right: 115px;
+          // transform: translate(50%, -50%);
+        }
+
+        .ticket-inner {
+          display: flex;
+          flex-direction: column;
+
+          .price {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: $mg-0 * 2;
+
+            span:nth-child(1) {
+              font-size: $fs-6;
+              font-weight: 600;
+              line-height: $lh-3;
+            }
+
+            span:nth-child(2) {
+              font-weight: 400;
+              margin-left: 6px;
+              line-height: $lh-1 + 1;
+            }
+          }
+
+          .date-guest {
+            margin-bottom: $mg-0 + 4;
+            border: 0.1px solid rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            display: grid;
+          }
+        }
+      }
+    }
+  }
+
+  .detail-info {
+    width: 60%;
+  }
+
+  .offers {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: ($pd-6 + 8) 0;
+
+    &-list {
+      display: grid;
+      gap: 0 16px;
+      grid-template-columns: repeat(2, 1fr);
+
+      .offer-item {
+        display: flex;
+
+        span {
+          margin-bottom: $mg-0 + 6;
+          margin-left: $mg-0 + 4;
+        }
+      }
+    }
+  }
+
+  .reviews {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
 }

@@ -7,7 +7,9 @@ const DetailTemplate = () => {
   return (
     <>
       <Header />
-      <RoomDetail />
+      <section>
+        <RoomDetail />
+      </section>
       <Footer variant="detail" />
     </>
   );

@@ -1,0 +1,28 @@
+@use "/src/scss/helper/variables" as *;
+@use "/src/scss/helper/mixin" as *;
+
+.banner {
+  object-fit: fill;
+  height: 80vh;
+  position: relative;
+  background-color: $color-black;
+  overflow: hidden;
+}
+
+@include responsiveMax("md") {
+  .banner {
+    height: 60vh;
+  }
+}
+
+@include responsiveMax("sm") {
+  .banner {
+    height: 50vh;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .banner {
+    height: 40vh;
+  }
+}

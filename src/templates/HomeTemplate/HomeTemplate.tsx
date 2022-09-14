@@ -8,7 +8,9 @@ const HomeTemplate = () => {
   return (
     <>
       <Header />
-      <Outlet />
+      <section style={{ marginBottom: "48px" }}>
+        <Outlet />
+      </section>
       <Footer variant="home" />
     </>
   );
