@@ -1,38 +1,61 @@
-import React, { useEffect } from "react";
-import { Box } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import React, { useEffect, useRef, useState } from "react";
+import { Box, Container } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getLocationList } from "redux/slices/locationsSlice";
 import { getRoomListByLocation } from "redux/slices/roomsSlice";
 import { RootState, AppDispatch } from "redux/store";
 import RoomItem from "components/RoomItem/RoomItem";
+import Loading from "components/Loading/Loading";
+import { LIMIT } from "services/axiosConfig";
 
 import styles from "./RoomList.module.scss";
-import { Container } from "@mui/system";
-import { Room } from "interfaces/room";
 
 const RoomList: React.FC = () => {
+  const triggerRef = useRef<IntersectionObserver>();
+
+  const [isTriggered, setIsTriggered] = useState(false);
+
   const dispatch = useDispatch<AppDispatch>();
 
-  const { roomsData, error, isLoading } = useSelector((state: RootState) => state.rooms);
+  const { roomsData, isLoading } = useSelector((state: RootState) => state.rooms);
 
   useEffect(() => {
-    dispatch(getLocationList());
-    dispatch(getRoomListByLocation());
+    // dispatch(getLocationList());
+    // dispatch(getRoomListByLocation({ limit: LIMIT }));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        console.log(entries);
+        const triggerDiv = entries[0];
+        if (triggerDiv.isIntersecting) {
+          setIsTriggered(triggerDiv.isIntersecting);
+        }
+      },
+      { threshold: 1 }
+    );
+
+    // observer.observe(triggerRef.current);
   }, []);
 
+  // LAZY LOAD FETCH USING INTERSECTION OBSERVER
+  useEffect(() => {
+    if (isTriggered) {
+      dispatch(getRoomListByLocation({ limit: LIMIT }));
+    }
+  }, [isTriggered]);
+
   return (
-    <Box className="inner">
+    <Box sx={{ marginTop: "25px" }}>
       <Container>
         <Box className={`${styles["room-list"]}`}>
-          {roomsData.map((room) => {
-            return (
-              <Box key={room._id}>
-                <RoomItem room={room} />
-              </Box>
-            );
-          })}
+          {isLoading && [...Array(15)].map((item, index) => <Loading key={index} variant="card" />)}
+          {roomsData.map((room, index) => (
+            <Box key={index}>
+              <RoomItem room={room} />
+            </Box>
+          ))}
         </Box>
+        <Box ref={triggerRef}></Box>
       </Container>
     </Box>
   );

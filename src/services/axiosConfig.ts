@@ -1,5 +1,7 @@
 import axios, { AxiosError } from "axios";
 
+export const LIMIT: number = 15;
+
 const axiosConfig = axios.create({
   baseURL: "https://airbnb.cybersoft.edu.vn/api",
   headers: {

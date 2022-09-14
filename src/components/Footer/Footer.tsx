@@ -9,8 +9,8 @@ type footerProps = {
 
 const Footer = ({ variant }: footerProps) => {
   return variant === "home" ? (
-    <footer>
-      <Box className={`${styles["footer-home"]}`}>
+    <footer className={`${styles["footer"]} ${styles["--footer-home"]}`}>
+      <Box>
         <Container>
           <Box className={`${styles["footer-inner"]}`}>
             <Box>
@@ -21,8 +21,8 @@ const Footer = ({ variant }: footerProps) => {
       </Box>
     </footer>
   ) : variant === "detail" ? (
-    <footer>
-      <Box className={`${styles["footer-detail"]}`}>
+    <footer className={`${styles["footer"]} ${styles["--footer-detail"]}`}>
+      <Box>
         <Container>
           <Box className={`${styles["footer-inner"]}`}>
             <Box>

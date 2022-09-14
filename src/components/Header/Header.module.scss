@@ -1,4 +1,4 @@
-@use "/src/scss/helper/variables";
+@use "/src/scss/helper/variables" as *;
 
 .main-header {
   z-index: 100;
@@ -6,7 +6,7 @@
   position: sticky;
   top: 0;
   width: 100%;
-  background-color: variables.$color-white-1;
+  background-color: $color-white-1;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
   .nav-bar {
@@ -18,15 +18,22 @@
     justify-content: space-between;
 
     .nav-bar-brand {
-      color: variables.$header-brand-color;
+      color: $header-brand-color;
+      height: 100%;
+
+      > a {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
     }
 
     .nav-bar-search {
       height: 48px;
       display: flex;
       align-items: center;
-      border: 1px solid variables.$color-gray-1;
-      border-radius: variables.$rd-1;
+      border: 1px solid $color-gray-1;
+      border-radius: $rd-1;
       box-shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 4px 12px rgb(0 0 0 / 5%);
       transition: all 0.2s ease-out;
 
@@ -36,29 +43,29 @@
 
       > div {
         button {
-          font-size: variables.$fs-2;
-          padding: 0 (variables.$pd-3 + 2);
+          font-size: $fs-2;
+          padding: 0 ($pd-3 + 2);
           text-transform: capitalize;
         }
 
         &:first-child {
-          padding-left: (variables.$pd-1 * 2);
+          padding-left: ($pd-1 * 2);
         }
 
         &:nth-child(2) {
-          border-right: 1px solid variables.$color-gray-1;
-          border-left: 1px solid variables.$color-gray-1;
+          border-right: 1px solid $color-gray-1;
+          border-left: 1px solid $color-gray-1;
         }
 
         &:last-child {
-          padding-right: (variables.$pd-1 * 2);
+          padding-right: ($pd-1 * 2);
 
           button {
             padding: 0;
 
             span {
-              padding: 0 (variables.$pd-3 + 2);
-              color: variables.$color-gray-2;
+              padding: 0 ($pd-3 + 2);
+              color: $color-gray-2;
               font-weight: 400;
             }
 
@@ -68,8 +75,8 @@
               display: flex;
               justify-content: center;
               align-items: center;
-              color: variables.$color-white-1;
-              background-color: variables.$header-brand-color;
+              color: $color-white-1;
+              background-color: $header-brand-color;
               border-radius: 50%;
             }
           }
@@ -87,7 +94,7 @@
       align-items: center;
 
       button {
-        padding: variables.$pd-2 + 2;
+        padding: $pd-2 + 2;
         border-radius: 22px;
         transition: all 0.2s;
 
@@ -107,7 +114,7 @@
         align-items: center;
 
         button {
-          background-color: variables.$color-white-1 !important;
+          background-color: $color-white-1 !important;
           padding: 5px 5px 5px 12px;
           border-radius: 22px;
           transition: all 0.2s ease-out;

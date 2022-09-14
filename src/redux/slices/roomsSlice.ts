@@ -2,8 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RoomAPIParams, Room } from "interfaces/room";
 import roomAPI from "services/roomAPI";
 
+import { LIMIT } from "../../services/axiosConfig";
+
 interface RoomsState {
   roomsData: Room[];
+  roomsPagination: Room[];
   roomDetail: Room;
   isLoading: boolean;
   error: string;
@@ -11,6 +14,7 @@ interface RoomsState {
 
 const initialState: RoomsState = {
   roomsData: [],
+  roomsPagination: new Array<Room>(LIMIT),
   roomDetail: {} as Room,
   isLoading: false,
   error: "",
@@ -18,9 +22,9 @@ const initialState: RoomsState = {
 
 export const getRoomListByLocation = createAsyncThunk(
   "rooms/getRoomListByLocation",
-  async (locationId?: RoomAPIParams) => {
+  async ({ locationId, limit }: RoomAPIParams) => {
     try {
-      const data = await roomAPI.getRoomListByLocation(locationId);
+      const data = await roomAPI.getRoomListByLocation({ locationId, limit });
       return data;
     } catch (error) {
       throw error;
@@ -46,7 +50,12 @@ const roomsSlice = createSlice({
       return { ...state, isLoading: true };
     });
     builder.addCase(getRoomListByLocation.fulfilled, (state, { payload }) => {
-      return { ...state, isLoading: false, roomsData: payload };
+      return {
+        ...state,
+        isLoading: false,
+        roomsPagination: payload,
+        roomsData: [...state.roomsData, ...payload] as Room[],
+      };
     });
     builder.addCase(getRoomListByLocation.rejected, (state, { error }) => {
       return { ...state, isLoading: false, error: error.message as string };

@@ -109,6 +109,14 @@ const Header = () => {
                       handleCloseUserMenu();
                       navigate(`${setting.path}`);
                     }}
+                    sx={{
+                      transition: "all 0.5s",
+                      borderBottom: "1px solid transparent",
+                      "&:hover": {
+                        backgroundColor: "rgba(0,0,0, 0.1) !important",
+                        borderColor: "rgba(0,0,0, 0.1)",
+                      },
+                    }}
                   >
                     <Typography textAlign="center">{setting.title}</Typography>
                   </MenuItem>
