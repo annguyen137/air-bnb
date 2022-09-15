@@ -4,7 +4,7 @@ import { Room, RoomAPIParams } from "interfaces/room";
 
 const reviewAPI = {
   getReviewsByRoomId: (roomId: Room["_id"]) => {
-    return axiosConfig.get("reviews/byRoom", { params: { roomId: roomId } });
+    return axiosConfig.get<unknown, Review[]>("reviews/byRoom", { params: { roomId: roomId } });
   },
 };
 

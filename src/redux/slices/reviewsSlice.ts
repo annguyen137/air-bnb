@@ -17,7 +17,7 @@ const initialState: ReviewState = {
 
 export const getReviewsByRoomId = createAsyncThunk("reviews/getReviewsByRoomId", async (roomId: Room["_id"]) => {
   try {
-    const { data } = await reviewAPI.getReviewsByRoomId(roomId);
+    const data = await reviewAPI.getReviewsByRoomId(roomId);
     return data;
   } catch (error) {
     throw error;
@@ -29,6 +29,7 @@ const reviewsSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // reviews by room
     builder.addCase(getReviewsByRoomId.pending, (state) => ({ ...state, isLoading: true }));
 
     builder.addCase(getReviewsByRoomId.fulfilled, (state, { payload }) => ({
@@ -36,6 +37,14 @@ const reviewsSlice = createSlice({
       isLoading: false,
       reviewsByRoomId: payload,
     }));
+
+    builder.addCase(getReviewsByRoomId.rejected, (state, { error }) => ({
+      ...state,
+      isLoading: false,
+      error: error as string,
+    }));
+
+    //
   },
 });
 

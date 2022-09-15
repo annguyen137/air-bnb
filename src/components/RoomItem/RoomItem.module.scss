@@ -5,6 +5,7 @@
   position: relative;
 
   .room-img {
+    position: relative;
     border-radius: $rd-2;
     object-fit: fill;
     margin-bottom: $mg-0;
@@ -14,24 +15,36 @@
     border-color: unset;
     aspect-ratio: 1/0.9;
 
+    .overlay {
+      position: absolute;
+      content: "";
+      bottom: 0;
+      width: 100%;
+      height: 0;
+      transition: all 0.5s ease-out;
+    }
+
     img {
       height: 100%;
       min-width: 100%;
       border-radius: $rd-2;
-      transition: transform 0.3s ease-out;
+      transition: all 0.3s ease-out;
     }
 
     &:hover {
+      .overlay {
+        height: 30%;
+      }
+
       img {
-        transform: scale(1.1);
+        filter: brightness(0.5);
       }
     }
   }
 
   .room-name {
-    font-weight: 600;
+    font-weight: 800;
     margin-bottom: 8px;
-    font-size: 15px;
   }
 
   .room-price {

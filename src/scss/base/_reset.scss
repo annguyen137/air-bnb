@@ -12,6 +12,7 @@ span,
 p {
   color: $color-text-primary;
   line-height: 18px;
+  font-size: $fs-4;
 }
 
 img {
@@ -45,6 +46,11 @@ a:visited {
   color: unset;
 }
 
+ul,
+li {
+  list-style: none;
+}
+
 h3.title {
   color: $color-black-2;
 
@@ -53,5 +59,14 @@ h3.title {
     line-height: $lh-3;
     font-weight: 600;
     margin-bottom: $mg-2;
+  }
+}
+
+h4.title {
+  font-size: $fs-2;
+  font-weight: 800;
+
+  &.--footer-title {
+    margin-bottom: $mg-0 + 4;
   }
 }
