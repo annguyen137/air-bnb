@@ -8,6 +8,8 @@
   color: $color-black-2;
 
   .detail-title {
+    margin-bottom: $mg-1 - 4;
+
     h1 {
       font-size: $fs-5;
       font-weight: 600;
@@ -15,43 +17,142 @@
       color: $color-text-primary;
       margin-bottom: $mg-0 - 2;
     }
+
+    p,
+    span {
+      font-weight: 600;
+      line-height: $lh-1;
+    }
   }
 
-  .detail-content {
+  .detail-img {
     width: 100%;
-    display: flex;
-    // gap: 0 40px;
     margin-bottom: $mg-5;
+    overflow: hidden;
+    position: relative;
 
-    .img {
-      border-radius: $rd-2;
-      width: 60%;
-      overflow: hidden;
-      height: 300px;
+    .img-grid {
+      display: grid;
+      gap: 10px;
+      height: 100%;
+      max-height: 300px;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, minmax(0, 1fr));
 
       img {
-        width: 80% !important;
+        cursor: pointer;
+        border-radius: $rd-2;
+        transition: all 0.5s;
+
+        &:hover {
+          filter: brightness(0.7);
+        }
+      }
+
+      img:nth-child(1) {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
       }
     }
 
-    .ticket {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-left: auto;
+    .img-all {
+      position: absolute;
+      bottom: 10%;
+      left: 1%;
+      z-index: 10;
+    }
+  }
+
+  .detail-info {
+    display: flex;
+    justify-content: space-between;
+
+    .detail-left {
+      width: 60%;
+
+      .info {
+        margin-bottom: $mg-2;
+
+        ul {
+          display: flex;
+          gap: 0 10px;
+
+          li {
+            font-size: $fs-4;
+            font-weight: 500;
+            color: $color-black-2;
+            display: flex;
+            padding-right: 10px;
+            gap: 0 5px;
+            position: relative;
+
+            &::after {
+              position: absolute;
+              content: "";
+              right: 0;
+              width: 2px;
+              height: 2px;
+              top: 50%;
+              background-color: $color-black-2;
+              border-radius: 50%;
+            }
+
+            &:last-child {
+              &::after {
+                visibility: hidden;
+              }
+            }
+          }
+        }
+      }
+
+      .description {
+        width: 100%;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding: ($pd-6 - 8) 0;
+
+        p {
+          line-height: $lh-3 - 2;
+          font-weight: 400;
+        }
+      }
+
+      .offers {
+        width: 100%;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding: ($pd-6 + 8) 0;
+        padding-right: $pd-5 * 2;
+
+        &-list {
+          display: grid;
+          gap: 0 16px;
+          grid-template-columns: repeat(2, 1fr);
+
+          .offer-item {
+            display: flex;
+            align-items: center;
+            gap: 0 16px;
+            margin-bottom: $mg-0 + 6;
+
+            span.item-invalid {
+              text-decoration: line-through;
+            }
+          }
+        }
+      }
+    }
+
+    .detail-right {
+      flex-grow: 1;
+      margin-left: 8%;
 
       .book-ticket {
-        padding: $pd-5;
-        box-shadow: rgb(0 0 0 / 12%) 0px 6px 16px;
         border: 1px solid $color-gray-1;
+        padding: $pd-5;
         border-radius: $rd-2 + 2;
-
-        &.--sticky-ticket {
-          // position: fixed;
-          // top: 50%;
-          // right: 115px;
-          // transform: translate(50%, -50%);
-        }
+        box-shadow: rgb(0 0 0 / 12%) 0px 6px 16px;
 
         .ticket-inner {
           display: flex;
@@ -60,7 +161,6 @@
           .price {
             display: flex;
             align-items: baseline;
-            margin-bottom: $mg-0 * 2;
 
             span:nth-child(1) {
               font-size: $fs-6;
@@ -76,42 +176,81 @@
           }
 
           .date-guest {
-            margin-bottom: $mg-0 + 4;
-            border: 0.1px solid rgba(0, 0, 0, 0.5);
-            border-radius: 8px;
-            overflow: hidden;
-            display: grid;
+            padding: $pd-5 0;
           }
         }
       }
     }
   }
 
-  .detail-info {
-    width: 60%;
-  }
-
-  .offers {
+  .detail-reviews {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding: ($pd-6 + 8) 0;
 
-    &-list {
+    .reviews-list {
+      width: 100%;
       display: grid;
-      gap: 0 16px;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 40px 95px;
 
-      .offer-item {
+      .review-item {
         display: flex;
+        flex-direction: column;
+        gap: 17px 0;
 
-        span {
-          margin-bottom: $mg-0 + 6;
-          margin-left: $mg-0 + 4;
+        h4.user-name {
+          font-size: $fs-4;
+          font-weight: 600;
+          line-height: $lh-1;
+        }
+
+        span.review-date {
+          color: $color-gray-2;
+          font-size: $fs-2;
+        }
+
+        p.user-review {
+          line-height: $lh-3 - 2;
         }
       }
     }
   }
+}
 
-  .reviews {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+.reviews-all {
+  position: relative;
+  height: 100%;
+
+  .list-all {
+    width: 50%;
+    max-height: 90vh;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 40px 0;
+    overflow-y: scroll;
+    padding: 0 $pd-4;
+
+    .review-item {
+      display: flex;
+      flex-direction: column;
+      gap: 17px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+      h4.user-name {
+        font-size: $fs-4;
+        font-weight: 600;
+        line-height: $lh-1;
+      }
+
+      span.review-date {
+        color: $color-gray-2;
+        font-size: $fs-2;
+      }
+
+      p.user-review {
+        line-height: $lh-3 - 2;
+      }
+    }
   }
 }

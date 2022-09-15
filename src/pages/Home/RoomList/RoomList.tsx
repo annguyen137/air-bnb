@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { MutableRefObject, RefObject, useEffect, useRef, useState } from "react";
 import { Box, Container } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getLocationList } from "redux/slices/locationsSlice";
@@ -9,53 +9,50 @@ import Loading from "components/Loading/Loading";
 import { LIMIT } from "services/axiosConfig";
 
 import styles from "./RoomList.module.scss";
+import useIntersectionObserver from "utils/useIntersectionObserver";
 
 const RoomList: React.FC = () => {
-  const triggerRef = useRef<IntersectionObserver>();
-
-  const [isTriggered, setIsTriggered] = useState(false);
+  const triggerRef = useRef() as React.MutableRefObject<HTMLElement>;
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const { roomsData, isLoading } = useSelector((state: RootState) => state.rooms);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
+  const [isTriggered, page, observer] = useIntersectionObserver();
+
+  const { roomsData, roomsPagination, isLoading } = useSelector((state: RootState) => state.rooms);
+
+  // LAZY LOAD FETCH USING INTERSECTION OBSERVER (CUSTOM HOOK)
   useEffect(() => {
-    // dispatch(getLocationList());
-    // dispatch(getRoomListByLocation({ limit: LIMIT }));
+    if (isFirstLoad) {
+      dispatch(getLocationList());
+      dispatch(getRoomListByLocation({ limit: LIMIT, skip: LIMIT * page }));
+      setIsFirstLoad(false);
+    }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        console.log(entries);
-        const triggerDiv = entries[0];
-        if (triggerDiv.isIntersecting) {
-          setIsTriggered(triggerDiv.isIntersecting);
-        }
-      },
-      { threshold: 1 }
-    );
-
-    // observer.observe(triggerRef.current);
+    observer.observe(triggerRef.current);
   }, []);
 
-  // LAZY LOAD FETCH USING INTERSECTION OBSERVER
   useEffect(() => {
-    if (isTriggered) {
-      dispatch(getRoomListByLocation({ limit: LIMIT }));
+    if (isTriggered && roomsPagination.length) {
+      dispatch(getRoomListByLocation({ limit: LIMIT, skip: LIMIT * page }));
     }
-  }, [isTriggered]);
+  }, [isTriggered, page]);
 
   return (
     <Box sx={{ marginTop: "25px" }}>
       <Container>
         <Box className={`${styles["room-list"]}`}>
-          {isLoading && [...Array(15)].map((item, index) => <Loading key={index} variant="card" />)}
           {roomsData.map((room, index) => (
             <Box key={index}>
               <RoomItem room={room} />
             </Box>
           ))}
+          {isLoading && [...Array(LIMIT)].map((item, index) => <Loading key={index} variant="card" />)}
         </Box>
-        <Box ref={triggerRef}></Box>
+        <Box ref={triggerRef} sx={{ padding: "25px 0", textAlign: "center" }}>
+          {!roomsPagination.length ? "End of result" : ""}
+        </Box>
       </Container>
     </Box>
   );

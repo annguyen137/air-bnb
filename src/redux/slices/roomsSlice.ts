@@ -22,9 +22,9 @@ const initialState: RoomsState = {
 
 export const getRoomListByLocation = createAsyncThunk(
   "rooms/getRoomListByLocation",
-  async ({ locationId, limit }: RoomAPIParams) => {
+  async ({ locationId, limit, skip }: RoomAPIParams) => {
     try {
-      const data = await roomAPI.getRoomListByLocation({ locationId, limit });
+      const data = await roomAPI.getRoomListByLocation({ locationId, limit, skip });
       return data;
     } catch (error) {
       throw error;
