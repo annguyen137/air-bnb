@@ -13,12 +13,13 @@ interface Props {
 const RoomItem = ({ room }: Props) => {
   return (
     <Box className={`${styles["room-card"]}`}>
-      <NavLink to={`/rooms/${room._id}`}>
+      <NavLink to={`/rooms/${room._id}`} target={"_blank"}>
         <Box>
           <Box className={`${styles["room-img"]}`}>
             <img src={`${room.image}`} alt={room.name} />
+            <Box className={`${styles["overlay"]}`}></Box>
           </Box>
-          <p className={`${styles["room-name"]}`}>{room.name}</p>
+          <h4 className={`${styles["room-name"]}`}>{room.name}</h4>
           <p className={`${styles["room-price"]}`}>
             <span>${room.price}</span> đêm
           </p>
