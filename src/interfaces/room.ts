@@ -27,5 +27,6 @@ export interface Room {
 export interface RoomAPIParams {
   locationId?: LocationId["_id"];
   limit?: number;
+  skip?: number;
   roomId?: string;
 }
