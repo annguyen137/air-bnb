@@ -145,10 +145,14 @@
     }
 
     .detail-right {
+      position: relative;
       flex-grow: 1;
       margin-left: 8%;
 
       .book-ticket {
+        position: sticky;
+        position: -webkit-sticky;
+        top: 15%;
         border: 1px solid $color-gray-1;
         padding: $pd-5;
         border-radius: $rd-2 + 2;
@@ -222,7 +226,7 @@
   height: 100%;
 
   .list-all {
-    width: 50%;
+    width: 70%;
     max-height: 90vh;
     display: flex !important;
     flex-direction: column !important;
