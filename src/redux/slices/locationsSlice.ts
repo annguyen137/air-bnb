@@ -4,15 +4,17 @@ import locationAPI from "services/locationAPI";
 
 interface LocationsState {
   locationsData: LocationId[];
+  isLocationsLoading: boolean;
   locationDetail: LocationId;
-  isLoading: boolean;
+  isLocationDetailLoading: boolean;
   error: string;
 }
 
 const initialState: LocationsState = {
   locationsData: [],
   locationDetail: {} as LocationId,
-  isLoading: false,
+  isLocationsLoading: false,
+  isLocationDetailLoading: false,
   error: "",
 };
 
@@ -43,10 +45,10 @@ const locationsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     //location list
-    builder.addCase(getLocationList.pending, (state) => ({ ...state, isLoading: true }));
+    builder.addCase(getLocationList.pending, (state) => ({ ...state, isLocationsLoading: true }));
     builder.addCase(getLocationList.fulfilled, (state, { payload }) => ({
       ...state,
-      isLoading: false,
+      isLocationsLoading: false,
       locationsData: payload,
     }));
     builder.addCase(getLocationList.rejected, (state, { error }) => ({
@@ -56,15 +58,15 @@ const locationsSlice = createSlice({
     }));
 
     // location detail
-    builder.addCase(getLocationDetail.pending, (state) => ({ ...state, isLoading: true }));
+    builder.addCase(getLocationDetail.pending, (state) => ({ ...state, isLocationDetailLoading: true }));
     builder.addCase(getLocationDetail.fulfilled, (state, { payload }) => ({
       ...state,
-      isLoading: false,
+      isLocationDetailLoading: false,
       locationDetail: payload,
     }));
     builder.addCase(getLocationDetail.rejected, (state, { error }) => ({
       ...state,
-      isLoading: false,
+      isLocationDetailLoading: false,
       error: error.message as string,
     }));
   },

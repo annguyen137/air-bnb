@@ -1,3 +1,4 @@
+import { Pagination } from "./pagination";
 import { Room } from "./room";
 import { User } from "./user";
 
@@ -10,4 +11,13 @@ export interface Review {
   created_at: Date;
   updatedAt: Date;
   __v: number;
+}
+
+export interface ReviewBodyValue {
+  content: Review["content"];
+}
+
+export interface ReviewQueryParams extends Pagination {
+  roomId?: Room["_id"];
+  reviewId?: Review["_id"];
 }
