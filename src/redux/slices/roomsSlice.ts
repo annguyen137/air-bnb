@@ -1,28 +1,34 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RoomAPIParams, Room } from "interfaces/room";
+import { RoomQueryParams, Room } from "interfaces/room";
 import roomAPI from "services/roomAPI";
 
 import { LIMIT } from "../../services/axiosConfig";
 
 interface RoomsState {
+  // room list
   roomsData: Room[];
   roomsPagination: Room[];
+  isRoomsLoading: boolean;
+  // room detail
   roomDetail: Room;
-  isLoading: boolean;
+  isDetailLoading: boolean;
+  // error
   error: string;
 }
 
 const initialState: RoomsState = {
   roomsData: [],
   roomsPagination: new Array<Room>(LIMIT),
+  isRoomsLoading: false,
+
   roomDetail: {} as Room,
-  isLoading: false,
+  isDetailLoading: false,
   error: "",
 };
 
 export const getRoomListByLocation = createAsyncThunk(
   "rooms/getRoomListByLocation",
-  async ({ locationId, limit, skip }: RoomAPIParams) => {
+  async ({ locationId, limit, skip }: RoomQueryParams) => {
     try {
       const data = await roomAPI.getRoomListByLocation({ locationId, limit, skip });
       return data;
@@ -31,9 +37,9 @@ export const getRoomListByLocation = createAsyncThunk(
     }
   }
 );
-export const getRoomDetail = createAsyncThunk("rooms/getRoomDetail", async (roomId: Room["_id"]) => {
+export const getRoomDetail = createAsyncThunk("rooms/getRoomDetail", async ({ roomId }: RoomQueryParams) => {
   try {
-    const data = await roomAPI.getRoomDetail(roomId);
+    const data = await roomAPI.getRoomDetail({ roomId });
     return data;
   } catch (error) {
     throw error;
@@ -47,29 +53,29 @@ const roomsSlice = createSlice({
   extraReducers: (builder) => {
     // room list
     builder.addCase(getRoomListByLocation.pending, (state) => {
-      return { ...state, isLoading: true };
+      return { ...state, isRoomsLoading: true };
     });
     builder.addCase(getRoomListByLocation.fulfilled, (state, { payload }) => {
       return {
         ...state,
-        isLoading: false,
+        isRoomsLoading: false,
         roomsPagination: payload,
-        roomsData: [...state.roomsData, ...payload] as Room[],
+        roomsData: [...state.roomsData, ...payload],
       };
     });
     builder.addCase(getRoomListByLocation.rejected, (state, { error }) => {
-      return { ...state, isLoading: false, error: error.message as string };
+      return { ...state, isRoomsLoading: false, error: error.message as string };
     });
 
     // room detail
     builder.addCase(getRoomDetail.pending, (state) => {
-      return { ...state, isLoading: true };
+      return { ...state, isDetailLoading: true };
     });
     builder.addCase(getRoomDetail.fulfilled, (state, { payload }) => {
-      return { ...state, isLoading: false, roomDetail: payload };
+      return { ...state, isDetailLoading: false, roomDetail: payload };
     });
     builder.addCase(getRoomDetail.rejected, (state, { error }) => {
-      return { ...state, isLoading: false, error: error.message as string };
+      return { ...state, isDetailLoading: false, error: error.message as string };
     });
   },
 });

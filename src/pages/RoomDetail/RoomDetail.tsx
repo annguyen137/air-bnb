@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./RoomDetail.module.scss";
 import { useParams } from "react-router-dom";
 import { Room } from "interfaces/room";
-import { Box, Container, Button, Stack, TextField, Avatar } from "@mui/material";
+import { Box, Container, Button, Stack, TextField, Avatar, Rating, Typography } from "@mui/material";
 import { SxProps } from "@mui/system";
 import moment from "moment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -40,7 +40,7 @@ const RoomDetail: React.FC = () => {
     icon: (<></>) as JSX.Element,
   });
 
-  const { roomDetail, isLoading } = useSelector((state: RootState) => state.rooms);
+  const { roomDetail, isDetailLoading } = useSelector((state: RootState) => state.rooms);
 
   const { reviewsByRoomId } = useSelector((state: RootState) => state.review);
 
@@ -71,6 +71,10 @@ const RoomDetail: React.FC = () => {
         <Stack direction={"row"} justifyContent="space-between" gap={"10px"} className={`${styles["reviews-all"]}`}>
           <Box flexGrow={1}>
             <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
+            <Box>
+              <Typography component="legend">No rating given</Typography>
+              <Rating name="no-value" value={null} />
+            </Box>
           </Box>
 
           <Box className={`${styles["list-all"]}`}>
@@ -81,7 +85,7 @@ const RoomDetail: React.FC = () => {
                     <Box>{review.userId !== null ? <Avatar src={review.userId?.avatar} /> : <Avatar />}</Box>
                     <Stack>
                       <h4 className={`${styles["user-name"]}`}>
-                        {review.userId !== null ? review.userId?.name : "Account***"}
+                        {review.userId !== null ? review.userId?.name : "******"}
                       </h4>
                       <span className={`${styles["review-date"]}`}>
                         {moment(review.created_at).format("DD/MM/YYYY hh:mm").toString()}
@@ -122,20 +126,11 @@ const RoomDetail: React.FC = () => {
     if (isFirstLoad) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       setIsFirstLoad(false);
-      dispatch(getRoomDetail(roomId));
-      dispatch(getReviewsByRoomId(roomId));
+      dispatch(getRoomDetail({ roomId }));
+      dispatch(getReviewsByRoomId({ roomId }));
     }
 
-    const fixTicket = window.addEventListener("scroll", () => {
-      if (window.scrollY >= 300) {
-        ticketRef.current?.classList.add(styles["--sticky-ticket"]);
-      } else if (window.scrollY >= 1000 || window.scrollY < 300) {
-        ticketRef.current?.classList.remove(styles["--sticky-ticket"]);
-      }
-    }) as unknown as EventListenerOrEventListenerObject;
-
     return () => {
-      window.removeEventListener("scroll", fixTicket);
       document.title = "AirBnb";
     };
   }, []);
@@ -145,7 +140,7 @@ const RoomDetail: React.FC = () => {
       <Container>
         <Box className={`${styles["detail"]}`}>
           <Box className={`${styles["detail-title"]}`}>
-            {isLoading ? (
+            {isDetailLoading ? (
               <Loading width={300} />
             ) : (
               <Box>
@@ -165,7 +160,7 @@ const RoomDetail: React.FC = () => {
           </Box>
           <Box className={`${styles["detail-img"]}`}>
             <Box className={`${styles["img-grid"]}`}>
-              {isLoading ? (
+              {isDetailLoading ? (
                 <Loading height={300} />
               ) : (
                 <img src={roomDetail.image} alt={roomDetail.name} title={roomDetail.name} onClick={viewImage} />
@@ -189,101 +184,123 @@ const RoomDetail: React.FC = () => {
           <Box className={`${styles["detail-info"]}`}>
             <Box className={`${styles["detail-left"]}`}>
               <Box className={`${styles["info"]}`}>
-                <ul>
-                  <li>
-                    <span>{roomDetail.guests}</span>
-                    <span>guest</span>
-                  </li>
-                  <li>
-                    <span>{roomDetail.bedRoom}</span>
-                    <span>beds</span>
-                  </li>
-                  <li>
-                    <span>{roomDetail.bath} </span>
-                    <span>baths</span>
-                  </li>
-                </ul>
+                {isDetailLoading ? (
+                  <ul>
+                    <li>
+                      <Loading width={100} />
+                    </li>
+                    <li>
+                      <Loading width={100} />
+                    </li>
+                    <li>
+                      <Loading width={100} />
+                    </li>
+                  </ul>
+                ) : (
+                  <ul>
+                    <li>
+                      <span>{roomDetail.guests}</span>
+                      <span>guest</span>
+                    </li>
+                    <li>
+                      <span>{roomDetail.bedRoom}</span>
+                      <span>beds</span>
+                    </li>
+                    <li>
+                      <span>{roomDetail.bath} </span>
+                      <span>baths</span>
+                    </li>
+                  </ul>
+                )}
               </Box>
 
               <Box className={`${styles["description"]}`}>
-                <p>{roomDetail.description}</p>
+                {isDetailLoading ? <Loading width={600} height={200} /> : <p>{roomDetail.description}</p>}
               </Box>
 
               <Box className={`${styles["offers"]}`}>
-                <h3 className="title --secondary-title">What this place offers</h3>
-                <Box className={`${styles["offers-list"]}`}>
-                  <Box className={`${styles["offer-item"]}`}>
-                    <ElevatorIcon />
-                    <span className={roomDetail.elevator ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Elevator
-                    </span>
-                  </Box>
+                {isDetailLoading ? (
+                  <Loading width={600} height={600} />
+                ) : (
+                  <>
+                    <h3 className="title --secondary-title">What this place offers</h3>
+                    <Box className={`${styles["offers-list"]}`}>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <ElevatorIcon />
+                        <span className={roomDetail.elevator ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Elevator
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <HotTubIcon />
-                    <span className={roomDetail.hotTub ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Hot Tub
-                    </span>
-                  </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <HotTubIcon />
+                        <span className={roomDetail.hotTub ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Hot Tub
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <PoolIcon />
-                    <span className={roomDetail.pool ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Pool
-                    </span>
-                  </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <PoolIcon />
+                        <span className={roomDetail.pool ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Pool
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <FireplaceIcon />
-                    <span
-                      className={roomDetail.indoorFireplace ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}
-                    >
-                      Indoor fireplace
-                    </span>
-                  </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <FireplaceIcon />
+                        <span
+                          className={
+                            roomDetail.indoorFireplace ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`
+                          }
+                        >
+                          Indoor fireplace
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <DryIcon />
-                    <span className={roomDetail.dryer ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Dryer
-                    </span>
-                  </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <DryIcon />
+                        <span className={roomDetail.dryer ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Dryer
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <FitnessCenterIcon />
-                    <span className={roomDetail.gym ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Gym
-                    </span>
-                  </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <FitnessCenterIcon />
+                        <span className={roomDetail.gym ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Gym
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <KitchenIcon />
-                    <span className={roomDetail.kitchen ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Kitchen
-                    </span>
-                  </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <KitchenIcon />
+                        <span className={roomDetail.kitchen ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Kitchen
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <WifiIcon />
-                    <span className={roomDetail.wifi ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Wifi
-                    </span>
-                  </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <WifiIcon />
+                        <span className={roomDetail.wifi ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Wifi
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <HeatPumpIcon />
-                    <span className={roomDetail.heating ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Heating
-                    </span>
-                  </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <HeatPumpIcon />
+                        <span className={roomDetail.heating ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Heating
+                        </span>
+                      </Box>
 
-                  <Box className={`${styles["offer-item"]}`}>
-                    <TvIcon />
-                    <span className={roomDetail.cableTV ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
-                      Cable TV
-                    </span>
-                  </Box>
-                </Box>
+                      <Box className={`${styles["offer-item"]}`}>
+                        <TvIcon />
+                        <span className={roomDetail.cableTV ? `${styles["item-valid"]}` : `${styles["item-invalid"]}`}>
+                          Cable TV
+                        </span>
+                      </Box>
+                    </Box>
+                  </>
+                )}
               </Box>
             </Box>
             <Box className={`${styles["detail-right"]}`}>
@@ -308,45 +325,51 @@ const RoomDetail: React.FC = () => {
             </Box>
           </Box>
           <Box className={`${styles["detail-reviews"]}`}>
-            <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
-            <Box className={`${styles["reviews-list"]}`}>
-              {[...reviewsByRoomId].slice(0, 6).map((review) => (
-                <Box key={review._id} className={`${styles["review-item"]}`}>
-                  <Box>
-                    <Stack direction="row" alignItems="center" gap="12px">
-                      <Box>{review.userId !== null ? <Avatar src={review.userId?.avatar} /> : <Avatar />}</Box>
-                      <Stack>
-                        <h4 className={`${styles["user-name"]}`}>
-                          {review.userId !== null ? review.userId?.name : "******"}
-                        </h4>
-                        <span className={`${styles["review-date"]}`}>
-                          {moment(review.created_at).format("DD/MM/YYYY hh:mm").toString()}
-                        </span>
-                      </Stack>
-                    </Stack>
-                  </Box>
-                  <Box>
-                    <p className={`${styles["user-review"]}`}>{review.content}</p>
-                  </Box>
+            {isDetailLoading ? (
+              <Loading height={500} />
+            ) : (
+              <>
+                <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
+                <Box className={`${styles["reviews-list"]}`}>
+                  {[...reviewsByRoomId].slice(0, 6).map((review) => (
+                    <Box key={review._id} className={`${styles["review-item"]}`}>
+                      <Box>
+                        <Stack direction="row" alignItems="center" gap="12px">
+                          <Box>{review.userId !== null ? <Avatar src={review.userId?.avatar} /> : <Avatar />}</Box>
+                          <Stack>
+                            <h4 className={`${styles["user-name"]}`}>
+                              {review.userId !== null ? review.userId?.name : "******"}
+                            </h4>
+                            <span className={`${styles["review-date"]}`}>
+                              {moment(review.created_at).format("DD/MM/YYYY hh:mm").toString()}
+                            </span>
+                          </Stack>
+                        </Stack>
+                      </Box>
+                      <Box>
+                        <p className={`${styles["user-review"]}`}>{review.content}</p>
+                      </Box>
+                    </Box>
+                  ))}
                 </Box>
-              ))}
-            </Box>
-            <Box>
-              <Button
-                sx={{
-                  marginTop: "20px",
-                  backgroundColor: "white",
-                  borderColor: "black",
-                  "&:hover": {
-                    backgroundColor: "white !important",
-                  },
-                }}
-                variant="outlined"
-                onClick={viewAllReviews}
-              >
-                Show all {reviewsByRoomId?.length} reviews
-              </Button>
-            </Box>
+                <Box>
+                  <Button
+                    sx={{
+                      marginTop: "20px",
+                      backgroundColor: "white",
+                      borderColor: "black",
+                      "&:hover": {
+                        backgroundColor: "white !important",
+                      },
+                    }}
+                    variant="outlined"
+                    onClick={viewAllReviews}
+                  >
+                    Show all {reviewsByRoomId?.length} reviews
+                  </Button>
+                </Box>
+              </>
+            )}
           </Box>
         </Box>
       </Container>

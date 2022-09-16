@@ -1,5 +1,9 @@
+import { SignUpValue } from "./auth";
+import { Ticket } from "./ticket";
+
+//user
 export interface User {
-  tickets: string[];
+  tickets: Ticket["_id"][];
   deleteAt: boolean;
   _id: string;
   name: string;
@@ -12,4 +16,13 @@ export interface User {
   type: string;
   __v: number;
   avatar: string;
+}
+
+// admin
+export interface AddUserBodyValue extends SignUpValue {
+  type: "ADMIN" | "CLIENT";
+}
+
+export interface UpdateUserAvatarValue {
+  avatar: File;
 }
