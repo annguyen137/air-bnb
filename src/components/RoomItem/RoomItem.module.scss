@@ -17,11 +17,35 @@
 
     .overlay {
       position: absolute;
+      opacity: 0;
+      z-index: 10;
       content: "";
+      padding: $pd-3;
       bottom: 0;
-      width: 100%;
+      left: 0;
+      right: 0;
+      width: 60%;
       height: 0;
-      transition: all 0.5s ease-out;
+      transition: all 0.2s ease-out;
+
+      span {
+        color: $color-white-2;
+        font-size: $fs-2;
+        filter: brightness(200%);
+      }
+
+      .book-button {
+        margin-top: $mg-0;
+        background-color: $header-brand-color;
+        color: $color-white-1 !important;
+        border-radius: $rd-2;
+        transition: all 0.1s ease-out;
+
+        &:hover {
+          background-color: $header-brand-color !important;
+          filter: grayscale(0.2);
+        }
+      }
     }
 
     img {
@@ -33,7 +57,10 @@
 
     &:hover {
       .overlay {
-        height: 30%;
+        opacity: 1;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        box-shadow: 20px 20px 50px 50px rgba(0, 0, 0, 0.7);
       }
 
       img {

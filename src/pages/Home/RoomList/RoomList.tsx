@@ -1,4 +1,4 @@
-import React, { MutableRefObject, RefObject, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Container } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getLocationList } from "redux/slices/locationsSlice";
@@ -10,24 +10,25 @@ import { LIMIT } from "services/axiosConfig";
 
 import styles from "./RoomList.module.scss";
 import useIntersectionObserver from "utils/useIntersectionObserver";
+import useIsFirstLoad from "utils/useIsFirstLoad";
 
 const RoomList: React.FC = () => {
   const triggerRef = useRef() as React.MutableRefObject<HTMLElement>;
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [isFirstLoad, setIsFirstLoad] = useIsFirstLoad();
 
   const [isTriggered, page, observer] = useIntersectionObserver();
 
-  const { roomsData, roomsPagination, isLoading } = useSelector((state: RootState) => state.rooms);
+  const { roomsData, roomsPagination, isRoomsLoading } = useSelector((state: RootState) => state.rooms);
 
   // LAZY LOAD FETCH USING INTERSECTION OBSERVER (CUSTOM HOOK)
   useEffect(() => {
     if (isFirstLoad) {
+      setIsFirstLoad(false);
       dispatch(getLocationList());
       dispatch(getRoomListByLocation({ limit: LIMIT, skip: LIMIT * page }));
-      setIsFirstLoad(false);
     }
 
     observer.observe(triggerRef.current);
@@ -48,7 +49,7 @@ const RoomList: React.FC = () => {
               <RoomItem room={room} />
             </Box>
           ))}
-          {isLoading && [...Array(LIMIT)].map((item, index) => <Loading key={index} variant="card" />)}
+          {isRoomsLoading && [...Array(LIMIT)].map((item, index) => <Loading key={index} variant="card" />)}
         </Box>
         <Box ref={triggerRef} sx={{ padding: "25px 0", textAlign: "center" }}>
           {!roomsPagination.length ? "End of result" : ""}
