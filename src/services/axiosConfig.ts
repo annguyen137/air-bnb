@@ -1,8 +1,9 @@
-import axios, { AxiosError } from "axios";
+import { Store } from "@reduxjs/toolkit";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
 
 export const LIMIT: number = 15;
 
-const axiosConfig = axios.create({
+const axiosConfig: AxiosInstance = axios.create({
   baseURL: "https://airbnb.cybersoft.edu.vn/api",
   headers: {
     tokenByClass:
@@ -14,20 +15,28 @@ interface ErrorResponse {
   message: string;
 }
 
-axiosConfig.interceptors.response.use(
-  (response) => {
-    return response.data;
-  },
-  (error: AxiosError<ErrorResponse>) => {
-    return Promise.reject(error.response?.data.message);
-  }
-);
+export const setUpAxiosIntercepters = (store: Store, instance: AxiosInstance) => {
+  instance.interceptors.response.use(
+    (response: AxiosResponse) => {
+      return response.data;
+    },
+    (error: AxiosError<ErrorResponse>) => {
+      return Promise.reject(error.response?.data.message);
+    }
+  );
 
-axiosConfig.interceptors.request.use((config) => {
-  if (config.headers) {
-  }
+  instance.interceptors.request.use((config: AxiosRequestConfig) => {
+    if (config.headers) {
+      if (store.getState().auth) {
+        const { token } = store.getState().auth;
+        if (token) {
+          config.headers.token = token;
+        }
+      }
+    }
 
-  return config;
-});
+    return config;
+  });
+};
 
 export default axiosConfig;

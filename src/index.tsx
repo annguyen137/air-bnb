@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
@@ -66,6 +67,7 @@ root.render(
       <ThemeProvider theme={theme}>
         {/* <CssBaseline /> */}
         <App />
+        <ToastContainer position="top-right" closeOnClick pauseOnHover newestOnTop />
       </ThemeProvider>
     </BrowserRouter>
   </Provider>

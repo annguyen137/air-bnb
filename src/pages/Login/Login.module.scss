@@ -1,0 +1,105 @@
+@use "/src/scss/helper/variables" as *;
+@use "/src/scss/helper/mixin" as *;
+
+.login-form {
+  background: url("../../../public/img/banner-1.jpg") no-repeat center;
+  background-size: cover;
+  background-attachment: fixed;
+
+  .form-inner {
+    min-height: calc(100vh - 80px - 48px);
+    position: relative;
+
+    .form {
+      position: absolute;
+      width: 90%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: $pd-2;
+      background-color: $color-white-1;
+      border-radius: $rd-2;
+      box-shadow: rgb(0 0 0 / 28%) 0px 8px 28px !important;
+
+      .form-title {
+        margin-bottom: $mg-1;
+      }
+
+      form {
+        height: 100%;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 400px) {
+  .login-form {
+    .form {
+      width: 90% !important;
+      padding: $pd-2 !important;
+
+      form {
+        padding: $pd-1 !important;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .login-form {
+    .form {
+      width: 80% !important;
+      padding: $pd-2 !important;
+
+      form {
+        padding: $pd-2 !important;
+      }
+    }
+  }
+}
+
+@include responsiveMin("sm") {
+  .login-form {
+    .form {
+      width: 60% !important;
+      padding: $pd-4 !important;
+
+      form {
+        padding: $pd-3 !important;
+      }
+    }
+  }
+}
+
+@include responsiveMin("md") {
+  .login-form {
+    .form {
+      width: 50% !important;
+      padding: $pd-5 !important;
+
+      form {
+        padding: $pd-5 !important;
+      }
+    }
+  }
+}
+
+@include responsiveMin("lg") {
+  .login-form {
+    .form {
+      width: 40% !important;
+      padding: $pd-6 !important;
+
+      form {
+        padding: 0 $pd-6 !important;
+      }
+    }
+  }
+}
+@include responsiveMin("xl") {
+  .login-form {
+    .form {
+      width: 30% !important;
+    }
+  }
+}
