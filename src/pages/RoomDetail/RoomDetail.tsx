@@ -21,18 +21,19 @@ import FireplaceIcon from "@mui/icons-material/Fireplace";
 import PoolIcon from "@mui/icons-material/Pool";
 import ElevatorIcon from "@mui/icons-material/Elevator";
 import HotTubIcon from "@mui/icons-material/HotTub";
-import { getRoomDetail } from "redux/slices/roomsSlice";
+import { getRoomDetail, resetRoomState } from "redux/slices/roomsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
 import Loading from "components/Loading/Loading";
-import { getReviewsByRoomId } from "redux/slices/reviewsSlice";
+import { getReviewsByRoomId, resetReviewState } from "redux/slices/reviewsSlice";
 import CustomDrawer from "components/CustomDrawer/CustomDrawer";
 import useDrawer from "utils/useDrawer";
+import { fetchAll, resetFetchAllStatus } from "redux/slices/fetchAllSlice";
+import { getUserDetail } from "redux/slices/authSlice";
+import initFetch from "utils/initFetch";
 
 const RoomDetail: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const [content, setContent] = useState({
     css: {} as SxProps,
@@ -40,11 +41,13 @@ const RoomDetail: React.FC = () => {
     icon: (<></>) as JSX.Element,
   });
 
-  const { roomDetail, isDetailLoading } = useSelector((state: RootState) => state.rooms);
+  const { fetchAllLoading } = useSelector((state: RootState) => state.all);
+
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  const { roomDetail } = useSelector((state: RootState) => state.rooms);
 
   const { reviewsByRoomId } = useSelector((state: RootState) => state.review);
-
-  document.title = roomDetail.name;
 
   const ticketRef = useRef<HTMLElement>();
 
@@ -107,9 +110,9 @@ const RoomDetail: React.FC = () => {
         margin: "0 auto !important",
         borderRadius: "20px",
         overflow: "hidden",
-        top: "50%",
+        top: "50% !important",
         left: "50%",
-        transform: "translate(-50%,-50%) !important",
+        transform: "translate(-50%, -50%) !important",
       },
       icon: <CloseIcon />,
     });
@@ -117,30 +120,37 @@ const RoomDetail: React.FC = () => {
   };
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // if (Object.keys(user).length) {
+    //   dispatch(fetchAll([getRoomDetail({ roomId }),getUserDetail(""), getReviewsByRoomId({ roomId })]));
+    // } else {
+    //   dispatch(fetchAll([getRoomDetail({ roomId }), getReviewsByRoomId({ roomId })]));
+    // }
+
+    dispatch(fetchAll(initFetch(user, "detail", roomId)));
+
+    return () => {
+      document.title = "AirBnb";
+
+      dispatch(resetFetchAllStatus());
+      dispatch(resetReviewState());
+      dispatch(resetRoomState());
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isOpen) {
       setContent({ css: {} as object, element: (<></>) as JSX.Element, icon: (<></>) as JSX.Element });
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    if (isFirstLoad) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      setIsFirstLoad(false);
-      dispatch(getRoomDetail({ roomId }));
-      dispatch(getReviewsByRoomId({ roomId }));
-    }
-
-    return () => {
-      document.title = "AirBnb";
-    };
-  }, []);
 
   return (
     <Box sx={{ marginTop: "25px" }}>
       <Container>
         <Box className={`${styles["detail"]}`}>
           <Box className={`${styles["detail-title"]}`}>
-            {isDetailLoading ? (
+            {fetchAllLoading ? (
               <Loading width={300} />
             ) : (
               <Box>
@@ -160,7 +170,7 @@ const RoomDetail: React.FC = () => {
           </Box>
           <Box className={`${styles["detail-img"]}`}>
             <Box className={`${styles["img-grid"]}`}>
-              {isDetailLoading ? (
+              {fetchAllLoading ? (
                 <Loading height={300} />
               ) : (
                 <img src={roomDetail.image} alt={roomDetail.name} title={roomDetail.name} onClick={viewImage} />
@@ -184,7 +194,7 @@ const RoomDetail: React.FC = () => {
           <Box className={`${styles["detail-info"]}`}>
             <Box className={`${styles["detail-left"]}`}>
               <Box className={`${styles["info"]}`}>
-                {isDetailLoading ? (
+                {fetchAllLoading ? (
                   <ul>
                     <li>
                       <Loading width={100} />
@@ -215,11 +225,11 @@ const RoomDetail: React.FC = () => {
               </Box>
 
               <Box className={`${styles["description"]}`}>
-                {isDetailLoading ? <Loading width={600} height={200} /> : <p>{roomDetail.description}</p>}
+                {fetchAllLoading ? <Loading width={600} height={200} /> : <p>{roomDetail.description}</p>}
               </Box>
 
               <Box className={`${styles["offers"]}`}>
-                {isDetailLoading ? (
+                {fetchAllLoading ? (
                   <Loading width={600} height={600} />
                 ) : (
                   <>
@@ -325,7 +335,7 @@ const RoomDetail: React.FC = () => {
             </Box>
           </Box>
           <Box className={`${styles["detail-reviews"]}`}>
-            {isDetailLoading ? (
+            {fetchAllLoading ? (
               <Loading height={500} />
             ) : (
               <>
@@ -335,7 +345,9 @@ const RoomDetail: React.FC = () => {
                     <Box key={review._id} className={`${styles["review-item"]}`}>
                       <Box>
                         <Stack direction="row" alignItems="center" gap="12px">
-                          <Box>{review.userId !== null ? <Avatar src={review.userId?.avatar} /> : <Avatar />}</Box>
+                          <Box>
+                            <Avatar src={review.userId?.avatar} />
+                          </Box>
                           <Stack>
                             <h4 className={`${styles["user-name"]}`}>
                               {review.userId !== null ? review.userId?.name : "******"}

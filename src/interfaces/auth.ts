@@ -1,6 +1,9 @@
+import { User } from "./user";
+
 export interface LoginValue {
   email: string;
   password: string;
+  isRemember?: boolean;
 }
 
 export interface SignUpValue {
@@ -11,4 +14,10 @@ export interface SignUpValue {
   birthday: Date;
   gender: true;
   address: string;
+}
+
+export interface LoginPayload {
+  message?: string;
+  token?: string;
+  user?: User;
 }

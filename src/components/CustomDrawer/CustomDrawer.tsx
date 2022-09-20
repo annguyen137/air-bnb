@@ -13,25 +13,23 @@ type DrawerProps = {
 
 const CustomDrawer = ({ anchor, children, css, toggle, isOpen, icon }: DrawerProps) => {
   return (
-    <Box>
-      <Drawer anchor={anchor} open={isOpen} onClose={toggle} PaperProps={{ sx: css }}>
-        <Box sx={{ height: "100%" }}>
-          <Box
-            sx={{
-              position: "sticky",
-              zIndex: 10,
-              top: 0,
-              width: "100%",
-              padding: "0 20px",
-              backgroundColor: "white",
-            }}
-          >
-            <Button onClick={toggle}>{icon}</Button>
-          </Box>
-          <Box sx={{ padding: "50px", height: "100%" }}>{children}</Box>
+    <Drawer anchor={anchor} open={isOpen} onClose={toggle} PaperProps={{ sx: css }}>
+      <Box sx={{ height: "100%" }}>
+        <Box
+          sx={{
+            position: "sticky",
+            zIndex: 10,
+            top: 0,
+            width: "100%",
+            padding: "0 20px",
+            backgroundColor: "white",
+          }}
+        >
+          <Button onClick={toggle}>{icon}</Button>
         </Box>
-      </Drawer>
-    </Box>
+        <Box sx={{ padding: "50px", height: "100%" }}>{children}</Box>
+      </Box>
+    </Drawer>
   );
 };
 

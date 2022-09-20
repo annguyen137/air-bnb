@@ -4,8 +4,7 @@
   position: fixed;
   z-index: 100;
   bottom: 0;
-  width: 100%;
-  // height: 48px;
+  width: 100vw;
   background-color: $color-white-1;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   font-size: $fs-2;
@@ -43,9 +42,11 @@
   }
 
   &.--footer-detail {
+    width: 100% !important;
     position: inherit;
     background-color: $color-white-2;
     height: unset;
+    padding-right: unset !important;
 
     .footer-link {
       background-color: $color-white-2;

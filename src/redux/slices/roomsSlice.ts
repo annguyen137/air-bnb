@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RoomQueryParams, Room } from "interfaces/room";
 import roomAPI from "services/roomAPI";
 
-import { LIMIT } from "../../services/axiosConfig";
+import { LIMIT } from "services/axiosConfig";
 
 interface RoomsState {
   // room list
@@ -18,9 +18,8 @@ interface RoomsState {
 
 const initialState: RoomsState = {
   roomsData: [],
-  roomsPagination: new Array<Room>(LIMIT),
+  roomsPagination: [],
   isRoomsLoading: false,
-
   roomDetail: {} as Room,
   isDetailLoading: false,
   error: "",
@@ -49,7 +48,19 @@ export const getRoomDetail = createAsyncThunk("rooms/getRoomDetail", async ({ ro
 const roomsSlice = createSlice({
   name: "rooms",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    resetRoomState: (state) => {
+      return {
+        ...state,
+        roomsData: [],
+        roomsPagination: [],
+        isRoomsLoading: false,
+        roomDetail: {} as Room,
+        isDetailLoading: false,
+        error: "",
+      };
+    },
+  },
   extraReducers: (builder) => {
     // room list
     builder.addCase(getRoomListByLocation.pending, (state) => {
@@ -81,3 +92,5 @@ const roomsSlice = createSlice({
 });
 
 export default roomsSlice.reducer;
+
+export const { resetRoomState } = roomsSlice.actions;
