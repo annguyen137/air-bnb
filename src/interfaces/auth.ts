@@ -1,3 +1,4 @@
+import { Moment, MomentBuiltinFormat, MomentCreationData } from "moment";
 import { User } from "./user";
 
 export interface LoginValue {
@@ -12,7 +13,7 @@ export interface SignUpValue {
   password: string;
   phone: string;
   birthday: Date;
-  gender: true;
+  gender: boolean;
   address: string;
 }
 

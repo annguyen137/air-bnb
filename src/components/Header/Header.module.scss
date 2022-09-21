@@ -1,6 +1,7 @@
 @use "/src/scss/helper/variables" as *;
 
 .main-header {
+  // position: fixed;
   position: fixed;
   width: 100vw;
   z-index: 100;

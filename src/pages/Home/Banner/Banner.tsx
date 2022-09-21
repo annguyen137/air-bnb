@@ -34,7 +34,7 @@ const Banner = () => {
 
   return (
     <Carousel
-      animation="slide"
+      animation="fade"
       autoPlay
       interval={4000}
       duration={1000}
@@ -51,7 +51,7 @@ const Banner = () => {
         <img src="../img/banner-2.jpeg" alt="banner" />
       </Box>
       <Box className={styles["banner"]}>
-        <img src="../img/banner-3.png" alt="banner" />
+        <img src="../img/banner-3.jpg" alt="banner" />
       </Box>
     </Carousel>
   );

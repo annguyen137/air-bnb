@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAll, resetFetchAllStatus } from "redux/slices/fetchAllSlice";
@@ -35,10 +36,10 @@ const Home = () => {
   }, []);
 
   return (
-    <>
+    <Box sx={{ width: "100%" }}>
       <Banner />
       <RoomList />
-    </>
+    </Box>
   );
 };
 
