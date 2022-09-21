@@ -43,7 +43,11 @@ export const getReviewDetail = createAsyncThunk("reviews/getReviewDetail", async
 const reviewsSlice = createSlice({
   name: "reviews",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    resetReviewState: (state) => {
+      return { ...state, ...initialState };
+    },
+  },
   extraReducers: (builder) => {
     // reviews by room
     builder.addCase(getReviewsByRoomId.pending, (state) => ({ ...state, isReviewsLoading: true }));
@@ -76,3 +80,5 @@ const reviewsSlice = createSlice({
 });
 
 export default reviewsSlice.reducer;
+
+export const { resetReviewState } = reviewsSlice.actions;

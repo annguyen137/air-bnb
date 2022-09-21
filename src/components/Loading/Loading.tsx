@@ -1,13 +1,15 @@
 import { Skeleton, Box } from "@mui/material";
+import { SxProps } from "@mui/system";
 import React from "react";
 
 type Props = {
   variant?: string;
   height?: number;
   width?: number;
+  css?: SxProps;
 };
 
-const Loading = ({ variant, height, width }: Props) => {
+const Loading = ({ variant, height, width, css }: Props) => {
   return variant === "card" ? (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ width: "100%", aspectRatio: "1/0.9 !important" }}>
@@ -21,7 +23,7 @@ const Loading = ({ variant, height, width }: Props) => {
       <Skeleton width={50} animation="wave" />
     </Box>
   ) : (
-    <Skeleton height={height} width={width} animation="wave" sx={{ transform: "unset" }} />
+    <Skeleton height={height} width={width} animation="wave" sx={{ transform: "unset", width: "100%", ...css }} />
   );
 };
 

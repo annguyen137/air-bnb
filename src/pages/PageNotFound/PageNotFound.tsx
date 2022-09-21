@@ -1,19 +1,18 @@
 import React from "react";
+import { Stack } from "@mui/material";
 import Footer from "components/Footer/Footer";
 import Header from "components/Header/Header";
-import RoomDetail from "pages/RoomDetail/RoomDetail";
-import { Stack } from "@mui/material";
 
-const DetailTemplate = () => {
+const PageNotFound = () => {
   return (
     <Stack sx={{ minHeight: "100vh" }}>
       <Header />
       <section>
-        <RoomDetail />
+        <p>Page not found</p>
       </section>
-      <Footer variant="detail" />
+      <Footer variant="home" />
     </Stack>
   );
 };
 
-export default DetailTemplate;
+export default PageNotFound;
