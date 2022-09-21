@@ -118,7 +118,12 @@ const authSlice = createSlice({
     });
 
     builder.addCase(signup.fulfilled, (state) => {
-      toast.update(noti, { render: "Success!", type: "success", isLoading: false, autoClose: 1000 });
+      toast.update(noti, {
+        render: "Sign Up Success! Ridirect to Login",
+        type: "success",
+        isLoading: false,
+        autoClose: 1000,
+      });
 
       state.pending = false;
       state.success = true;

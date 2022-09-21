@@ -6,7 +6,7 @@ import { Stack } from "@mui/material";
 
 const DetailTemplate = () => {
   return (
-    <Stack>
+    <Stack sx={{ minHeight: "100vh" }}>
       <Header />
       <section>
         <RoomDetail />

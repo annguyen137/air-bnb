@@ -146,7 +146,7 @@ const RoomDetail: React.FC = () => {
   }, [isOpen]);
 
   return (
-    <Box sx={{ marginTop: "25px" }}>
+    <Box sx={{ marginTop: "25px", width: "100%" }}>
       <Container>
         <Box className={`${styles["detail"]}`}>
           <Box className={`${styles["detail-title"]}`}>

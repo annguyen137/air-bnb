@@ -1,10 +1,14 @@
 @use "/src/scss/helper/variables" as *;
 
 .footer {
+  // position: fixed;
+  // z-index: 100;
+  // bottom: 0;
+  // width: 100vw;
   position: fixed;
-  z-index: 100;
-  bottom: 0;
   width: 100vw;
+  bottom: 0;
+  z-index: 100;
   background-color: $color-white-1;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   font-size: $fs-2;
