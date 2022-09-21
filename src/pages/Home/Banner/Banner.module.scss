@@ -2,11 +2,15 @@
 @use "/src/scss/helper/mixin" as *;
 
 .banner {
-  object-fit: fill;
-  height: 80vh;
+  height: 65vh;
   position: relative;
   background-color: $color-black;
   overflow: hidden;
+
+  img {
+    object-fit: cover;
+    object-position: center;
+  }
 }
 
 @include responsiveMax("md") {
@@ -17,12 +21,12 @@
 
 @include responsiveMax("sm") {
   .banner {
-    height: 50vh;
+    height: 40vh;
   }
 }
 
 @media screen and (max-width: 400px) {
   .banner {
-    height: 40vh;
+    height: 30vh;
   }
 }

@@ -15,7 +15,7 @@ export interface User {
   address: string;
   type: string;
   __v: number;
-  avatar: string;
+  avatar?: string;
 }
 
 // admin

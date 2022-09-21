@@ -1,0 +1,71 @@
+@use "/src/scss/helper/variables" as *;
+@use "/src/scss/helper/mixin" as *;
+
+.signup-form {
+  background: url("../../../public/img/background-2.jpg") no-repeat center;
+  background-size: cover;
+  background-attachment: fixed;
+  width: 100%;
+  position: relative;
+  padding: $pd-4;
+
+  .form-inner {
+    .form {
+      width: 80%;
+      margin: 0 auto;
+      top: 50%;
+      padding: $pd-2;
+      background-color: $color-white-1;
+      border-radius: $rd-2;
+      box-shadow: rgb(0 0 0 / 28%) 0px 8px 28px !important;
+
+      .form-title {
+        margin-bottom: $mg-1;
+      }
+
+      form {
+        height: 100%;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 400px) {
+  .signup-form {
+    .form {
+      width: 90% !important;
+      padding: $pd-2 !important;
+
+      form {
+        padding: $pd-1 !important;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .signup-form {
+    .form {
+      width: 80% !important;
+      padding: $pd-2 !important;
+    }
+  }
+}
+
+@include responsiveMin("sm") {
+  .signup-form {
+    .form {
+      width: 60% !important;
+      padding: $pd-4 !important;
+    }
+  }
+}
+
+@include responsiveMin("md") {
+  .signup-form {
+    .form {
+      width: 50% !important;
+      padding: $pd-5 !important;
+    }
+  }
+}
