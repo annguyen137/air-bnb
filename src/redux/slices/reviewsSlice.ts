@@ -1,13 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Review, ReviewQueryParams } from "interfaces/review";
+import { Review, ReviewBodyValue, ReviewQueryParams } from "interfaces/review";
 import { Room } from "interfaces/room";
 import reviewAPI from "services/reviewAPI";
+import { toast } from "react-toastify";
 
 interface ReviewState {
   reviewsByRoomId: Review[];
   isReviewsLoading: boolean;
   reviewDetail: Review;
   isReviewDetailLoading: boolean;
+  reviewActionSuccess: boolean;
   error: string;
 }
 
@@ -15,6 +17,7 @@ const initialState: ReviewState = {
   reviewsByRoomId: [],
   isReviewsLoading: false,
   reviewDetail: {} as Review,
+  reviewActionSuccess: false,
   isReviewDetailLoading: false,
   error: "",
 };
@@ -40,12 +43,27 @@ export const getReviewDetail = createAsyncThunk("reviews/getReviewDetail", async
   }
 });
 
+export const postAReviewByRoomId = createAsyncThunk(
+  "reviews/postAReviewByRoomId",
+  async ({ roomId, content }: { roomId: ReviewQueryParams["roomId"]; content: ReviewBodyValue["content"] }) => {
+    try {
+      const data = await reviewAPI.postAReviewByRoomId(roomId, content);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const reviewsSlice = createSlice({
   name: "reviews",
   initialState: initialState,
   reducers: {
     resetReviewState: (state) => {
       return { ...state, ...initialState };
+    },
+    resetReviewAction: (state) => {
+      return { ...state, reviewActionSuccess: false };
     },
   },
   extraReducers: (builder) => {
@@ -76,9 +94,19 @@ const reviewsSlice = createSlice({
       isReviewDetailLoading: false,
       error: error.message as string,
     }));
+
+    // post review
+    builder.addCase(postAReviewByRoomId.fulfilled, (state) => {
+      toast.success("Success posting your review!", { isLoading: false, autoClose: 1000, pauseOnHover: true });
+      return { ...state, reviewActionSuccess: true };
+    });
+    builder.addCase(postAReviewByRoomId.rejected, (state) => {
+      toast.error("Fail to post your review!", { isLoading: false, autoClose: 1000, pauseOnHover: true });
+      return { ...state, reviewActionSuccess: false };
+    });
   },
 });
 
 export default reviewsSlice.reducer;
 
-export const { resetReviewState } = reviewsSlice.actions;
+export const { resetReviewState, resetReviewAction } = reviewsSlice.actions;

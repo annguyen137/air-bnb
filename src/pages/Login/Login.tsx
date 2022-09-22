@@ -25,9 +25,11 @@ import { login, resetAuthActionStatus } from "redux/slices/authSlice";
 import { toast } from "react-toastify";
 import useIsFirstLoad from "utils/useIsFirstLoad";
 
-type Props = {};
+type Props = {
+  modalMode?: boolean;
+};
 
-const Login = (props: Props) => {
+const Login = ({ modalMode }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const navigate = useNavigate();
@@ -75,11 +77,13 @@ const Login = (props: Props) => {
   useEffect(() => {
     // AFTER FIRST RENDER SET IS FIRST LOAD TO FALSE, USE FOR SETTIMEOUT REDIRECT AFTER TOAST NOTIFICATION
     setIsFirstLoad(false);
-    setFocus("email");
+
+    if (!Boolean(localStorage.getItem("token"))) {
+      setFocus("email");
+    }
 
     return () => {
       dispatch(resetAuthActionStatus());
-      toast.dismiss();
     };
   }, []);
 
@@ -90,13 +94,16 @@ const Login = (props: Props) => {
       reset({}, { keepDefaultValues: true });
       dispatch(resetAuthActionStatus());
       clearErrors();
-      setTimeout(() => {
-        navigate("/", { replace: true });
-      }, 1000);
+      if (!modalMode) {
+        setTimeout(() => {
+          navigate("/", { replace: true });
+        }, 1000);
+      }
     }
 
     if (authError) {
       if (authError === "Không tìm thấy email phù hợp") {
+        setFocus("email");
         setError("email", { type: "manual", message: authError }, { shouldFocus: true });
       } else if (authError === "Tài khoãng hoặc mật khẩu không đúng") {
         setError("email", { type: "manual", message: authError }, { shouldFocus: false });
@@ -114,10 +121,10 @@ const Login = (props: Props) => {
   }
 
   return (
-    <Box className={`${styles["login-form"]}`}>
+    <Box className={`${styles["login-form"]} ${modalMode && styles["--no-bg"]}`}>
       <Container>
         <Box className={`${styles["form-inner"]}`}>
-          <Box className={`${styles["form"]}`}>
+          <Box className={`${styles["form"]} ${modalMode && styles["--modal-mode"]}`}>
             <Box className={`${styles["form-title"]}`}>
               <h1>Login</h1>
             </Box>
@@ -127,7 +134,7 @@ const Login = (props: Props) => {
                   name="email"
                   control={control}
                   defaultValue=""
-                  render={({ field }) => (
+                  render={({ field: { ref, ...rest } }) => (
                     <TextField
                       required
                       variant="outlined"
@@ -136,12 +143,13 @@ const Login = (props: Props) => {
                       InputLabelProps={{ shrink: true }}
                       label="Email"
                       margin="dense"
+                      inputRef={ref}
                       error={!!errors?.email}
                       helperText={errors.email?.message}
                       onFocus={() => {
                         authError && clearErrors();
                       }}
-                      {...field}
+                      {...rest}
                     />
                   )}
                 />
@@ -150,7 +158,7 @@ const Login = (props: Props) => {
                   name="password"
                   control={control}
                   defaultValue=""
-                  render={({ field }) => (
+                  render={({ field: { ref, ...rest } }) => (
                     <TextField
                       variant="outlined"
                       label="Password"
@@ -159,6 +167,7 @@ const Login = (props: Props) => {
                       required
                       InputLabelProps={{ shrink: true }}
                       margin="dense"
+                      inputRef={ref}
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">
@@ -178,7 +187,7 @@ const Login = (props: Props) => {
                       onFocus={() => {
                         authError && clearErrors();
                       }}
-                      {...field}
+                      {...rest}
                     />
                   )}
                 />

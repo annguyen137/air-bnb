@@ -17,11 +17,9 @@ import { scrollTop } from "utils/eventFunction";
 function App() {
   // IF USER TRY TO MANUAL CLEAR LOCALSTORAGE => TRIGGER CLEAR ALL LOCALSTORAGE AND REFRESH PAGE -> REQUIRE RE-LOGIN
   useEffect(() => {
-    window.addEventListener("storage", manualClearStorage);
     window.addEventListener("beforeunload", scrollTop);
 
     return () => {
-      window.removeEventListener("storage", manualClearStorage);
       window.removeEventListener("beforeunload", scrollTop);
     };
   }, []);
