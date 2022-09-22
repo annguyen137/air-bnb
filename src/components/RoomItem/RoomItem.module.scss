@@ -3,6 +3,7 @@
 .room-card {
   overflow: hidden;
   position: relative;
+  height: 100%;
 
   .room-img {
     position: relative;
@@ -13,7 +14,14 @@
     background: linear-gradient(to top, $color-gray-2 10%, $color-gray-1);
     width: 100%;
     border-color: unset;
+    padding-top: 90%;
     aspect-ratio: 1/0.9;
+
+    img {
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
 
     .overlay {
       position: absolute;
