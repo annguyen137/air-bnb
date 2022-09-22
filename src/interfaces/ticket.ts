@@ -9,3 +9,10 @@ export interface Ticket {
   userId: null;
   __v: number;
 }
+
+export interface BookTicket {
+  roomId: Room["_id"];
+  checkIn: Date;
+  checkOut: Date;
+  guestAmount?: number;
+}

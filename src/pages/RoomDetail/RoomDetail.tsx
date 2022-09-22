@@ -2,12 +2,27 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./RoomDetail.module.scss";
 import { useParams } from "react-router-dom";
 import { Room } from "interfaces/room";
-import { Box, Container, Button, Stack, TextField, Avatar, Rating, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Button,
+  Stack,
+  TextField,
+  Select,
+  FormHelperText,
+  Input,
+  Avatar,
+  Rating,
+  Typography,
+} from "@mui/material";
 import { SxProps } from "@mui/system";
 import moment from "moment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers";
+import { Controller, useForm, SubmitErrorHandler, SubmitHandler } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star";
@@ -21,22 +36,28 @@ import FireplaceIcon from "@mui/icons-material/Fireplace";
 import PoolIcon from "@mui/icons-material/Pool";
 import ElevatorIcon from "@mui/icons-material/Elevator";
 import HotTubIcon from "@mui/icons-material/HotTub";
-import { getRoomDetail, resetRoomState } from "redux/slices/roomsSlice";
+import { resetRoomState } from "redux/slices/roomsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
 import Loading from "components/Loading/Loading";
-import { getReviewsByRoomId, resetReviewState } from "redux/slices/reviewsSlice";
+import { getReviewsByRoomId, postAReviewByRoomId, resetReviewState } from "redux/slices/reviewsSlice";
 import CustomDrawer from "components/CustomDrawer/CustomDrawer";
 import useDrawer from "utils/useDrawer";
 import { fetchAll, resetFetchAllStatus } from "redux/slices/fetchAllSlice";
-import { getUserDetail } from "redux/slices/authSlice";
 import initFetch from "utils/initFetch";
+import { BookTicket } from "interfaces/ticket";
+import { toast } from "react-toastify";
+import { resetReviewAction } from "redux/slices/reviewsSlice";
+import { ReviewBodyValue } from "interfaces/review";
+import PopModal from "components/PopModal/PopModal";
+import useModalHook from "utils/useModalHook";
+import Login from "pages/Login/Login";
 
 const RoomDetail: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [content, setContent] = useState({
-    css: {} as SxProps,
+    sx: {} as SxProps,
     element: (<></>) as JSX.Element,
     icon: (<></>) as JSX.Element,
   });
@@ -47,13 +68,13 @@ const RoomDetail: React.FC = () => {
 
   const { roomDetail } = useSelector((state: RootState) => state.rooms);
 
-  const { reviewsByRoomId } = useSelector((state: RootState) => state.review);
-
-  const ticketRef = useRef<HTMLElement>();
+  const { reviewsByRoomId, reviewActionSuccess } = useSelector((state: RootState) => state.review);
 
   const { roomId } = useParams() as { roomId: Room["_id"] };
 
   const [isOpen, toggleDrawer] = useDrawer();
+
+  const [isModalOpen, handleOpenModal, handleCloseModal] = useModalHook();
 
   const viewImage = (): void => {
     setContent({
@@ -71,13 +92,18 @@ const RoomDetail: React.FC = () => {
   const viewAllReviews = (): void => {
     setContent({
       element: (
-        <Stack direction={"row"} justifyContent="space-between" gap={"10px"} className={`${styles["reviews-all"]}`}>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          justifyContent="space-between"
+          gap={2}
+          className={`${styles["reviews-all"]}`}
+        >
           <Box flexGrow={1}>
             <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
-            <Box>
-              <Typography component="legend">No rating given</Typography>
-              <Rating name="no-value" value={null} />
-            </Box>
+            <Stack direction={"row"} gap={2} alignItems={"center"}>
+              <Typography component="legend">{roomDetail.locationId?.valueate ?? "No rating given"}</Typography>
+              <Rating readOnly max={10} value={roomDetail.locationId?.valueate ?? null} />
+            </Stack>
           </Box>
 
           <Box className={`${styles["list-all"]}`}>
@@ -104,29 +130,110 @@ const RoomDetail: React.FC = () => {
           </Box>
         </Stack>
       ),
-      css: {
-        width: "70vw !important",
-        height: "90vh !important",
+      sx: (theme) => ({
+        width: {
+          sm: "80vw !important",
+          lg: "70vw !important",
+          "@media (max-width: 743px)": {
+            width: "90vw !important",
+          },
+        },
+        height: "80vh !important",
         margin: "0 auto !important",
         borderRadius: "20px",
         overflow: "hidden",
         top: "50% !important",
         left: "50%",
         transform: "translate(-50%, -50%) !important",
-      },
+      }),
       icon: <CloseIcon />,
     });
     toggleDrawer();
   };
 
+  const showLoginRequire = () => {
+    setContent({
+      element: <Login modalMode={true} />,
+      icon: <CloseIcon />,
+      sx: {
+        display: "flex",
+        width: "50%",
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%,-50%)",
+      },
+    });
+    handleOpenModal();
+  };
+
+  const bookTicketSchema = yup.object().shape({
+    roomId: yup.string().required().default(roomId),
+    checkIn: yup.date().required("Please select checkin date!").min(new Date(), "Cannot book past date"),
+    checkOut: yup.date().required("Please select checkin date!").min(new Date(), "Cannot book past date"),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<BookTicket>({
+    mode: "onSubmit",
+    resolver: yupResolver(bookTicketSchema),
+  });
+
+  const onSubmitTicket: SubmitHandler<BookTicket> = (values) => {
+    console.log(values);
+    if (Object.keys(user).length) {
+    } else {
+      showLoginRequire();
+    }
+  };
+
+  const onErrorTicket: SubmitErrorHandler<BookTicket> = (error) => {
+    console.log(error);
+  };
+
+  const {
+    control: controlReview,
+    handleSubmit: handleSubmitReview,
+    formState: { errors: errorsReview },
+    setFocus: setFocusReview,
+    clearErrors: clearErrorsReview,
+    reset: resetReviewForm,
+  } = useForm<{ roomId: string; content: string }>({
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
+    defaultValues: {
+      roomId: roomId,
+      content: "",
+    },
+  });
+
+  const onSubmitRewiew: SubmitHandler<{ roomId: Room["_id"]; content: ReviewBodyValue["content"] }> = (value) => {
+    if (Object.keys(user).length) {
+      dispatch(postAReviewByRoomId(value));
+    } else {
+      showLoginRequire();
+    }
+  };
+
+  const onErrorReview: SubmitErrorHandler<{ roomId: string; content: string }> = (error) => {
+    // console.log(error);
+    toast.error("Please enter some reviews before posting!", { isLoading: false, autoClose: 1000, pauseOnHover: true });
+    setFocusReview("content");
+  };
+
+  useEffect(() => {
+    if (reviewActionSuccess) {
+      dispatch(resetReviewAction());
+      dispatch(getReviewsByRoomId({ roomId }));
+      resetReviewForm();
+    }
+  }, [reviewActionSuccess]);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-
-    // if (Object.keys(user).length) {
-    //   dispatch(fetchAll([getRoomDetail({ roomId }),getUserDetail(""), getReviewsByRoomId({ roomId })]));
-    // } else {
-    //   dispatch(fetchAll([getRoomDetail({ roomId }), getReviewsByRoomId({ roomId })]));
-    // }
 
     dispatch(fetchAll(initFetch(user, "detail", roomId)));
 
@@ -141,9 +248,15 @@ const RoomDetail: React.FC = () => {
 
   useEffect(() => {
     if (!isOpen) {
-      setContent({ css: {} as object, element: (<></>) as JSX.Element, icon: (<></>) as JSX.Element });
+      setContent({ sx: {} as SxProps, element: (<></>) as JSX.Element, icon: (<></>) as JSX.Element });
     }
-  }, [isOpen]);
+
+    if (Object.keys(user).length) {
+      if (isModalOpen) {
+        handleCloseModal();
+      }
+    }
+  }, [isOpen, user]);
 
   return (
     <Box sx={{ marginTop: "25px", width: "100%" }}>
@@ -160,7 +273,13 @@ const RoomDetail: React.FC = () => {
                     <StarIcon />
                     <span>{roomDetail.locationId?.valueate}</span>
                   </Stack>
-                  <span>{reviewsByRoomId.length} reviews</span>
+                  <Typography
+                    variant="body1"
+                    sx={{ cursor: "pointer", textDecoration: "underline" }}
+                    onClick={viewAllReviews}
+                  >
+                    {reviewsByRoomId.length} reviews
+                  </Typography>
                   <p>
                     {roomDetail.locationId?.name}, {roomDetail.locationId?.province}, {roomDetail.locationId?.country}
                   </p>
@@ -314,7 +433,7 @@ const RoomDetail: React.FC = () => {
               </Box>
             </Box>
             <Box className={`${styles["detail-right"]}`}>
-              <Box className={`${styles["book-ticket"]}`} ref={ticketRef}>
+              <Box className={`${styles["book-ticket"]}`}>
                 <Box className={`${styles["ticket-inner"]}`}>
                   <Box>
                     <Stack direction="row" alignItems="baseline" justifyContent="space-between">
@@ -323,12 +442,123 @@ const RoomDetail: React.FC = () => {
                         <span>night</span>
                       </Box>
                       <Box>
-                        <p style={{ cursor: "pointer", textDecoration: "underline" }} onClick={viewAllReviews}>
-                          {reviewsByRoomId?.length} reviews
-                        </p>
+                        <Typography
+                          variant="body1"
+                          sx={{ cursor: "pointer", textDecoration: "underline" }}
+                          onClick={viewAllReviews}
+                        >
+                          {reviewsByRoomId.length} reviews
+                        </Typography>
                       </Box>
                     </Stack>
-                    <Box className={`${styles["date-guest"]}`}></Box>
+                    <Box>
+                      <Box
+                        component={"form"}
+                        noValidate
+                        autoComplete="off"
+                        className={`${styles["ticket-form"]}`}
+                        onSubmit={handleSubmit(onSubmitTicket, onErrorTicket)}
+                      >
+                        <Box>
+                          <Controller
+                            name="checkIn"
+                            control={control}
+                            render={({ field: { onChange, value, ref, ...rest } }) => (
+                              <LocalizationProvider dateAdapter={AdapterMoment}>
+                                <DatePicker
+                                  minDate={new Date()}
+                                  disablePast
+                                  inputFormat="YYYY/MM/DD"
+                                  label="Check in"
+                                  onChange={(e) => {
+                                    onChange(e);
+                                  }}
+                                  value={value}
+                                  ref={ref}
+                                  {...rest}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      margin="dense"
+                                      required
+                                      size="medium"
+                                      error={!!errors?.checkIn}
+                                      helperText={errors.checkIn?.message}
+                                      FormHelperTextProps={{
+                                        children: errors.checkIn?.message,
+                                        error: !!errors?.checkIn,
+                                      }}
+                                      InputLabelProps={{ shrink: true }}
+                                      {...params}
+                                    />
+                                  )}
+                                />
+                              </LocalizationProvider>
+                            )}
+                          />
+                        </Box>
+                        <Box>
+                          <Controller
+                            name="checkOut"
+                            control={control}
+                            render={({ field: { onChange, value, ref, ...rest } }) => (
+                              <LocalizationProvider dateAdapter={AdapterMoment}>
+                                <DatePicker
+                                  minDate={new Date()}
+                                  disablePast
+                                  inputFormat="YYYY/MM/DD"
+                                  label="Check out"
+                                  onChange={(e) => {
+                                    onChange(e);
+                                  }}
+                                  value={value}
+                                  ref={ref}
+                                  {...rest}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      margin="dense"
+                                      required
+                                      size="medium"
+                                      error={!!errors?.checkOut}
+                                      helperText={errors.checkOut?.message}
+                                      FormHelperTextProps={{
+                                        children: errors.checkOut?.message,
+                                        error: !!errors?.checkOut,
+                                      }}
+                                      InputLabelProps={{ shrink: true }}
+                                      {...params}
+                                    />
+                                  )}
+                                />
+                              </LocalizationProvider>
+                            )}
+                          />
+                        </Box>
+                        {/* <Box>
+                          <Controller
+                            name="guestAmount"
+                            control={control}
+                            render={({ field }) => <Select fullWidth {...field} />}
+                          />
+                        </Box> */}
+                        <Box>
+                          <Button
+                            variant="contained"
+                            type="submit"
+                            fullWidth
+                            sx={{
+                              height: "100%",
+                              backgroundColor: "#ff385c",
+                              "&:hover": {
+                                backgroundColor: "#ff385c !important",
+                                filter: "brightness(80%)",
+                              },
+                            }}
+                          >
+                            Book now
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
@@ -339,7 +569,76 @@ const RoomDetail: React.FC = () => {
               <Loading height={500} />
             ) : (
               <>
-                <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
+                <Box
+                  component={"form"}
+                  noValidate
+                  autoComplete="off"
+                  marginBottom={5}
+                  onSubmit={handleSubmitReview(onSubmitRewiew, onErrorReview)}
+                >
+                  <Stack direction={"row"} gap={2} alignItems="baseline">
+                    <Box
+                      sx={(theme) => ({
+                        width: "100%",
+                        [theme.breakpoints.up("lg")]: {
+                          width: "50%",
+                        },
+                      })}
+                    >
+                      <Controller
+                        name="content"
+                        control={controlReview}
+                        defaultValue={""}
+                        rules={{
+                          required: {
+                            value: true,
+                            message: "Please enter some reviews before posting!",
+                          },
+                          min: 1,
+                        }}
+                        render={({ field: { onBlur, ref, ...rest } }) => (
+                          <TextField
+                            variant="standard"
+                            fullWidth
+                            placeholder="Post a review"
+                            onBlur={(e) => {
+                              onBlur();
+                              clearErrorsReview("content");
+                            }}
+                            error={!!errorsReview.content}
+                            helperText={errorsReview.content?.message}
+                            inputRef={ref}
+                            {...rest}
+                          />
+                        )}
+                      />
+                    </Box>
+
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      sx={{
+                        height: "100%",
+                        color: "white !important",
+                        backgroundColor: "#ff385c",
+                        "&:hover": {
+                          backgroundColor: "#ff385c !important",
+                          filter: "brightness(80%)",
+                        },
+                      }}
+                    >
+                      Post
+                    </Button>
+                  </Stack>
+                </Box>
+
+                <Stack direction={"row"} gap={2} alignItems="flex-start">
+                  <Stack direction={"row"} alignItems="center">
+                    <StarIcon />
+                    <Typography variant="body1">{roomDetail.locationId?.valueate}</Typography>
+                  </Stack>
+                  <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
+                </Stack>
                 <Box className={`${styles["reviews-list"]}`}>
                   {[...reviewsByRoomId].slice(0, 6).map((review) => (
                     <Box key={review._id} className={`${styles["review-item"]}`}>
@@ -389,9 +688,16 @@ const RoomDetail: React.FC = () => {
         anchor="bottom"
         toggle={toggleDrawer}
         isOpen={isOpen}
-        css={content.css}
+        css={content.sx}
         children={content.element}
         icon={content.icon}
+      />
+      <PopModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        css={content.sx}
+        icon={content.icon}
+        children={content.element}
       />
     </Box>
   );

@@ -2,12 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./RoomList.module.scss";
 import { Box, Container } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { getRoomListByLocation } from "redux/slices/roomsSlice";
+import { getRoomListByLocation, resetRoomState } from "redux/slices/roomsSlice";
 import { RootState, AppDispatch } from "redux/store";
 import RoomItem from "components/RoomItem/RoomItem";
 import Loading from "components/Loading/Loading";
 import { LIMIT } from "services/axiosConfig";
 import useIntersectionObserver from "utils/useIntersectionObserver";
+import { logoRef } from "components/Header/Header";
+import { fetchAll, resetFetchAllStatus } from "redux/slices/fetchAllSlice";
+import { resetLocationState } from "redux/slices/locationsSlice";
+import initFetch from "utils/initFetch";
 
 const RoomList: React.FC = () => {
   const triggerRef = useRef() as React.MutableRefObject<HTMLElement>;
@@ -16,16 +20,33 @@ const RoomList: React.FC = () => {
 
   const [isTriggered, page, observer] = useIntersectionObserver();
 
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const { fetchAllLoading } = useSelector((state: RootState) => state.all);
 
   const { roomsData, roomsPagination, isRoomsLoading } = useSelector((state: RootState) => state.rooms);
 
+  const reFetch = () => {
+    window.scroll({ top: 0, behavior: "smooth" });
+
+    if (window.top) {
+      dispatch(resetFetchAllStatus());
+      dispatch(resetRoomState());
+      dispatch(resetLocationState());
+      //fetch but not refresh page
+      dispatch(fetchAll(initFetch(user, "home")));
+    }
+  };
+
   // PAGINATION FETCHING DATA USING INTERSECTION OBSERVER (CUSTOM HOOK)
   useEffect(() => {
+    logoRef.current?.addEventListener("click", reFetch);
+
     observer.observe(triggerRef.current);
 
     return () => {
       observer.disconnect();
+      logoRef.current?.removeEventListener("click", reFetch);
     };
   }, []);
 
