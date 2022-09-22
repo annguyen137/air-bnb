@@ -33,7 +33,7 @@ const manualClearStorage = () => {
   const _id = localStorage.getItem("_id");
   if (!r || !token || !_id) {
     localStorage.clear();
-    window.location.reload();
+    // window.location.reload();
   }
 };
 

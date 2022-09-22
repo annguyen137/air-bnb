@@ -76,7 +76,19 @@ section {
   display: flex;
 }
 
-@include responsiveMin("lg") {
+@media screen and (max-width: 743px) {
+  section {
+    margin: ($mg-3) 0 ($mg-4 * 2 + 5);
+  }
+}
+
+@include responsiveMin("sm") {
+  section {
+    margin: $mg-6 0 ($mg-4 + 8);
+  }
+}
+
+@include responsiveMin("md") {
   section {
     margin: $mg-6 0 ($mg-5 + 1);
   }

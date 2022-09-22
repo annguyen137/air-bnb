@@ -5,6 +5,7 @@ import { fetchAll, resetFetchAllStatus } from "redux/slices/fetchAllSlice";
 import { resetLocationState } from "redux/slices/locationsSlice";
 import { resetRoomState } from "redux/slices/roomsSlice";
 import { AppDispatch, RootState } from "redux/store";
+import { scrollTop } from "utils/eventFunction";
 import initFetch from "utils/initFetch";
 import { clearLocalStorage } from "utils/storage";
 import useIsFirstLoad from "utils/useIsFirstLoad";
@@ -23,11 +24,14 @@ const Home = () => {
   useEffect(() => {
     window.scroll(0, 0);
     if (isFirstLoad) {
+      window.addEventListener("beforeunload", scrollTop);
       setIsFirstLoad(false);
       dispatch(fetchAll(initFetch(user, "home")));
     }
 
     return () => {
+      window.removeEventListener("beforeunload", scrollTop);
+
       // CLEANUP STATE WHEN COMPONENT UNMOUNT, FOR REFETCHING NEWEST DATA FROM BACKEND API IF COMPONENT IS MOUNT NEXT TIME
       dispatch(resetFetchAllStatus());
       dispatch(resetRoomState());

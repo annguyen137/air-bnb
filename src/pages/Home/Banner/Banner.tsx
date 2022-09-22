@@ -11,26 +11,26 @@ import Loading from "components/Loading/Loading";
 const Banner = () => {
   const { fetchAllLoading } = useSelector((state: RootState) => state.all);
 
-  if (fetchAllLoading) {
-    return (
-      <Loading
-        css={{
-          "@media (max-width: 400px)": {
-            height: "40vh",
-          },
-          "@media (max-width: 744px)": {
-            height: "50vh",
-          },
-          "@media (max-width: 949px)": {
-            height: "60vh",
-          },
-          "@media (min-width: 950px)": {
-            height: "80vh",
-          },
-        }}
-      />
-    );
-  }
+  // if (fetchAllLoading) {
+  //   return (
+  //     <Loading
+  //       css={{
+  //         "@media (max-width: 400px)": {
+  //           height: "40vh",
+  //         },
+  //         "@media (max-width: 744px)": {
+  //           height: "50vh",
+  //         },
+  //         "@media (max-width: 949px)": {
+  //           height: "60vh",
+  //         },
+  //         "@media (min-width: 950px)": {
+  //           height: "80vh",
+  //         },
+  //       }}
+  //     />
+  //   );
+  // }
 
   return (
     <Carousel
