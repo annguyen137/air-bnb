@@ -132,9 +132,15 @@
     }
   }
 
-  .loading-round {
+  .loading-effect {
     position: absolute !important;
     width: 100%;
     bottom: -1;
+    text-align: center;
+
+    .loading-round {
+      margin-top: $mg-0;
+      color: #ff385c;
+    }
   }
 }

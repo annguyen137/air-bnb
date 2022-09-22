@@ -27,7 +27,21 @@ const CustomDrawer = ({ anchor, children, css, toggle, isOpen, icon }: DrawerPro
         >
           <Button onClick={toggle}>{icon}</Button>
         </Box>
-        <Box sx={{ padding: "50px", height: "100%" }}>{children}</Box>
+        <Box
+          sx={(theme) => ({
+            height: "100%",
+            maxHeight: "80vh",
+            padding: "20px",
+            [theme.breakpoints.up("sm")]: {
+              padding: "30px",
+            },
+            [theme.breakpoints.up("lg")]: {
+              padding: "50px",
+            },
+          })}
+        >
+          {children}
+        </Box>
       </Box>
     </Drawer>
   );

@@ -24,6 +24,8 @@ import { resetRoomState } from "redux/slices/roomsSlice";
 import { getLocationList, resetLocationState } from "redux/slices/locationsSlice";
 import { fetchAll } from "redux/slices/fetchAllSlice";
 
+export const logoRef = React.createRef<HTMLElement>();
+
 type menuType = Array<{
   title: string;
   path?: string;
@@ -31,8 +33,6 @@ type menuType = Array<{
 }>;
 
 const Header = () => {
-  const logoRef = React.useRef<HTMLDivElement>(null);
-
   const dispatch = useDispatch<AppDispatch>();
 
   const navigate = useNavigate();
@@ -61,15 +61,11 @@ const Header = () => {
     setAnchorElUser(null);
   };
 
-  const scrollTopFetch = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
-    <header className={`${styles["main-header"]}`} ref={logoRef}>
+    <header className={`${styles["main-header"]}`}>
       <Container>
         <Box className={`${styles["nav-bar"]}`}>
-          <Box className={`${styles["nav-bar-brand"]}`} onClick={scrollTopFetch}>
+          <Box className={`${styles["nav-bar-brand"]}`} ref={logoRef}>
             <Link to="/" className={""}>
               <svg width="102" height="32">
                 <path
@@ -181,7 +177,12 @@ const Header = () => {
           </Box>
         </Box>
       </Container>
-      {fetchAllLoading && <LinearProgress className={`${styles["loading-round"]}`} />}
+      {fetchAllLoading && (
+        <Box className={`${styles["loading-effect"]}`}>
+          <LinearProgress className={`${styles["loading-line"]}`} />
+          <CircularProgress size={50} thickness={7} className={`${styles["loading-round"]}`} />
+        </Box>
+      )}
     </header>
   );
 };

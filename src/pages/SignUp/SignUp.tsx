@@ -275,7 +275,7 @@ const SignUp = () => {
                             clearErrors("birthday");
                           }}
                           value={value}
-                          ref={ref}
+                          inputRef={ref}
                           {...rest}
                           renderInput={(params) => (
                             <TextField
