@@ -1,4 +1,5 @@
 @use "/src/scss/helper/variables" as *;
+@use "/src/scss/helper/mixin" as *;
 
 .main-header {
   // position: fixed;
@@ -94,6 +95,11 @@
       }
     }
 
+    .nav-bar-search-sm {
+      display: none !important;
+      visibility: hidden !important;
+    }
+
     .nav-bar-auth {
       display: flex;
       align-items: center;
@@ -141,6 +147,55 @@
     .loading-round {
       margin-top: $mg-0;
       color: #ff385c;
+    }
+  }
+}
+
+@include responsiveMax("sm") {
+  .main-header {
+    height: 70px;
+
+    .nav-bar {
+      height: 70px;
+      justify-content: space-between;
+
+      .nav-bar-search {
+        display: none !important;
+      }
+      .nav-bar-search-sm {
+        display: block !important;
+        visibility: visible !important;
+      }
+
+      .nav-bar-brand {
+        visibility: hidden;
+        display: none;
+      }
+    }
+  }
+}
+
+@include responsiveMin("md") {
+  .main-header {
+    .nav-bar {
+      .nav-bar-brand {
+        path:nth-child(2) {
+          display: block !important;
+        }
+      }
+    }
+  }
+}
+
+@include responsiveMax("md") {
+  .main-header {
+    .nav-bar {
+      .nav-bar-auth {
+        .bca-host,
+        .language-icon {
+          display: none;
+        }
+      }
     }
   }
 }

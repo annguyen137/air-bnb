@@ -10,6 +10,7 @@ import {
   Typography,
   CircularProgress,
   LinearProgress,
+  TextField,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
@@ -18,11 +19,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
 import Loading from "components/Loading/Loading";
-import { Action, ActionCreator } from "@reduxjs/toolkit";
+import { ActionCreator } from "@reduxjs/toolkit";
 import { logout } from "redux/slices/authSlice";
-import { resetRoomState } from "redux/slices/roomsSlice";
-import { getLocationList, resetLocationState } from "redux/slices/locationsSlice";
-import { fetchAll } from "redux/slices/fetchAllSlice";
 
 export const logoRef = React.createRef<HTMLElement>();
 
@@ -51,7 +49,11 @@ const Header = () => {
     { title: "Help", path: "" },
   ];
 
-  const LoggedInMenuItems: menuType = [{ title: "Log out", actions: [logout] }];
+  const LoggedInMenuItems: menuType = [
+    { title: "Profile", path: "/profile" },
+    { title: "Management", path: "/management" },
+    { title: "Log out", actions: [logout] },
+  ];
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -107,6 +109,7 @@ const Header = () => {
               </Button>
             </div>
           </Box>
+          <Box className={`${styles["nav-bar-search-sm"]}`}></Box>
           <Box className={`${styles["nav-bar-auth"]}`}>
             <div className={`${styles["bca-host"]}`}>
               <Button color="inherit" size="small" variant="text">

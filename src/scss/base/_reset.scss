@@ -58,7 +58,6 @@ h3.title {
     font-size: $fs-6;
     line-height: $lh-3;
     font-weight: 600;
-    margin-bottom: $mg-2;
   }
 }
 
@@ -85,6 +84,12 @@ section {
 @include responsiveMin("sm") {
   section {
     margin: $mg-6 0 ($mg-4 + 8);
+  }
+
+  h3.title {
+    &.--secondary-title {
+      margin-bottom: $mg-2;
+    }
   }
 }
 
