@@ -14,7 +14,7 @@ type DrawerProps = {
 const CustomDrawer = ({ anchor, children, css, toggle, isOpen, icon }: DrawerProps) => {
   return (
     <Drawer anchor={anchor} open={isOpen} onClose={toggle} PaperProps={{ sx: css }}>
-      <Box sx={{ height: "100%" }}>
+      <Box sx={{ height: "100%", maxHeight: "100%", paddingBottom: "30px", display: "flex", flexDirection: "column" }}>
         <Box
           sx={{
             position: "sticky",
