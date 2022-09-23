@@ -78,13 +78,15 @@ const RoomDetail: React.FC = () => {
 
   const viewImage = (): void => {
     setContent({
-      ...content,
       element: (
         <Box sx={{ width: "70%", margin: "0 auto" }}>
           <img src={roomDetail.image} />
         </Box>
       ),
       icon: <ArrowBackIosIcon />,
+      sx: {
+        top: 0,
+      },
     });
     toggleDrawer();
   };
@@ -92,13 +94,8 @@ const RoomDetail: React.FC = () => {
   const viewAllReviews = (): void => {
     setContent({
       element: (
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          justifyContent="space-between"
-          gap={2}
-          className={`${styles["reviews-all"]}`}
-        >
-          <Box flexGrow={1}>
+        <Stack direction={{ xs: "column", md: "row" }} gap={2} flexGrow={1} className={`${styles["reviews-all"]}`}>
+          <Box>
             <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
             <Stack direction={"row"} gap={2} alignItems={"center"}>
               <Typography component="legend">{roomDetail.locationId?.valueate ?? "No rating given"}</Typography>
@@ -133,12 +130,20 @@ const RoomDetail: React.FC = () => {
       sx: (theme) => ({
         width: {
           sm: "80vw !important",
-          lg: "70vw !important",
+          md: "70vw !important",
+          lg: "60vw !important",
           "@media (max-width: 743px)": {
             width: "90vw !important",
           },
         },
-        height: "80vh !important",
+        height: {
+          sm: "60vh !important",
+          md: "70vh !important",
+          lg: "80vh !important",
+          "@media (max-width: 743px)": {
+            height: "50vh !important",
+          },
+        },
         margin: "0 auto !important",
         borderRadius: "20px",
         overflow: "hidden",
@@ -155,14 +160,20 @@ const RoomDetail: React.FC = () => {
     setContent({
       element: <Login modalMode={true} />,
       icon: <CloseIcon />,
-      sx: {
+      sx: (theme) => ({
         display: "flex",
-        width: "50%",
+        width: {
+          sm: "70%",
+          md: "50%",
+          "@media (max-width: 743px)": {
+            width: "90vw !important",
+          },
+        },
         position: "absolute",
         left: "50%",
         top: "50%",
         transform: "translate(-50%,-50%)",
-      },
+      }),
     });
     handleOpenModal();
   };
