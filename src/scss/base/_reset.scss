@@ -77,19 +77,13 @@ section {
 
 @media screen and (max-width: 743px) {
   section {
-    margin: ($mg-3) 0 ($mg-4 * 2 + 5);
+    margin: ($mg-3) 0 ($mg-5 + 1);
   }
 }
 
 @include responsiveMin("sm") {
   section {
-    margin: $mg-6 0 ($mg-4 + 8);
-  }
-
-  h3.title {
-    &.--secondary-title {
-      margin-bottom: $mg-2;
-    }
+    margin: $mg-6 0 ($mg-5 + 1);
   }
 }
 
