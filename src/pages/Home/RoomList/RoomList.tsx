@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./RoomList.module.scss";
-import { Box, Container } from "@mui/material";
+import { Box, CircularProgress, Container } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getRoomListByLocation, resetRoomState } from "redux/slices/roomsSlice";
 import { RootState, AppDispatch } from "redux/store";
@@ -32,9 +32,10 @@ const RoomList: React.FC = () => {
     if (window.top) {
       dispatch(resetFetchAllStatus());
       dispatch(resetRoomState());
-      dispatch(resetLocationState());
+      dispatch(getRoomListByLocation({ limit: LIMIT }));
+      // dispatch(resetLocationState());
       //fetch but not refresh page
-      dispatch(fetchAll(initFetch(user, "home")));
+      // dispatch(fetchAll(initFetch(user, "home")));
     }
   };
 
@@ -58,6 +59,19 @@ const RoomList: React.FC = () => {
 
   return (
     <Box sx={{ marginTop: "25px" }}>
+      {isRoomsLoading && (
+        <CircularProgress
+          sx={{
+            position: "absolute",
+            top: "10px",
+            zIndex: 10,
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+          size={50}
+          thickness={7}
+        />
+      )}
       <Container>
         <Box className={`${styles["room-list"]}`}>
           {/* show loading at first load */}

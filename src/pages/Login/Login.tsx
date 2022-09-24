@@ -56,7 +56,7 @@ const Login = ({ modalMode }: Props) => {
     setFocus,
   } = useForm<LoginValue>({
     resolver: yupResolver(loginSchema),
-    mode: "onBlur",
+    mode: modalMode ? "onSubmit" : "onBlur",
     reValidateMode: "onBlur",
   });
 
