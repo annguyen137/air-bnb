@@ -40,7 +40,7 @@ const Home = () => {
   }, []);
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", position: "relative" }}>
       <Banner />
       <RoomList />
     </Box>

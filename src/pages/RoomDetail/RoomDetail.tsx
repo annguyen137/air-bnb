@@ -194,7 +194,7 @@ const RoomDetail: React.FC = () => {
   });
 
   const onSubmitTicket: SubmitHandler<BookTicket> = (values) => {
-    console.log(values);
+    // console.log(values);
     if (Object.keys(user).length) {
     } else {
       showLoginRequire();
@@ -202,7 +202,11 @@ const RoomDetail: React.FC = () => {
   };
 
   const onErrorTicket: SubmitErrorHandler<BookTicket> = (error) => {
-    console.log(error);
+    // console.log(error);
+    if (Object.keys(user).length) {
+    } else {
+      showLoginRequire();
+    }
   };
 
   const {
