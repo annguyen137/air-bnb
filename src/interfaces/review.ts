@@ -13,10 +13,6 @@ export interface Review {
   __v: number;
 }
 
-export interface ReviewBodyValue {
-  content: Review["content"];
-}
-
 export interface ReviewQueryParams extends Pagination {
   roomId?: Room["_id"];
   reviewId?: Review["_id"];

@@ -20,8 +20,6 @@ const RoomList: React.FC = () => {
 
   const [isTriggered, page, observer] = useIntersectionObserver();
 
-  const { user } = useSelector((state: RootState) => state.auth);
-
   const { fetchAllLoading } = useSelector((state: RootState) => state.all);
 
   const { roomsData, roomsPagination, isRoomsLoading } = useSelector((state: RootState) => state.rooms);
@@ -33,9 +31,6 @@ const RoomList: React.FC = () => {
       dispatch(resetFetchAllStatus());
       dispatch(resetRoomState());
       dispatch(getRoomListByLocation({ limit: LIMIT }));
-      // dispatch(resetLocationState());
-      //fetch but not refresh page
-      // dispatch(fetchAll(initFetch(user, "home")));
     }
   };
 
@@ -57,21 +52,10 @@ const RoomList: React.FC = () => {
     }
   }, [isTriggered, page]);
 
+  // console.log("re-render");
+
   return (
     <Box sx={{ marginTop: "25px" }}>
-      {isRoomsLoading && (
-        <CircularProgress
-          sx={{
-            position: "absolute",
-            top: "10px",
-            zIndex: 10,
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}
-          size={50}
-          thickness={7}
-        />
-      )}
       <Container>
         <Box className={`${styles["room-list"]}`}>
           {/* show loading at first load */}
