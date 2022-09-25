@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Review, ReviewBodyValue, ReviewQueryParams } from "interfaces/review";
+import { Review, ReviewQueryParams } from "interfaces/review";
 import { Room } from "interfaces/room";
 import reviewAPI from "services/reviewAPI";
 import { toast } from "react-toastify";
@@ -45,7 +45,7 @@ export const getReviewDetail = createAsyncThunk("reviews/getReviewDetail", async
 
 export const postAReviewByRoomId = createAsyncThunk(
   "reviews/postAReviewByRoomId",
-  async ({ roomId, content }: { roomId: ReviewQueryParams["roomId"]; content: ReviewBodyValue["content"] }) => {
+  async ({ roomId, content }: { roomId: ReviewQueryParams["roomId"]; content: Review["content"] }) => {
     try {
       const data = await reviewAPI.postAReviewByRoomId(roomId, content);
       return data;

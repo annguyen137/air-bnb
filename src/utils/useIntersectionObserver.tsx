@@ -8,6 +8,7 @@ const useIntersectionObserver = () => {
   const observer = new IntersectionObserver(
     ([entry]) => {
       if (entry.isIntersecting) {
+        // console.log("true");
         setIsTriggered(entry.isIntersecting);
         setPage((prevPage) => prevPage + 1);
       }
