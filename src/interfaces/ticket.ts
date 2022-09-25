@@ -12,7 +12,6 @@ export interface Ticket {
 
 export interface BookTicket {
   roomId: Room["_id"];
-  checkIn: Date;
-  checkOut: Date;
-  guestAmount?: number;
+  checkIn: string;
+  checkOut: string;
 }

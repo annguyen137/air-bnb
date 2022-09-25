@@ -12,13 +12,6 @@ export interface LocationId {
   image: string;
 }
 
-export interface LocationBodyValue {
-  name: LocationId["name"];
-  province: LocationId["province"];
-  country: LocationId["country"];
-  valueate: LocationId["valueate"];
-}
-
 export interface UpdateLocationImageValue {
   location: File;
 }

@@ -48,10 +48,21 @@ import initFetch from "utils/initFetch";
 import { BookTicket } from "interfaces/ticket";
 import { toast } from "react-toastify";
 import { resetReviewAction } from "redux/slices/reviewsSlice";
-import { ReviewBodyValue } from "interfaces/review";
 import PopModal from "components/PopModal/PopModal";
 import useModalHook from "utils/useModalHook";
 import Login from "pages/Login/Login";
+
+interface TicketForm {
+  roomId: Room["_id"];
+  checkIn: Date;
+  checkOut: Date;
+  guestNumber?: number;
+}
+
+interface ReviewForm {
+  roomId: Room["_id"];
+  content: "";
+}
 
 const RoomDetail: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -68,7 +79,7 @@ const RoomDetail: React.FC = () => {
 
   const { roomDetail } = useSelector((state: RootState) => state.rooms);
 
-  const { reviewsByRoomId, reviewActionSuccess } = useSelector((state: RootState) => state.review);
+  const { reviewsByRoomId, reviewActionSuccess, isReviewsLoading } = useSelector((state: RootState) => state.review);
 
   const { roomId } = useParams() as { roomId: Room["_id"] };
 
@@ -95,8 +106,8 @@ const RoomDetail: React.FC = () => {
     setContent({
       element: (
         <Stack direction={{ xs: "column", md: "row" }} gap={2} flexGrow={1} className={`${styles["reviews-all"]}`}>
-          <Box>
-            <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
+          <Box sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }}>
+            <h3 className="title ">{reviewsByRoomId?.length} reviews</h3>
             <Stack direction={"row"} gap={2} alignItems={"center"}>
               <Typography component="legend">{roomDetail.locationId?.valueate ?? "No rating given"}</Typography>
               <Rating readOnly max={10} value={roomDetail.locationId?.valueate ?? null} />
@@ -114,7 +125,7 @@ const RoomDetail: React.FC = () => {
                         {review.userId !== null ? review.userId?.name : "******"}
                       </h4>
                       <span className={`${styles["review-date"]}`}>
-                        {moment(review.created_at).format("DD/MM/YYYY hh:mm").toString()}
+                        {moment(review.created_at).format("DD/MM/YYYY hh:mm")}
                       </span>
                     </Stack>
                   </Stack>
@@ -180,30 +191,55 @@ const RoomDetail: React.FC = () => {
 
   const bookTicketSchema = yup.object().shape({
     roomId: yup.string().required().default(roomId),
-    checkIn: yup.date().required("Please select checkin date!").min(new Date(), "Cannot book past date"),
-    checkOut: yup.date().required("Please select checkin date!").min(new Date(), "Cannot book past date"),
+    checkIn: yup
+      .date()
+      .required("Please select checkin date!")
+      .typeError("Invalid date!")
+      // .nullable()
+      .min(new Date(), "Cannot book past date"),
+    checkOut: yup
+      .date()
+      .required("Please select checkout date!")
+      .typeError("Invalid date!")
+      // .nullable()
+      .when("checkIn", (checkIn, schema) => {
+        if (moment(checkIn).isValid()) {
+          const dayAfter = new Date(checkIn.getTime() + 86400000);
+          return schema.min(dayAfter, "Checkout date must be after checkin date");
+        }
+        return schema;
+      }),
   });
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<BookTicket>({
-    mode: "onSubmit",
+  } = useForm<TicketForm>({
+    mode: "onBlur",
     resolver: yupResolver(bookTicketSchema),
+    defaultValues: {
+      checkIn: new Date(),
+      checkOut: new Date(),
+    },
   });
 
-  const onSubmitTicket: SubmitHandler<BookTicket> = (values) => {
-    // console.log(values);
+  const onSubmitTicket: SubmitHandler<TicketForm> = (values) => {
     if (Object.keys(user).length) {
+      // dispatch()
     } else {
       showLoginRequire();
     }
   };
 
-  const onErrorTicket: SubmitErrorHandler<BookTicket> = (error) => {
+  const onErrorTicket: SubmitErrorHandler<TicketForm> = (error) => {
     // console.log(error);
     if (Object.keys(user).length) {
+      toast.error("Please check your checkin / checkout date", {
+        isLoading: false,
+        autoClose: 2000,
+        closeOnClick: true,
+      });
     } else {
       showLoginRequire();
     }
@@ -216,7 +252,7 @@ const RoomDetail: React.FC = () => {
     setFocus: setFocusReview,
     clearErrors: clearErrorsReview,
     reset: resetReviewForm,
-  } = useForm<{ roomId: string; content: string }>({
+  } = useForm<ReviewForm>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     defaultValues: {
@@ -225,15 +261,16 @@ const RoomDetail: React.FC = () => {
     },
   });
 
-  const onSubmitRewiew: SubmitHandler<{ roomId: Room["_id"]; content: ReviewBodyValue["content"] }> = (value) => {
+  const onSubmitRewiew: SubmitHandler<ReviewForm> = (value) => {
     if (Object.keys(user).length) {
-      dispatch(postAReviewByRoomId(value));
+      console.log(value);
+      // dispatch(postAReviewByRoomId(value));
     } else {
       showLoginRequire();
     }
   };
 
-  const onErrorReview: SubmitErrorHandler<{ roomId: string; content: string }> = (error) => {
+  const onErrorReview: SubmitErrorHandler<ReviewForm> = (error) => {
     // console.log(error);
     toast.error("Please enter some reviews before posting!", { isLoading: false, autoClose: 1000, pauseOnHover: true });
     setFocusReview("content");
@@ -451,7 +488,7 @@ const RoomDetail: React.FC = () => {
               <Box className={`${styles["book-ticket"]}`}>
                 <Box className={`${styles["ticket-inner"]}`}>
                   <Box>
-                    <Stack direction="row" alignItems="baseline" justifyContent="space-between">
+                    <Stack direction={"row"} alignItems="baseline" justifyContent="space-between">
                       <Box className={`${styles["price"]}`}>
                         <span>${roomDetail.price}</span>
                         <span>night</span>
@@ -474,94 +511,80 @@ const RoomDetail: React.FC = () => {
                         className={`${styles["ticket-form"]}`}
                         onSubmit={handleSubmit(onSubmitTicket, onErrorTicket)}
                       >
-                        <Box>
-                          <Controller
-                            name="checkIn"
-                            control={control}
-                            render={({ field: { onChange, value, ref, ...rest } }) => (
-                              <LocalizationProvider dateAdapter={AdapterMoment}>
-                                <DatePicker
-                                  minDate={new Date()}
-                                  disablePast
-                                  inputFormat="YYYY/MM/DD"
-                                  label="Check in"
-                                  onChange={(e) => {
-                                    onChange(e);
-                                  }}
-                                  value={value}
-                                  ref={ref}
-                                  {...rest}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      margin="dense"
-                                      required
-                                      size="medium"
-                                      error={!!errors?.checkIn}
-                                      helperText={errors.checkIn?.message}
-                                      FormHelperTextProps={{
-                                        children: errors.checkIn?.message,
-                                        error: !!errors?.checkIn,
-                                      }}
-                                      InputLabelProps={{ shrink: true }}
-                                      {...params}
-                                    />
-                                  )}
-                                />
-                              </LocalizationProvider>
-                            )}
-                          />
-                        </Box>
-                        <Box>
-                          <Controller
-                            name="checkOut"
-                            control={control}
-                            render={({ field: { onChange, value, ref, ...rest } }) => (
-                              <LocalizationProvider dateAdapter={AdapterMoment}>
-                                <DatePicker
-                                  minDate={new Date()}
-                                  disablePast
-                                  inputFormat="YYYY/MM/DD"
-                                  label="Check out"
-                                  onChange={(e) => {
-                                    onChange(e);
-                                  }}
-                                  value={value}
-                                  ref={ref}
-                                  {...rest}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      margin="dense"
-                                      required
-                                      size="medium"
-                                      error={!!errors?.checkOut}
-                                      helperText={errors.checkOut?.message}
-                                      FormHelperTextProps={{
-                                        children: errors.checkOut?.message,
-                                        error: !!errors?.checkOut,
-                                      }}
-                                      InputLabelProps={{ shrink: true }}
-                                      {...params}
-                                    />
-                                  )}
-                                />
-                              </LocalizationProvider>
-                            )}
-                          />
-                        </Box>
-                        {/* <Box>
-                          <Controller
-                            name="guestAmount"
-                            control={control}
-                            render={({ field }) => <Select fullWidth {...field} />}
-                          />
-                        </Box> */}
+                        <Stack direction={{ xs: "column", md: "row" }} gap={2} marginBottom={2}>
+                          <Box>
+                            <Controller
+                              name="checkIn"
+                              control={control}
+                              defaultValue={moment().toDate()}
+                              render={({ field: { onChange, value, ref, ...rest } }) => (
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                  <DatePicker
+                                    disablePast
+                                    inputFormat="YYYY/MM/DD"
+                                    label="Check in"
+                                    onChange={onChange}
+                                    value={value}
+                                    ref={ref}
+                                    {...rest}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        margin="dense"
+                                        fullWidth
+                                        required
+                                        size="medium"
+                                        error={!!errors?.checkIn}
+                                        helperText={errors.checkIn?.message}
+                                        InputLabelProps={{ shrink: true }}
+                                      />
+                                    )}
+                                  />
+                                </LocalizationProvider>
+                              )}
+                            />
+                          </Box>
+                          <Box>
+                            <Controller
+                              name="checkOut"
+                              control={control}
+                              defaultValue={moment().toDate()}
+                              render={({ field: { onChange, value, ref, ...rest } }) => (
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                  <DatePicker
+                                    disablePast
+                                    inputFormat="YYYY/MM/DD"
+                                    label="Check out"
+                                    onChange={onChange}
+                                    value={value}
+                                    ref={ref}
+                                    {...rest}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        margin="dense"
+                                        required
+                                        fullWidth
+                                        size="medium"
+                                        error={Boolean(errors?.checkOut)}
+                                        helperText={errors.checkOut?.message}
+                                        InputLabelProps={{ shrink: true }}
+                                      />
+                                    )}
+                                  />
+                                </LocalizationProvider>
+                              )}
+                            />
+                          </Box>
+                        </Stack>
+
                         <Box>
                           <Button
                             variant="contained"
                             type="submit"
+                            size="large"
                             fullWidth
                             sx={{
-                              height: "100%",
                               backgroundColor: "#ff385c",
                               "&:hover": {
                                 backgroundColor: "#ff385c !important",
@@ -667,7 +690,7 @@ const RoomDetail: React.FC = () => {
                               {review.userId !== null ? review.userId?.name : "******"}
                             </h4>
                             <span className={`${styles["review-date"]}`}>
-                              {moment(review.created_at).format("DD/MM/YYYY hh:mm").toString()}
+                              {moment(review.created_at).format("DD/MM/YYYY hh:mm")}
                             </span>
                           </Stack>
                         </Stack>
@@ -677,6 +700,19 @@ const RoomDetail: React.FC = () => {
                       </Box>
                     </Box>
                   ))}
+                  {reviewsByRoomId.length <= 6 && isReviewsLoading && (
+                    <Stack rowGap={"17px"}>
+                      <Stack direction={"row"} columnGap={"12px"} alignItems="center">
+                        <Loading width={40} height={40} css={{ borderRadius: "50%" }} />
+                        <Box>
+                          <Loading width={150} />
+                        </Box>
+                      </Stack>
+                      <Box>
+                        <Loading width={300} />
+                      </Box>
+                    </Stack>
+                  )}
                 </Box>
                 <Box>
                   <Button

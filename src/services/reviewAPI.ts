@@ -1,5 +1,5 @@
 import axiosConfig from "./axiosConfig";
-import { Review, ReviewBodyValue, ReviewQueryParams } from "interfaces/review";
+import { Review, ReviewQueryParams } from "interfaces/review";
 import { Room } from "interfaces/room";
 
 const reviewAPI = {
@@ -9,7 +9,7 @@ const reviewAPI = {
   getReviewDetail: ({ reviewId }: ReviewQueryParams) => {
     return axiosConfig.get<unknown, Review>(`reviews/${reviewId}`);
   },
-  postAReviewByRoomId: (roomId: ReviewQueryParams["roomId"], content: ReviewBodyValue["content"]) => {
+  postAReviewByRoomId: (roomId: ReviewQueryParams["roomId"], content: Review["content"]) => {
     return axiosConfig.post<unknown, Review>(`reviews`, { content }, { params: { roomId } });
   },
 };
