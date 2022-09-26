@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./RoomList.module.scss";
-import { Box, CircularProgress, Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getRoomListByLocation, resetRoomState } from "redux/slices/roomsSlice";
 import { RootState, AppDispatch } from "redux/store";
@@ -9,16 +9,14 @@ import Loading from "components/Loading/Loading";
 import { LIMIT } from "services/axiosConfig";
 import useIntersectionObserver from "utils/useIntersectionObserver";
 import { logoRef } from "components/Header/Header";
-import { fetchAll, resetFetchAllStatus } from "redux/slices/fetchAllSlice";
-import { resetLocationState } from "redux/slices/locationsSlice";
-import initFetch from "utils/initFetch";
+import { resetFetchAllStatus } from "redux/slices/fetchAllSlice";
 
 const RoomList: React.FC = () => {
   const triggerRef = useRef() as React.MutableRefObject<HTMLElement>;
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const [isTriggered, page, observer] = useIntersectionObserver();
+  const [isTriggered, page, resetPage, observer] = useIntersectionObserver();
 
   const { fetchAllLoading } = useSelector((state: RootState) => state.all);
 
@@ -28,6 +26,7 @@ const RoomList: React.FC = () => {
     window.scroll({ top: 0, behavior: "smooth" });
 
     if (window.top) {
+      resetPage();
       dispatch(resetFetchAllStatus());
       dispatch(resetRoomState());
       dispatch(getRoomListByLocation({ limit: LIMIT }));
@@ -51,8 +50,6 @@ const RoomList: React.FC = () => {
       dispatch(getRoomListByLocation({ limit: LIMIT, skip: LIMIT * page }));
     }
   }, [isTriggered, page]);
-
-  // console.log("re-render");
 
   return (
     <Box sx={{ marginTop: "25px" }}>

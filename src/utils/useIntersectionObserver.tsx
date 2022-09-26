@@ -5,6 +5,10 @@ const useIntersectionObserver = () => {
 
   const [page, setPage] = useState(1);
 
+  const resetPage = () => {
+    setPage(1);
+  };
+
   const observer = new IntersectionObserver(
     ([entry]) => {
       if (entry.isIntersecting) {
@@ -16,7 +20,7 @@ const useIntersectionObserver = () => {
     { threshold: 0.5, rootMargin: "-50px" }
   );
 
-  return [isTriggered, page, observer] as const;
+  return [isTriggered, page, resetPage, observer] as const;
 };
 
 export default useIntersectionObserver;
