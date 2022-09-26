@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RoomQueryParams, Room } from "interfaces/room";
 import roomAPI from "services/roomAPI";
-
-import { LIMIT } from "services/axiosConfig";
+import { BookTicket } from "interfaces/ticket";
+import { toast, ToastItem } from "react-toastify";
 
 interface RoomsState {
   // room list
@@ -12,6 +12,10 @@ interface RoomsState {
   // room detail
   roomDetail: Room;
   isDetailLoading: boolean;
+  // actions (booking, edit, update, delete,...)
+  roomActionPending: boolean;
+  roomActionSuccess: boolean;
+  message: string;
   // error
   error: string;
 }
@@ -22,6 +26,9 @@ const initialState: RoomsState = {
   isRoomsLoading: false,
   roomDetail: {} as Room,
   isDetailLoading: false,
+  roomActionPending: false,
+  roomActionSuccess: false,
+  message: "",
   error: "",
 };
 
@@ -44,6 +51,17 @@ export const getRoomDetail = createAsyncThunk("rooms/getRoomDetail", async ({ ro
     throw error;
   }
 });
+
+export const bookRoomById = createAsyncThunk("rooms/bookRoomById", async (values: BookTicket) => {
+  try {
+    const data = await roomAPI.bookRoomById(values);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+});
+
+let noti: ToastItem["id"];
 
 const roomsSlice = createSlice({
   name: "rooms",
@@ -87,6 +105,37 @@ const roomsSlice = createSlice({
     });
     builder.addCase(getRoomDetail.rejected, (state, { error }) => {
       return { ...state, isDetailLoading: false, error: error.message as string };
+    });
+
+    // book room by Id
+    builder.addCase(bookRoomById.pending, (state) => {
+      noti = toast.loading("Booking room...!");
+
+      return { ...state, roomActionPending: true };
+    });
+    builder.addCase(bookRoomById.fulfilled, (state, { payload }) => {
+      toast.update(noti, {
+        type: "success",
+        isLoading: false,
+        closeOnClick: true,
+        autoClose: false,
+        closeButton: true,
+        render: payload.message,
+      });
+
+      return { ...state, roomActionPending: false, roomActionSuccess: true, message: payload.message };
+    });
+    builder.addCase(bookRoomById.rejected, (state, { error }) => {
+      toast.update(noti, {
+        type: "error",
+        isLoading: false,
+        closeOnClick: true,
+        autoClose: false,
+        closeButton: true,
+        render: error.message,
+      });
+
+      return { ...state, roomActionPending: false, roomActionSuccess: false, error: error.message as string };
     });
   },
 });

@@ -2,19 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./RoomDetail.module.scss";
 import { useParams } from "react-router-dom";
 import { Room } from "interfaces/room";
-import {
-  Box,
-  Container,
-  Button,
-  Stack,
-  TextField,
-  Select,
-  FormHelperText,
-  Input,
-  Avatar,
-  Rating,
-  Typography,
-} from "@mui/material";
+import { Box, Container, Button, Stack, TextField, Avatar, Rating, Typography, Popover } from "@mui/material";
 import { SxProps } from "@mui/system";
 import moment from "moment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -36,7 +24,7 @@ import FireplaceIcon from "@mui/icons-material/Fireplace";
 import PoolIcon from "@mui/icons-material/Pool";
 import ElevatorIcon from "@mui/icons-material/Elevator";
 import HotTubIcon from "@mui/icons-material/HotTub";
-import { resetRoomState } from "redux/slices/roomsSlice";
+import { bookRoomById, resetRoomState } from "redux/slices/roomsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
 import Loading from "components/Loading/Loading";
@@ -44,13 +32,14 @@ import { getReviewsByRoomId, postAReviewByRoomId, resetReviewState } from "redux
 import CustomDrawer from "components/CustomDrawer/CustomDrawer";
 import useDrawer from "utils/useDrawer";
 import { fetchAll, resetFetchAllStatus } from "redux/slices/fetchAllSlice";
+import { getUserDetail } from "redux/slices/authSlice";
 import initFetch from "utils/initFetch";
-import { BookTicket } from "interfaces/ticket";
 import { toast } from "react-toastify";
 import { resetReviewAction } from "redux/slices/reviewsSlice";
 import PopModal from "components/PopModal/PopModal";
 import useModalHook from "utils/useModalHook";
 import Login from "pages/Login/Login";
+import { BookTicket } from "interfaces/ticket";
 
 interface TicketForm {
   roomId: Room["_id"];
@@ -77,7 +66,7 @@ const RoomDetail: React.FC = () => {
 
   const { user } = useSelector((state: RootState) => state.auth);
 
-  const { roomDetail } = useSelector((state: RootState) => state.rooms);
+  const { roomDetail, roomActionSuccess } = useSelector((state: RootState) => state.rooms);
 
   const { reviewsByRoomId, reviewActionSuccess, isReviewsLoading } = useSelector((state: RootState) => state.review);
 
@@ -86,6 +75,10 @@ const RoomDetail: React.FC = () => {
   const [isOpen, toggleDrawer] = useDrawer();
 
   const [isModalOpen, handleOpenModal, handleCloseModal] = useModalHook();
+
+  const [confirmAnchor, setConfirmAnchor] = useState<HTMLElement | null>(null);
+
+  const [ticket, setTicket] = useState<BookTicket>({ roomId: roomId, checkIn: "", checkOut: "" });
 
   const viewImage = (): void => {
     setContent({
@@ -195,13 +188,11 @@ const RoomDetail: React.FC = () => {
       .date()
       .required("Please select checkin date!")
       .typeError("Invalid date!")
-      // .nullable()
       .min(new Date(), "Cannot book past date"),
     checkOut: yup
       .date()
       .required("Please select checkout date!")
       .typeError("Invalid date!")
-      // .nullable()
       .when("checkIn", (checkIn, schema) => {
         if (moment(checkIn).isValid()) {
           const dayAfter = new Date(checkIn.getTime() + 86400000);
@@ -215,6 +206,8 @@ const RoomDetail: React.FC = () => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
+    clearErrors,
   } = useForm<TicketForm>({
     mode: "onBlur",
     resolver: yupResolver(bookTicketSchema),
@@ -224,9 +217,15 @@ const RoomDetail: React.FC = () => {
     },
   });
 
-  const onSubmitTicket: SubmitHandler<TicketForm> = (values) => {
+  const onSubmitTicket: SubmitHandler<TicketForm> = (values, event) => {
     if (Object.keys(user).length) {
-      // dispatch()
+      console.log(values);
+      setTicket({
+        roomId: values.roomId,
+        checkIn: moment(values.checkIn).toISOString(),
+        checkOut: moment(values.checkOut).toISOString(),
+      });
+      setConfirmAnchor(event?.target);
     } else {
       showLoginRequire();
     }
@@ -263,8 +262,7 @@ const RoomDetail: React.FC = () => {
 
   const onSubmitRewiew: SubmitHandler<ReviewForm> = (value) => {
     if (Object.keys(user).length) {
-      console.log(value);
-      // dispatch(postAReviewByRoomId(value));
+      dispatch(postAReviewByRoomId(value));
     } else {
       showLoginRequire();
     }
@@ -272,17 +270,9 @@ const RoomDetail: React.FC = () => {
 
   const onErrorReview: SubmitErrorHandler<ReviewForm> = (error) => {
     // console.log(error);
-    toast.error("Please enter some reviews before posting!", { isLoading: false, autoClose: 1000, pauseOnHover: true });
+    toast.error("Please fill a review before posting!", { isLoading: false, autoClose: 1000, pauseOnHover: true });
     setFocusReview("content");
   };
-
-  useEffect(() => {
-    if (reviewActionSuccess) {
-      dispatch(resetReviewAction());
-      dispatch(getReviewsByRoomId({ roomId }));
-      resetReviewForm();
-    }
-  }, [reviewActionSuccess]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -299,10 +289,26 @@ const RoomDetail: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (reviewActionSuccess) {
+      dispatch(resetReviewAction());
+      dispatch(getReviewsByRoomId({ roomId }));
+      resetReviewForm();
+    }
+
+    if (roomActionSuccess) {
+      dispatch(getUserDetail(user._id));
+      reset();
+      setConfirmAnchor(null);
+      setTicket({ roomId: roomId, checkIn: "", checkOut: "" });
+    }
+  }, [reviewActionSuccess, roomActionSuccess]);
+
+  useEffect(() => {
     if (!isOpen) {
       setContent({ sx: {} as SxProps, element: (<></>) as JSX.Element, icon: (<></>) as JSX.Element });
     }
 
+    // close login modal after success login
     if (Object.keys(user).length) {
       if (isModalOpen) {
         handleCloseModal();
@@ -525,12 +531,14 @@ const RoomDetail: React.FC = () => {
                                     label="Check in"
                                     onChange={onChange}
                                     value={value}
-                                    ref={ref}
+                                    inputRef={ref}
                                     {...rest}
                                     renderInput={(params) => (
                                       <TextField
                                         {...params}
                                         margin="dense"
+                                        focused={!!errors.checkIn}
+                                        onBlur={() => errors && clearErrors()}
                                         fullWidth
                                         required
                                         size="medium"
@@ -557,12 +565,14 @@ const RoomDetail: React.FC = () => {
                                     label="Check out"
                                     onChange={onChange}
                                     value={value}
-                                    ref={ref}
+                                    inputRef={ref}
                                     {...rest}
                                     renderInput={(params) => (
                                       <TextField
                                         {...params}
                                         margin="dense"
+                                        focused={!!errors.checkOut}
+                                        onBlur={() => errors && clearErrors()}
                                         required
                                         fullWidth
                                         size="medium"
@@ -595,6 +605,70 @@ const RoomDetail: React.FC = () => {
                             Book now
                           </Button>
                         </Box>
+                      </Box>
+                      <Box>
+                        <Popover
+                          open={Boolean(confirmAnchor)}
+                          anchorEl={confirmAnchor}
+                          onClose={() => setConfirmAnchor(null)}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                          }}
+                          children={
+                            <Box padding={5}>
+                              <Stack marginBottom={2}>
+                                <p>Confirm book this room?</p>
+                                <p>
+                                  Checkin: <span>{moment(ticket.checkIn).format("YYYY/MM/DD")}</span>
+                                </p>
+                                <p>
+                                  Checout: <span>{moment(ticket.checkOut).format("YYYY/MM/DD")}</span>
+                                </p>
+                              </Stack>
+                              <Stack direction={"row"} columnGap={2}>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  type="button"
+                                  sx={{
+                                    color: "white !important",
+
+                                    "&:hover": {
+                                      filter: "brightness(80%)",
+                                      color: "black !important",
+                                    },
+                                  }}
+                                  onClick={() => dispatch(bookRoomById(ticket))}
+                                >
+                                  Book
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  type="button"
+                                  color="error"
+                                  sx={{
+                                    color: "white !important",
+
+                                    "&:hover": {
+                                      color: "black !important",
+                                    },
+                                  }}
+                                  onClick={() => {
+                                    setConfirmAnchor(null);
+                                    setTicket({ roomId: roomId, checkIn: "", checkOut: "" });
+                                  }}
+                                >
+                                  Change mind
+                                </Button>
+                              </Stack>
+                            </Box>
+                          }
+                        ></Popover>
                       </Box>
                     </Box>
                   </Box>
