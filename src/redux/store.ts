@@ -5,6 +5,7 @@ import rooms from "redux/slices/roomsSlice";
 import locations from "redux/slices/locationsSlice";
 import review from "redux/slices/reviewsSlice";
 import auth from "redux/slices/authSlice";
+import user from "redux/slices/userSlice";
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     locations,
     review,
     auth,
+    user,
   },
   devTools: process.env.NODE_ENV !== "production",
 });

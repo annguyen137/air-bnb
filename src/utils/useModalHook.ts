@@ -6,7 +6,7 @@ const useModalHook = () => {
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
 
-  return [isModalOpen, handleOpenModal, handleCloseModal] as const;
+  return { isModalOpen, handleOpenModal, handleCloseModal } as const;
 };
 
 export default useModalHook;

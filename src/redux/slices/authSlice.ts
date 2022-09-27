@@ -11,15 +11,17 @@ interface authState {
   message: string;
   success: boolean;
   pending: boolean;
+  isDetailLoading: boolean;
   authError: string;
 }
 
 const initialState: authState = {
   user: {} as User,
-  token: localStorage.getItem("token") && JSON.parse(localStorage.getItem("token") || ""),
+  token: (localStorage.getItem("token") && JSON.parse(localStorage.getItem("token") || "")) || "",
   message: "",
   success: false,
   pending: false,
+  isDetailLoading: false,
   authError: "",
 };
 
@@ -138,8 +140,17 @@ const authSlice = createSlice({
     });
 
     // get userDetail
+    builder.addCase(getUserDetail.pending, (state) => {
+      state.isDetailLoading = true;
+    });
     builder.addCase(getUserDetail.fulfilled, (state, { payload }) => {
+      state.isDetailLoading = false;
       state.user = payload;
+    });
+    builder.addCase(getUserDetail.rejected, (state, { error }) => {
+      state.isDetailLoading = false;
+      state.user = {} as User;
+      state.authError = error.message as string;
     });
   },
 });

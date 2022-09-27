@@ -12,6 +12,19 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.2);
 
+  &.--profile {
+    .nav-bar-brand {
+      display: block !important;
+      visibility: visible !important;
+    }
+
+    .nav-bar-search,
+    .language-icon,
+    .bca-host {
+      display: none !important;
+    }
+  }
+
   .nav-bar {
     position: relative;
     width: 100%;

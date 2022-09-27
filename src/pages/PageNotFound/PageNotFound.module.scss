@@ -1,0 +1,56 @@
+@use "/src/scss/helper/variables" as *;
+@use "/src/scss/helper/mixin" as *;
+
+.page-not-found {
+  padding: 48px 48px 0;
+  .content {
+    h1 {
+      font-size: 50px;
+      font-weight: 700;
+      color: #484848;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin: 25px 0 15px;
+    }
+
+    .back-to-home {
+      margin-top: 25px;
+    }
+  }
+
+  .img {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 744px) {
+  .page-not-found {
+    .content {
+      width: 50%;
+
+      h1 {
+        font-size: 100px;
+      }
+
+      h2 {
+        font-size: 32px;
+      }
+    }
+
+    .img {
+      display: block;
+    }
+  }
+}
+
+@media screen and (min-width: 950px) {
+  .page-not-found {
+    .content {
+      h1 {
+        font-size: 145px;
+      }
+    }
+  }
+}

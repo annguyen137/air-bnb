@@ -16,7 +16,7 @@ const RoomList: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const [isTriggered, page, resetPage, observer] = useIntersectionObserver();
+  const { isTriggered, page, resetPage, observer } = useIntersectionObserver();
 
   const { fetchAllLoading } = useSelector((state: RootState) => state.all);
 
