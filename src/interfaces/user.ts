@@ -18,11 +18,17 @@ export interface User {
   avatar?: string;
 }
 
+export interface UpdateInfoValue {
+  name: string;
+  email: string;
+  type: string;
+  phone: string;
+  birthday: string;
+  gender: boolean;
+  address: string;
+}
+
 // admin
 export interface AddUserBodyValue extends SignUpValue {
   type: "ADMIN" | "CLIENT";
-}
-
-export interface UpdateUserAvatarValue {
-  avatar: File;
 }

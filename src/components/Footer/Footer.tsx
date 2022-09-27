@@ -18,7 +18,16 @@ const Footer = ({ variant }: footerProps) => {
           <Box className={`${styles["footer-inner"]}`}>
             <Stack direction={"row"} alignItems="center" columnGap="19px" className={`${styles["copy-right"]}`}>
               <p>© 2022 Airbnb, Inc.</p>
-              <Stack direction={"row"} columnGap="19px">
+              <Stack
+                direction={"row"}
+                columnGap="19px"
+                sx={{
+                  display: {
+                    xs: "none",
+                    sm: "flex",
+                  },
+                }}
+              >
                 <span>Privacy</span>
                 <span>Terms</span>
                 <span>Sitemap</span>

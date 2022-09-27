@@ -56,6 +56,8 @@ interface ReviewForm {
 const RoomDetail: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const { roomId } = useParams() as { roomId: Room["_id"] };
+
   const [content, setContent] = useState({
     sx: {} as SxProps,
     element: (<></>) as JSX.Element,
@@ -70,11 +72,9 @@ const RoomDetail: React.FC = () => {
 
   const { reviewsByRoomId, reviewActionSuccess, isReviewsLoading } = useSelector((state: RootState) => state.review);
 
-  const { roomId } = useParams() as { roomId: Room["_id"] };
+  const { isOpen, toggleDrawer } = useDrawer();
 
-  const [isOpen, toggleDrawer] = useDrawer();
-
-  const [isModalOpen, handleOpenModal, handleCloseModal] = useModalHook();
+  const { isModalOpen, handleOpenModal, handleCloseModal } = useModalHook();
 
   const [confirmAnchor, setConfirmAnchor] = useState<HTMLElement | null>(null);
 

@@ -34,7 +34,7 @@ const Login = ({ modalMode }: Props) => {
 
   const navigate = useNavigate();
 
-  const [isFirstLoad, setIsFirstLoad] = useIsFirstLoad();
+  const { isFirstLoad, setIsFirstLoad } = useIsFirstLoad();
 
   const [showPass, setShowPass] = useState(false);
 
@@ -203,13 +203,14 @@ const Login = ({ modalMode }: Props) => {
                 <InputLabel>Remember password</InputLabel>
               </Stack>
 
-              <Stack direction={"row"} justifyContent="space-between" marginBottom={2}>
+              <Stack direction={"row"} justifyContent="space-between" gap={2} marginBottom={2}>
                 <Button
                   variant="contained"
                   type="submit"
                   size="large"
                   disabled={pending}
                   sx={{
+                    width: { xs: "100%", md: "50%" },
                     color: "white !important",
                     backgroundColor: "#ff385c",
                     "&:hover": { backgroundColor: "#ff385c !important", opacity: 0.9 },
@@ -217,6 +218,24 @@ const Login = ({ modalMode }: Props) => {
                 >
                   Login
                 </Button>
+                <Stack direction={"row"}>
+                  <span>
+                    Don't have an account?
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      sx={{
+                        borderColor: "#ff385c",
+                        hover: {
+                          borderColor: "#ff385c !important",
+                        },
+                      }}
+                      onClick={() => navigate("/signup")}
+                    >
+                      Signup now
+                    </Button>
+                  </span>
+                </Stack>
               </Stack>
               <FormHelperText error children={authError} />
             </Box>

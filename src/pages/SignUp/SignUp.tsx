@@ -33,17 +33,20 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const [isFirstLoad, setIsFirstLoad] = useIsFirstLoad();
+  const { isFirstLoad, setIsFirstLoad } = useIsFirstLoad();
 
   const [showPass, setShowPass] = useState(false);
 
   const { pending, success, authError } = useSelector((state: RootState) => state.auth);
 
-  const loginSchema = yup.object().shape({
+  const signupSchema = yup.object().shape({
     name: yup
       .string()
       .required("Please fill in the name!")
-      .matches(/^[a-zA-Z]+$/, "Name must contains only letters")
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêếìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\ ]+$/,
+        "Name must contains only letters"
+      )
       .default(""),
     email: yup.string().required("Please fill in email!").email("Wrong email format!").default(""),
     password: yup
@@ -60,9 +63,9 @@ const SignUp = () => {
     birthday: yup
       .date()
       .required("Please fill your birthday!")
-      .typeError("Please check your birthday!")
+      .typeError("Invalid birthday!")
       .test("errorType", "Invalid date!", (value) => {
-        return moment(value).isValid();
+        return moment(value?.toISOString()).isValid();
       })
       .min(new Date("1990/01/01"), "DOB cannot be before 1990")
       .max(new Date(), `DOB cannot be greater than ${moment(new Date()).format("YYYY/MM/DD")}`)
@@ -78,9 +81,9 @@ const SignUp = () => {
     clearErrors,
     reset,
   } = useForm<SignUpValue>({
-    resolver: yupResolver(loginSchema),
+    resolver: yupResolver(signupSchema),
     mode: "onBlur",
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
     defaultValues: {
       name: "",
       address: "",
@@ -93,13 +96,11 @@ const SignUp = () => {
   });
 
   const onSubmit: SubmitHandler<SignUpValue> = (value) => {
-    // let dob = moment(value.birthday).format("YYYY/MM/DD");
-
     dispatch(signup(value));
   };
 
   const onError: SubmitErrorHandler<SignUpValue> = (error) => {
-    console.log(error);
+    // console.log(error);
     toast.error("Check your field first!", {
       position: toast.POSITION.TOP_RIGHT,
       theme: "light",
@@ -121,7 +122,7 @@ const SignUp = () => {
 
   useEffect(() => {
     // AFTER STATE SUCCESS CHANGE (MEANS SUCCESS SIGNUP) => SET TIME OUT REDIRECT TO LOGIN PAGE AND RUN THE ABOVE EFFECT CLEAN UP.
-    // THIS HELP CLEAR STATE AND PREVENT USER TRY TO ACCESS SIGNUP ROUTE AGAIN
+    // THIS HELP CLEAR ACTION STATE
     if (success) {
       reset({}, { keepDefaultValues: true });
       dispatch(resetAuthActionStatus());
@@ -154,8 +155,16 @@ const SignUp = () => {
               <h1>Sign Up</h1>
             </Box>
             <Box component={"form"} autoComplete="off" noValidate onSubmit={handleSubmit(onSubmit, onError)}>
-              <Stack rowGap={{ xs: 1, md: 2 }} columnGap={2} direction={{ lg: "row" }}>
-                <Stack sx={{ width: "50%" }} rowGap={{ xs: 1, md: 2 }}>
+              <Stack rowGap={{ xs: 1, md: 2 }} columnGap={2} direction={{ md: "row" }}>
+                <Stack
+                  sx={{
+                    width: {
+                      xs: "100%",
+                      md: "50%",
+                    },
+                  }}
+                  rowGap={{ xs: 1, md: 2 }}
+                >
                   <Controller
                     name="name"
                     control={control}
@@ -261,35 +270,31 @@ const SignUp = () => {
                     )}
                   />
                 </Stack>
-                <Stack sx={{ width: "50%" }} rowGap={{ xs: 1, md: 2 }}>
+                <Stack sx={{ xs: "100%", md: "50%" }} rowGap={{ xs: 1, md: 2 }}>
                   <Controller
                     name="birthday"
                     control={control}
                     render={({ field: { onChange, value, ref, ...rest } }) => (
                       <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
+                          {...rest}
                           inputFormat="YYYY/MM/DD"
                           label="Birthday"
                           onChange={(e) => {
                             onChange(e);
-                            clearErrors("birthday");
+                            // clearErrors("birthday");
                           }}
                           value={value}
                           inputRef={ref}
-                          {...rest}
                           renderInput={(params) => (
                             <TextField
+                              {...params}
                               margin="dense"
                               required
                               size="medium"
                               helperText={errors.birthday?.message}
                               error={!!errors?.birthday}
-                              FormHelperTextProps={{
-                                children: errors.birthday?.message,
-                                error: !!errors?.birthday,
-                              }}
                               InputLabelProps={{ shrink: true }}
-                              {...params}
                             />
                           )}
                         />
@@ -332,7 +337,7 @@ const SignUp = () => {
                 </Stack>
               </Stack>
 
-              <Stack direction={"row"} justifyContent="space-between" marginTop={2}>
+              <Stack direction={"row"} justifyContent="space-between" alignItems={"center"} gap={3} marginTop={2}>
                 <Button
                   variant="contained"
                   type="submit"
@@ -346,6 +351,22 @@ const SignUp = () => {
                 >
                   Sign Up
                 </Button>
+                <span>
+                  Already got an account?{" "}
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      borderColor: "#ff385c",
+                      hover: {
+                        borderColor: "#ff385c !important",
+                      },
+                    }}
+                    onClick={() => navigate("/login")}
+                  >
+                    Login now
+                  </Button>
+                </span>
               </Stack>
               <FormHelperText error children={authError} />
             </Box>

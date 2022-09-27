@@ -19,7 +19,7 @@ const Home = () => {
 
   const { user } = useSelector((state: RootState) => state.auth);
 
-  const [isFirstLoad, setIsFirstLoad] = useIsFirstLoad();
+  const { isFirstLoad, setIsFirstLoad } = useIsFirstLoad();
 
   useEffect(() => {
     window.scroll(0, 0);
