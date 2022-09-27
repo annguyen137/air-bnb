@@ -1,0 +1,45 @@
+@use "/src/scss/helper/variables" as *;
+@use "/src/scss/helper/mixin" as *;
+
+.profile {
+  padding: ($pd-5 * 2) 0 $pd-6;
+  height: 100%;
+  flex-grow: 1;
+
+  .profile-left {
+    width: 40%;
+  }
+
+  .profile-right {
+    width: 60%;
+    padding-left: $pd-2 + 8;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .profile {
+    flex-direction: column !important;
+    gap: $pd-4 0;
+
+    .profile-left {
+      width: 100% !important;
+      padding-right: 0 !important;
+    }
+    .profile-right {
+      width: 100% !important;
+      padding: 0 !important;
+    }
+  }
+}
+
+@include responsiveMin("md") {
+  .profile {
+    .profile-left {
+      padding-right: $pd-4 + 8;
+    }
+
+    .profile-right {
+      padding-left: $pd-6 + 8;
+    }
+  }
+}

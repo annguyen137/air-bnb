@@ -20,7 +20,7 @@ const useIntersectionObserver = () => {
     { threshold: 0.5, rootMargin: "-50px" }
   );
 
-  return [isTriggered, page, resetPage, observer] as const;
+  return { isTriggered, page, resetPage, observer } as const;
 };
 
 export default useIntersectionObserver;

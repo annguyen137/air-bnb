@@ -10,9 +10,15 @@ import {
   Typography,
   CircularProgress,
   LinearProgress,
-  TextField,
+  Stack,
 } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import LoginIcon from "@mui/icons-material/Login";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 import SearchIcon from "@mui/icons-material/Search";
+import HelpIcon from "@mui/icons-material/Help";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import LanguageIcon from "@mui/icons-material/Language";
 import { Link, useNavigate } from "react-router-dom";
@@ -25,12 +31,12 @@ import { logout } from "redux/slices/authSlice";
 export const logoRef = React.createRef<HTMLElement>();
 
 type menuType = Array<{
-  title: string;
+  title: JSX.Element | string;
   path?: string;
   actions?: Array<ActionCreator<any>>;
 }>;
 
-const Header = () => {
+const Header = ({ variant }: { variant?: string }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const navigate = useNavigate();
@@ -42,17 +48,67 @@ const Header = () => {
   const { fetchAllLoading } = useSelector((state: RootState) => state.all);
 
   const menuItems: menuType = [
-    { title: "Sign Up", path: "/signup" },
-    { title: "Login", path: "/login" },
+    {
+      title: (
+        <>
+          <p>Sign Up</p>
+          <HowToRegIcon />
+        </>
+      ),
+      path: "/signup",
+    },
+    {
+      title: (
+        <>
+          <p>Login</p>
+          <LoginIcon />
+        </>
+      ),
+      path: "/login",
+    },
     { title: "Host your home", path: "" },
     { title: "Host an experience", path: "" },
-    { title: "Help", path: "" },
+    {
+      title: (
+        <>
+          <p>Help</p>
+          <HelpIcon />
+        </>
+      ),
+
+      path: "",
+    },
   ];
 
   const LoggedInMenuItems: menuType = [
-    { title: "Profile", path: "/profile" },
-    { title: "Management", path: "/management" },
-    { title: "Log out", actions: [logout] },
+    {
+      title: (
+        <>
+          <p>Profile</p>
+          <ManageAccountsIcon />
+        </>
+      ),
+
+      path: "/profile",
+    },
+    {
+      title: (
+        <>
+          <p>Management</p>
+          <BusinessCenterIcon />
+        </>
+      ),
+      path: "/management",
+    },
+    {
+      title: (
+        <>
+          <p>Log out</p>
+          <LogoutIcon />
+        </>
+      ),
+      actions: [logout],
+    },
   ];
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -64,7 +120,7 @@ const Header = () => {
   };
 
   return (
-    <header className={`${styles["main-header"]}`}>
+    <header className={`${styles["main-header"]} ${variant === "profile" && styles["--profile"]}`}>
       <Container>
         <Box className={`${styles["nav-bar"]}`}>
           <Box className={`${styles["nav-bar-brand"]}`} ref={logoRef}>
@@ -172,7 +228,15 @@ const Header = () => {
                       },
                     }}
                   >
-                    <Typography textAlign="center">{setting.title}</Typography>
+                    <Stack
+                      sx={{ width: "100%" }}
+                      direction={"row"}
+                      gap={2}
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      {setting.title}
+                    </Stack>
                   </MenuItem>
                 ))}
               </Menu>

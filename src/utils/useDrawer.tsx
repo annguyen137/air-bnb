@@ -7,7 +7,7 @@ const useDrawer = () => {
     setIsOpen(!isOpen);
   };
 
-  return [isOpen, toggleDrawer] as const;
+  return { isOpen, toggleDrawer } as const;
 };
 
 export default useDrawer;
