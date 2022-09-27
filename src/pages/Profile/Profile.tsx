@@ -77,9 +77,7 @@ const Profile = () => {
 
   const onSubmitUpdateAvatar: SubmitHandler<AvataForm> = (file) => {
     const formData = new FormData();
-    formData.append("avatar", file.avatar[0], file.avatar.item(0)?.name);
-
-    // console.log(formData.getAll("avatar"));
+    formData.append("avatar", file.avatar[0], file.avatar[0].name);
     dispatch(updateUserAvatar(formData));
     clearFile();
   };
@@ -247,7 +245,7 @@ const Profile = () => {
                           Change avatar
                           <input
                             hidden
-                            accept="image/*"
+                            // accept="image/*"
                             type="file"
                             {...register("avatar", {
                               required: true,
