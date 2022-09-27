@@ -72,13 +72,13 @@ const userSlice = createSlice({
         userActionSuccess: true,
       };
     });
-    builder.addCase(updateUserAvatar.rejected, (state, { error }) => {
+    builder.addCase(updateUserAvatar.rejected, (state, { error, meta, payload, type }) => {
       toast.update(noti, {
-        render: error.message,
+        render: `${error.message} ${meta.arg} ${meta.aborted} ${meta.condition} ${meta.rejectedWithValue} ${meta.requestId} ${meta.requestStatus} ${payload} ${type}`,
         type: "error",
         isLoading: false,
-        autoClose: 1000,
-        closeOnClick: true,
+        autoClose: false,
+        closeOnClick: false,
         pauseOnHover: true,
       });
 
