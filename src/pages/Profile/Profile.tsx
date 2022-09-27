@@ -54,7 +54,7 @@ const Profile = () => {
 
   const { userActionSuccess, userActionPending, error } = useSelector((state: RootState) => state.user);
 
-  const [preview, setPreview] = useState(user.avatar);
+  const [preview, setPreview] = useState(null);
 
   const [isChangeAvatar, setIsChangeAvatar] = useState(false);
 
@@ -69,7 +69,7 @@ const Profile = () => {
   } = useForm<AvataForm>({ mode: "onChange" });
 
   const clearFile = () => {
-    setPreview(user.avatar);
+    setPreview(null);
     setIsChangeAvatar(false);
     clearErrorsAvatar("avatar");
     resetField("avatar");
@@ -77,7 +77,9 @@ const Profile = () => {
 
   const onSubmitUpdateAvatar: SubmitHandler<AvataForm> = (file) => {
     const formData = new FormData();
-    formData.append("avatar", file.avatar[0]);
+    formData.append("avatar", file.avatar[0], file.avatar.item(0)?.name);
+
+    // console.log(formData.getAll("avatar"));
     dispatch(updateUserAvatar(formData));
     clearFile();
   };
@@ -131,7 +133,7 @@ const Profile = () => {
   });
 
   const onSubmitUpdateInfo: SubmitHandler<UpdateInfoForm> = (value) => {
-    console.log(value);
+    // console.log(value);
     dispatch(updateUserInfo({ userId: user._id, value: { ...value, birthday: moment(value.birthday).toISOString() } }));
   };
 
@@ -154,10 +156,12 @@ const Profile = () => {
 
     if (userActionSuccess) {
       dispatch(resetUserActionStatus());
+      setPreview(null);
       dispatch(getUserDetail(user._id));
     }
 
     if (error) {
+      dispatch(resetUserActionStatus());
     }
   }, [user, userActionSuccess, error]);
 
