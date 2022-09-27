@@ -14,7 +14,11 @@ const userAPI = {
   },
 
   updateUserInfo: (userId: User["_id"], value: UpdateInfoValue) => {
-    return axiosConfig.put<unknown, { message: string; userDetail: User }>(`users/${userId}`, value);
+    return axiosConfig.put<unknown, { message: string; userDetail: User }>(`users/${userId}`, value, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 };
 
