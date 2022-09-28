@@ -17,6 +17,7 @@ const userAPI = {
     return axiosConfig.put<unknown, { message: string; userDetail: User }>(`users/${userId}`, value, {
       headers: {
         "Content-Type": "multipart/form-data",
+        accept: "application/json",
       },
     });
   },
