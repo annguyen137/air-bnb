@@ -1,4 +1,5 @@
 import { ActionCreator } from "@reduxjs/toolkit";
+import { LocationId } from "interfaces/location";
 import { Room } from "interfaces/room";
 import { User } from "interfaces/user";
 import { getUserDetail } from "redux/slices/authSlice";
@@ -19,9 +20,10 @@ import { LIMIT } from "services/axiosConfig";
  * else: first load, not logged in => then just fetch for room and location from api and store in redux
  */
 
-const initFetch = (user: User, type: string, roomId?: Room["_id"]): any => {
-  const homeBaseAction = [getLocationList(), getRoomListByLocation({ limit: LIMIT })];
+const initFetch = (user: User, type: string, roomId?: Room["_id"], locationId?: LocationId["_id"]): any => {
+  const homeBaseAction = [getRoomListByLocation({ limit: LIMIT })];
   const detailBaseAction = [getReviewsByRoomId({ roomId }), getRoomDetail({ roomId })];
+  const roomsByLocationBaseAction = [getRoomListByLocation({ locationId })];
 
   // IF LOGGED IN
   if (Boolean(localStorage.getItem("_id")) && Boolean(localStorage.getItem("token"))) {
@@ -29,7 +31,7 @@ const initFetch = (user: User, type: string, roomId?: Room["_id"]): any => {
 
     // HOME FETCH
     if (type === "home") {
-      // IF USER IN REDUX (MEAN NOT REFRESH PAGE OR GET REDIRECT FROM ANOTHER LOCATION)
+      //IF USER IN REDUX (MEAN NOT REFRESH PAGE OR GET REDIRECT FROM ANOTHER LOCATION)
       if (Object.keys(user).length) {
         return homeBaseAction;
       }
@@ -38,13 +40,24 @@ const initFetch = (user: User, type: string, roomId?: Room["_id"]): any => {
     }
     // DETAIL FETCH
     else if (type === "detail") {
-      // IF USER IN REDUX (MEAN NOT REFRESH PAGE OR GET REDIRECT FROM ANOTHER LOCATION)
+      //IF USER IN REDUX (MEAN NOT REFRESH PAGE OR GET REDIRECT FROM ANOTHER LOCATION)
       if (Object.keys(user).length) {
         return detailBaseAction;
       }
 
       // IF USER REFRESH PAGE
       return [...detailBaseAction, getUserDetail(id)];
+    }
+
+    // ROOM BY LOCATION FETCH
+    else if (type === "roomsbylocation") {
+      //IF USER IN REDUX (MEAN NOT REFRESH PAGE OR GET REDIRECT FROM ANOTHER LOCATION)
+      if (Object.keys(user).length) {
+        return roomsByLocationBaseAction;
+      }
+
+      // IF USER REFRESH PAGE
+      return [...roomsByLocationBaseAction, getUserDetail(id)];
     }
   }
   // FIRST LOAD AND NOT LOGGED IN
@@ -54,6 +67,9 @@ const initFetch = (user: User, type: string, roomId?: Room["_id"]): any => {
     }
     if (type === "detail") {
       return detailBaseAction;
+    }
+    if (type === "roomsbylocation") {
+      return roomsByLocationBaseAction;
     }
   }
 };

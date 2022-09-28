@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LocationId } from "interfaces/location";
+import { LocationId, LocationQueryParams } from "interfaces/location";
 import locationAPI from "services/locationAPI";
 
 interface LocationsState {
   locationsData: LocationId[];
+  // locationsPagination: LocationId[];
   isLocationsLoading: boolean;
   locationDetail: LocationId;
   isLocationDetailLoading: boolean;
@@ -12,20 +13,24 @@ interface LocationsState {
 
 const initialState: LocationsState = {
   locationsData: [],
+  // locationsPagination: [],
   locationDetail: {} as LocationId,
   isLocationsLoading: false,
   isLocationDetailLoading: false,
   error: "",
 };
 
-export const getLocationList = createAsyncThunk("locations/getLocationList", async () => {
-  try {
-    const data = await locationAPI.getLocationList();
-    return data;
-  } catch (error) {
-    throw error;
+export const getLocationList = createAsyncThunk(
+  "locations/getLocationList",
+  async ({ location, skip, limit }: LocationQueryParams) => {
+    try {
+      const data = await locationAPI.getLocationList({ location, skip, limit });
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
-});
+);
 
 export const getLocationDetail = createAsyncThunk(
   "locations/getLocationDetail",
@@ -53,6 +58,7 @@ const locationsSlice = createSlice({
     builder.addCase(getLocationList.fulfilled, (state, { payload }) => ({
       ...state,
       isLocationsLoading: false,
+      // locationsPagination: payload,
       locationsData: payload,
     }));
     builder.addCase(getLocationList.rejected, (state, { error }) => ({

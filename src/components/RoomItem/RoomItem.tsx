@@ -11,9 +11,10 @@ import styles from "./RoomItem.module.scss";
 
 interface Props {
   room: Room;
+  mode?: string;
 }
 
-const RoomItem = ({ room }: Props) => {
+const RoomItem = ({ room, mode }: Props) => {
   const navigate = useNavigate();
 
   return (
@@ -24,7 +25,10 @@ const RoomItem = ({ room }: Props) => {
             <img src={`${room.image}`} alt={room.name} />
           </NavLink>
 
-          <Box className={`${styles["overlay"]}`}>
+          <Box
+            sx={{ display: mode === "roomsbylocation" ? "none !important" : "block" }}
+            className={`${styles["overlay"]}`}
+          >
             <NavLink to={`/rooms/${room._id}`} target={"_blank"}>
               <Stack rowGap={"5px"}>
                 <Box>

@@ -352,7 +352,7 @@ const SignUp = () => {
                   Sign Up
                 </Button>
                 <span>
-                  Already got an account?{" "}
+                  Already have an account?{" "}
                   <Button
                     size="small"
                     variant="outlined"

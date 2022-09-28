@@ -40,6 +40,7 @@ import PopModal from "components/PopModal/PopModal";
 import useModalHook from "utils/useModalHook";
 import Login from "pages/Login/Login";
 import { BookTicket } from "interfaces/ticket";
+import { resetLocationState } from "redux/slices/locationsSlice";
 
 interface TicketForm {
   roomId: Room["_id"];
@@ -285,6 +286,7 @@ const RoomDetail: React.FC = () => {
       dispatch(resetFetchAllStatus());
       dispatch(resetReviewState());
       dispatch(resetRoomState());
+      dispatch(resetLocationState());
     };
   }, []);
 
