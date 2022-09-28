@@ -77,9 +77,11 @@ const Profile = () => {
 
   const onSubmitUpdateAvatar: SubmitHandler<AvataForm> = (file) => {
     const formData = new FormData();
-    formData.append("avatar", file.avatar[0], file.avatar[0].name);
-    dispatch(updateUserAvatar(formData));
-    clearFile();
+    if (file.avatar.length) {
+      formData.append("avatar", file.avatar[0], file.avatar[0].name);
+      dispatch(updateUserAvatar(formData));
+      clearFile();
+    }
   };
 
   const updateInfoSchema = yup.object().shape({
@@ -245,7 +247,7 @@ const Profile = () => {
                           Change avatar
                           <input
                             hidden
-                            // accept="image/*"
+                            accept="image/png, image/gif, image/jpeg, image/jpg"
                             type="file"
                             {...register("avatar", {
                               required: true,
