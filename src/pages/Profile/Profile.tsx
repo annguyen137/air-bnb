@@ -12,8 +12,11 @@ import {
   Checkbox,
   Select,
   MenuItem,
+  Breadcrumbs,
+  Typography,
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
+import HomeIcon from "@mui/icons-material/Home";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import Footer from "components/Footer/Footer";
@@ -32,6 +35,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 interface AvataForm {
   avatar: FileList;
@@ -212,6 +216,17 @@ const Profile = () => {
           }}
         >
           <Container>
+            <Box marginTop={1}>
+              <Breadcrumbs>
+                <Link to="/">
+                  <Stack direction={"row"} alignItems="center">
+                    <HomeIcon />
+                    <Typography fontWeight={"700"}>Home</Typography>
+                  </Stack>
+                </Link>
+                <p>Profile</p>
+              </Breadcrumbs>
+            </Box>
             <Stack direction={"row"} className={`${styles["profile"]}`}>
               <Box className={`${styles["profile-left"]}`}>
                 <Stack
