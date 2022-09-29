@@ -15,7 +15,6 @@
   &.--profile {
     .nav-bar-brand {
       display: block !important;
-      visibility: visible !important;
     }
 
     .nav-bar-search,
@@ -181,6 +180,12 @@
 
       .nav-bar-brand {
         display: none;
+      }
+    }
+
+    &.--profile {
+      .nav-bar-brand {
+        display: block !important;
       }
     }
   }

@@ -8,7 +8,8 @@ import RoomItem from "components/RoomItem/RoomItem";
 import Loading from "components/Loading/Loading";
 import { LIMIT } from "services/axiosConfig";
 import useIntersectionObserver from "utils/useIntersectionObserver";
-import { logoRef } from "components/Header/Header";
+import { headerLogoRef } from "components/Header/Header";
+import { footerLogoRef } from "components/Footer/Footer";
 import { resetFetchAllStatus } from "redux/slices/fetchAllSlice";
 
 const RoomList: React.FC = () => {
@@ -35,13 +36,16 @@ const RoomList: React.FC = () => {
 
   // PAGINATION FETCHING DATA USING INTERSECTION OBSERVER (CUSTOM HOOK)
   useEffect(() => {
-    logoRef.current?.addEventListener("click", reFetch);
+    headerLogoRef.current?.addEventListener("click", reFetch);
+
+    footerLogoRef.current?.addEventListener("click", reFetch);
 
     observer.observe(triggerRef.current);
 
     return () => {
       observer.disconnect();
-      logoRef.current?.removeEventListener("click", reFetch);
+      headerLogoRef.current?.removeEventListener("click", reFetch);
+      footerLogoRef.current?.removeEventListener("click", reFetch);
     };
   }, []);
 
