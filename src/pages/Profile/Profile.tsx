@@ -14,9 +14,12 @@ import {
   MenuItem,
   Breadcrumbs,
   Typography,
+  SxProps,
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import HomeIcon from "@mui/icons-material/Home";
+import CloseIcon from "@mui/icons-material/Close";
+import StartIcon from "@mui/icons-material/Start";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import Footer from "components/Footer/Footer";
@@ -35,7 +38,13 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import CustomDrawer from "components/CustomDrawer/CustomDrawer";
+import PopModal from "components/PopModal/PopModal";
+import useModalHook from "utils/useModalHook";
+import { getTicketsByUser } from "redux/slices/ticketsSlice";
+import { Review } from "interfaces/review";
+import { Ticket } from "interfaces/ticket";
 
 interface AvataForm {
   avatar: FileList;
@@ -53,16 +62,175 @@ export interface UpdateInfoForm {
 
 const Profile = () => {
   window.scroll(0, 0);
+
   const dispatch = useDispatch<AppDispatch>();
+
+  const navigate = useNavigate();
+
   const { user, token, isDetailLoading } = useSelector((state: RootState) => state.auth);
 
   const { userActionSuccess, userActionPending, error } = useSelector((state: RootState) => state.user);
+
+  const { ticketsByUser, isTicketLoading } = useSelector((state: RootState) => state.ticket);
 
   const [preview, setPreview] = useState(null);
 
   const [isChangeAvatar, setIsChangeAvatar] = useState(false);
 
   const [editFormVisible, setEditFormVisible] = useState(false);
+
+  const { isModalOpen, handleOpenModal, handleCloseModal } = useModalHook();
+
+  const [content, setContent] = useState<{ title: string; list: Array<Ticket | Review> }>({
+    title: "abc",
+    list: [],
+  });
+
+  const modalProperties: { element: JSX.Element; sx: SxProps; icon: JSX.Element } = {
+    element: (
+      <Stack
+        gap={2}
+        flexGrow={1}
+        paddingY={2}
+        paddingX={{ xs: 2, sm: 5, md: 8 }}
+        sx={{ maxHeight: "100%", height: "100%" }}
+      >
+        <Box sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }} paddingBottom={1}>
+          {isTicketLoading ? <Loading width={200} /> : <h3 className="title ">{content.title}</h3>}
+        </Box>
+        <Box sx={{ height: "100%", overflowY: "scroll" }} paddingY={1}>
+          <Stack gap={{ xs: 2, sm: 3 }}>
+            {isTicketLoading ? (
+              <>
+                <Box marginX={{ xs: 1, sm: 2 }}>
+                  <Stack direction="row" columnGap={2}>
+                    <Loading height={50} css={{ width: "50%" }} />
+                    <Stack flexGrow={1} justifyContent="space-between">
+                      <Loading />
+                      <Loading />
+                    </Stack>
+                  </Stack>
+                </Box>
+                <Box marginX={{ xs: 1, sm: 2 }}>
+                  <Stack direction="row" columnGap={2}>
+                    <Loading height={50} css={{ width: "50%" }} />
+                    <Stack flexGrow={1} justifyContent="space-between">
+                      <Loading />
+                      <Loading />
+                    </Stack>
+                  </Stack>
+                </Box>
+                <Box marginX={{ xs: 1, sm: 2 }}>
+                  <Stack direction="row" columnGap={2}>
+                    <Loading height={50} css={{ width: "50%" }} />
+                    <Stack flexGrow={1} justifyContent="space-between">
+                      <Loading />
+                      <Loading />
+                    </Stack>
+                  </Stack>
+                </Box>
+                <Box marginX={{ xs: 1, sm: 2 }}>
+                  <Stack direction="row" columnGap={2}>
+                    <Loading height={50} css={{ width: "50%" }} />
+                    <Stack flexGrow={1} justifyContent="space-between">
+                      <Loading />
+                      <Loading />
+                    </Stack>
+                  </Stack>
+                </Box>
+              </>
+            ) : (
+              <>
+                {ticketsByUser.map((ticket, index) => {
+                  return (
+                    <Box
+                      padding={{ xs: 1, sm: 2 }}
+                      marginX={{ xs: 1, sm: 2 }}
+                      key={index}
+                      border="1px solid rgba(0,0,0,0.5)"
+                      borderRadius={"10px"}
+                    >
+                      <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        rowGap={2}
+                        columnGap={2}
+                        alignItems="center"
+                        onClick={() => ticket.roomId?._id && navigate(`/rooms/${ticket.roomId?._id}`)}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <Stack rowGap={1} sx={{ width: { xs: "100%", sm: "50%" } }}>
+                          <p>Checkin date: {moment(ticket.checkIn).format("YYYY/MM/DD")}</p>
+                          <p>Checkout date: {moment(ticket.checkIn).format("YYYY/MM/DD")}</p>
+                        </Stack>
+                        <Stack
+                          direction="row"
+                          flexGrow={1}
+                          justifyContent="space-between"
+                          alignItems="center"
+                          sx={{ width: { xs: "100%", sm: "50%" } }}
+                        >
+                          <Box>
+                            <Typography color={"Highlight"} variant="body1">
+                              {ticket.roomId?.name}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Button
+                              size="small"
+                              title="View this room"
+                              onClick={() => ticket.roomId?._id && navigate(`/rooms/${ticket.roomId?._id}`)}
+                            >
+                              <StartIcon />
+                            </Button>
+                          </Box>
+                        </Stack>
+                      </Stack>
+                    </Box>
+                  );
+                })}
+              </>
+            )}
+          </Stack>
+        </Box>
+      </Stack>
+    ),
+    sx: {
+      width: {
+        sm: "80vw !important",
+        md: "70vw !important",
+        lg: "60vw !important",
+        "@media (max-width: 743px)": {
+          width: "90vw !important",
+        },
+      },
+      height: {
+        sm: "60vh !important",
+        md: "70vh !important",
+        lg: "80vh !important",
+        "@media (max-width: 743px)": {
+          height: "50vh !important",
+        },
+      },
+      position: "absolute",
+      overflow: "hidden",
+      margin: "0 auto !important",
+      padding: { xs: 2, sm: 2, md: 3 },
+      borderRadius: "20px",
+      backgroundColor: "white",
+      top: "50% !important",
+      left: "50%",
+      transform: "translate(-50%, -50%) !important",
+    },
+    icon: <CloseIcon />,
+  };
+
+  const viewAll = (): void => {
+    handleOpenModal();
+
+    // if (!ticketsByUser.length) {
+    dispatch(getTicketsByUser({ userId: user._id }));
+    // }
+  };
 
   const {
     register,
@@ -565,9 +733,36 @@ const Profile = () => {
                     </Box>
                   </Box>
                 </Box>
+                <Stack direction={{ xs: "column", sm: "row" }} columnGap={3} rowGap={3} marginTop={3}>
+                  <Box borderTop={"1px solid rgba(0,0,0,0.1)"} paddingTop={2} paddingBottom={2}>
+                    <h3>My tickets</h3>
+                    <Box marginTop={3}>
+                      <Button variant="outlined" onClick={viewAll}>
+                        View all tickets
+                      </Button>
+                    </Box>
+                  </Box>
+                  <Box borderTop={"1px solid rgba(0,0,0,0.1)"} paddingTop={2} paddingBottom={2}>
+                    <h3>My reviews</h3>
+                    <Box marginTop={3}>
+                      <Button disabled variant="outlined" onClick={viewAll}>
+                        View all reviews
+                      </Button>
+                    </Box>
+                  </Box>
+                </Stack>
               </Box>
             </Stack>
           </Container>
+          <PopModal
+            open={isModalOpen}
+            // open={true}
+            onClose={handleCloseModal}
+            css={modalProperties.sx}
+            icon={modalProperties.icon}
+            iconRight={"5% !important"}
+            children={modalProperties.element}
+          />
         </Box>
       </section>
       <Footer variant="detail" />
