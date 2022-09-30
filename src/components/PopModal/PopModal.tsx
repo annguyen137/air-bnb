@@ -7,9 +7,10 @@ interface Props {
   children?: React.ReactElement;
   css?: SxProps;
   icon?: React.ReactElement;
+  iconRight?: string;
 }
 
-const PopModal = ({ open, onClose, children, css, icon }: Props) => {
+const PopModal = ({ open, onClose, children, css, icon, iconRight }: Props) => {
   return (
     <Box>
       <Modal
@@ -20,7 +21,7 @@ const PopModal = ({ open, onClose, children, css, icon }: Props) => {
       >
         <Box sx={css}>
           <Box
-            sx={{ position: "absolute", right: "15%", top: "5%", cursor: "pointer" }}
+            sx={{ position: "absolute", right: iconRight ?? "15%", top: "5%", cursor: "pointer" }}
             title={"Close"}
             onClick={onClose}
           >
