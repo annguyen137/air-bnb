@@ -23,7 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import HelpIcon from "@mui/icons-material/Help";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import LanguageIcon from "@mui/icons-material/Language";
-import { Link, useNavigate } from "react-router-dom";
+import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
 import Loading from "components/Loading/Loading";
@@ -215,6 +215,7 @@ const Header = ({ variant }: { variant?: string }) => {
                   isOptionEqualToValue={(option, value) => option.label === value.label}
                   onOpen={() => dispatch(getLocationList({}))}
                   onInputChange={(e: React.SyntheticEvent, value, reason) => {
+                    // DEBOUND SETSTATE INPUT VALUE
                     if (reason === "input") {
                       if (searchTimeoutRef.current) {
                         clearTimeout(searchTimeoutRef.current);
@@ -233,6 +234,15 @@ const Header = ({ variant }: { variant?: string }) => {
                   onChange={(e: React.SyntheticEvent, value, reason) => {
                     if (reason === "selectOption") {
                       setSelectedLocation(value);
+                      navigate(
+                        {
+                          pathname: `/location`,
+                          search: createSearchParams({
+                            province: value !== null ? value.province.replace("-", "") : "",
+                          }).toString(),
+                        },
+                        { state: value }
+                      );
                     } else if (reason === "clear") {
                       setSelectedLocation(null);
                     }
@@ -315,9 +325,16 @@ const Header = ({ variant }: { variant?: string }) => {
                   }}
                   onClick={() =>
                     selectedLocation?._id &&
-                    navigate(`/${selectedLocation?.province?.replace("-", "").split(" ").join("")}`, {
-                      state: selectedLocation,
-                    })
+                    navigate(
+                      {
+                        pathname: `/location`,
+                        search: createSearchParams({
+                          province:
+                            selectedLocation.province !== undefined ? selectedLocation.province.replace("-", "") : "",
+                        }).toString(),
+                      },
+                      { state: selectedLocation }
+                    )
                   }
                 >
                   <SearchIcon htmlColor="#ff385c" fontSize="medium" />

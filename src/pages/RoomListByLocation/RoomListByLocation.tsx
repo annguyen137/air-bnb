@@ -44,8 +44,12 @@ const RoomListByLocation = (props: Props) => {
   useEffect(() => {
     if (isFirstLoad) {
       setIsFirstLoad(false);
-      dispatch(fetchAll(initFetch(user, "roomsbylocation", undefined, state._id)));
+      if (state !== null && state._id) {
+        dispatch(fetchAll(initFetch(user, "roomsbylocation", undefined, state._id)));
+      }
     } else {
+      if (state !== null && state._id) {
+      }
       dispatch(getRoomListByLocation({ locationId: state._id }));
     }
 
@@ -127,9 +131,11 @@ const RoomListByLocation = (props: Props) => {
         <Box sx={{ paddingY: "25px" }}>
           <Stack direction={{ xs: "column", md: "row" }} gap={3}>
             <Box sx={{ width: "100%" }}>
-              <Box marginBottom={2}>
-                <h3>Rooms by {`${state.province}`}</h3>
-              </Box>
+              {state !== null && state._id && (
+                <Box marginBottom={2}>
+                  <h3>Rooms by {`${state.province}`}</h3>
+                </Box>
+              )}
               {roomsData.length > 0 ? (
                 <Box>
                   <Box
