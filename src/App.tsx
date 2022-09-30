@@ -38,7 +38,7 @@ function App() {
 
       <Route path="/rooms/:roomId" element={<DetailTemplate />} />
 
-      <Route path="/:city" element={<RoomListByLocationTemplate />} />
+      <Route path="/location" element={<RoomListByLocationTemplate />} />
 
       <Route path="/profile" element={<ProtectedRoute component={<Profile />} />} />
 
