@@ -1,8 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./RoomDetail.module.scss";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Room } from "interfaces/room";
-import { Box, Container, Button, Stack, TextField, Avatar, Rating, Typography, Popover } from "@mui/material";
+import {
+  Box,
+  Container,
+  Button,
+  Stack,
+  TextField,
+  Avatar,
+  Rating,
+  Typography,
+  Popover,
+  Breadcrumbs,
+} from "@mui/material";
 import { SxProps } from "@mui/system";
 import moment from "moment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -15,6 +26,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star";
 import DryIcon from "@mui/icons-material/Dry";
+import HomeIcon from "@mui/icons-material/Home";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import KitchenIcon from "@mui/icons-material/Kitchen";
 import WifiIcon from "@mui/icons-material/Wifi";
@@ -84,7 +96,7 @@ const RoomDetail: React.FC = () => {
   const viewImage = (): void => {
     setContent({
       element: (
-        <Box sx={{ width: "70%", margin: "0 auto" }}>
+        <Box sx={{ width: { xs: "90%", sm: "80%", md: "70%" }, margin: "0 auto" }}>
           <img src={roomDetail.image} />
         </Box>
       ),
@@ -321,6 +333,15 @@ const RoomDetail: React.FC = () => {
   return (
     <Box sx={{ marginTop: "25px", width: "100%" }}>
       <Container>
+        <Breadcrumbs>
+          <Link to="/">
+            <Stack direction={"row"} alignItems="center">
+              <HomeIcon />
+              <Typography fontWeight={"700"}>Home</Typography>
+            </Stack>
+          </Link>
+          <p>Room</p>
+        </Breadcrumbs>
         <Box className={`${styles["detail"]}`}>
           <Box className={`${styles["detail-title"]}`}>
             {fetchAllLoading ? (
