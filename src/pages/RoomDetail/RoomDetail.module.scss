@@ -5,7 +5,10 @@
   max-width: 1120px;
   min-height: 100vh;
   margin: 0 auto;
+  padding-top: $pd-2;
+  margin-top: $pd-2;
   color: $color-black-2;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 
   .detail-title {
     margin-bottom: $mg-1 - 4;
@@ -232,7 +235,7 @@
 
   .list-all {
     width: 100%;
-    max-height: 90vh;
+    height: 100%;
     display: flex !important;
     flex-direction: column !important;
     gap: 40px 0;
