@@ -12,6 +12,10 @@ import ProtectedRoute from "route/ProtectedRoute";
 import { scrollTop } from "utils/eventFunction";
 import Profile from "pages/Profile/Profile";
 import RoomListByLocationTemplate from "templates/DetailTemplate/RoomListByLocationTemplate";
+import Admin from "pages/Admin/Admin";
+import AdminTemplate from "templates/AdminTemplate/AdminTemplate";
+import LocationManagement from "pages/Admin/LocationsManagement/LocationManagement";
+import RoomManagement from "pages/Admin/RoomsManagement/RoomManagement";
 
 function App() {
   // IF USER TRY TO MANUAL CLEAR LOCALSTORAGE => TRIGGER CLEAR ALL LOCALSTORAGE AND REFRESH PAGE -> REQUIRE RE-LOGIN
@@ -41,6 +45,11 @@ function App() {
       <Route path="/location" element={<RoomListByLocationTemplate />} />
 
       <Route path="/profile" element={<ProtectedRoute component={<Profile />} />} />
+
+      <Route path="/admin" element={<ProtectedRoute component={<AdminTemplate />} />}>
+        <Route path="locations-management" element={<LocationManagement />} />
+        <Route path="rooms-management" element={<RoomManagement />} />
+      </Route>
 
       <Route path="*" element={<PageNotFound />} />
     </Routes>
