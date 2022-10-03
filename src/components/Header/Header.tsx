@@ -223,7 +223,7 @@ const Header = ({ variant }: { variant?: string }) => {
                     : variant === "roomsbylocation" || variant === "detail"
                     ? "block !important"
                     : "inherit",
-                // flexGrow: 1,
+                flexGrow: 1,
                 marginX: { sm: 10, md: 15, lg: 20, xl: "0 auto" },
                 maxWidth: { xl: "500px" },
                 "@media (max-width: 500px)": {
