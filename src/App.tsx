@@ -12,7 +12,6 @@ import ProtectedRoute from "route/ProtectedRoute";
 import { scrollTop } from "utils/eventFunction";
 import Profile from "pages/Profile/Profile";
 import RoomListByLocationTemplate from "templates/DetailTemplate/RoomListByLocationTemplate";
-import Admin from "pages/Admin/Admin";
 import AdminTemplate from "templates/AdminTemplate/AdminTemplate";
 import LocationManagement from "pages/Admin/LocationsManagement/LocationManagement";
 import RoomManagement from "pages/Admin/RoomsManagement/RoomManagement";

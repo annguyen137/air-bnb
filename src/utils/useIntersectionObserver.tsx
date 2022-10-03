@@ -17,7 +17,7 @@ const useIntersectionObserver = () => {
         setPage((prevPage) => prevPage + 1);
       }
     },
-    { threshold: 0.5, rootMargin: "-50px" }
+    { threshold: 0.2, rootMargin: "-10px" }
   );
 
   return { isTriggered, page, resetPage, observer } as const;

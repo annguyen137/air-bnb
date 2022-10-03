@@ -187,15 +187,15 @@
   }
 }
 
-@include responsiveMin("sm") {
-  .main-header {
-    .nav-bar {
-      .nav-bar-search-sm {
-        display: none !important;
-      }
-    }
-  }
-}
+// @include responsiveMin("sm") {
+//   .main-header {
+//     .nav-bar {
+//       .nav-bar-search-sm {
+//         display: none !important;
+//       }
+//     }
+//   }
+// }
 
 @include responsiveMin("md") {
   .main-header {
