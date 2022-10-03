@@ -142,7 +142,11 @@ const Header = ({ variant }: { variant?: string }) => {
       <header className={`${styles["main-header"]} ${variant === "profile" && styles["--profile"]}`} ref={headerRef}>
         <Container>
           <Box className={`${styles["nav-bar"]}`}>
-            <Box className={`${styles["nav-bar-brand"]}`} ref={headerLogoRef}>
+            <Box
+              className={`${styles["nav-bar-brand"]}`}
+              ref={headerLogoRef}
+              sx={{ display: variant === "admin" ? "block !important" : "inherit" }}
+            >
               <Link to="/" className={""}>
                 <svg width={variant === "roomsbylocation" ? "30" : "102"} height="32">
                   <path
@@ -156,7 +160,15 @@ const Header = ({ variant }: { variant?: string }) => {
                 </svg>
               </Link>
             </Box>
-            <Box className={`${styles["nav-bar-search"]}`}>
+            <Box
+              className={`${styles["nav-bar-search"]}`}
+              sx={{
+                display:
+                  variant === "admin" || variant === "roomsbylocation" || variant === "detail"
+                    ? "none !important"
+                    : "inherit",
+              }}
+            >
               <div>
                 <Button
                   disabled={fetchAllLoading}
@@ -205,9 +217,15 @@ const Header = ({ variant }: { variant?: string }) => {
             <Box
               className={`${styles["nav-bar-search-sm"]}`}
               sx={{
-                display: variant === "profile" ? "none !important" : "block !important",
+                display:
+                  variant === "profile" || variant === "admin"
+                    ? "none !important"
+                    : variant === "roomsbylocation" || variant === "detail"
+                    ? "block !important"
+                    : "inherit",
                 flexGrow: 1,
-                maxWidth: "500px",
+                marginX: { sm: 10, md: 15, lg: 20, xl: "0 auto" },
+                maxWidth: { xl: "500px" },
                 "@media (max-width: 500px)": {
                   marginRight: 1,
                 },
@@ -282,6 +300,8 @@ const Header = ({ variant }: { variant?: string }) => {
                           marginTop: "5px",
                           width: {
                             xs: "80% !important",
+                            sm: "60% !important",
+                            lg: "50% !important",
                           },
                           boxShadow: "50px 50px 50px 0 rgba(0, 0, 0, 0.3)",
                         },
@@ -304,8 +324,19 @@ const Header = ({ variant }: { variant?: string }) => {
                           },
                         ],
                       },
+                      popupIndicator: {
+                        sx: {
+                          color: "#ff385c !important",
+                          transform: "unset !important",
+                          transition: "all 0.2s ease",
+                          "&:hover": {
+                            transform: "scale(1.3) !important",
+                          },
+                        },
+                      },
                     }}
                     clearIcon={<ClearIcon />}
+                    popupIcon={<SearchIcon />}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -320,9 +351,11 @@ const Header = ({ variant }: { variant?: string }) => {
                           endAdornment: (
                             <>
                               {isLocationsLoading ? <CircularProgress color="inherit" size={20} /> : null}
+
                               {params.InputProps.endAdornment}
                             </>
                           ),
+
                           onKeyDown: (e) => {
                             if (e.code === "enter" && e.currentTarget.value) {
                               setSelectedLocation({
@@ -390,7 +423,7 @@ const Header = ({ variant }: { variant?: string }) => {
                   />
                 </Button>
                 <Menu
-                  sx={{ mt: "45px" }}
+                  sx={{ mt: "50px", zIndex: 1600, width: "200px" }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{

@@ -76,7 +76,6 @@ const RoomList: React.FC = () => {
           sx={{
             padding: "25px 0",
             textAlign: "center",
-            transform: "translateY(-50%)",
           }}
         >
           {!roomsPagination.length ? "End of result" : ""}

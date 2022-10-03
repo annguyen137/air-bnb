@@ -12,9 +12,9 @@ type DrawerProps = {
   customCss?: SxProps;
 };
 
-const CustomDrawer = ({ anchor, children, css, toggle, isOpen, icon, customCss, ...rest }: DrawerProps) => {
+const CustomDrawer = ({ anchor, children, css, toggle, isOpen, icon, customCss }: DrawerProps) => {
   return (
-    <Drawer anchor={anchor} open={isOpen} onClose={toggle} PaperProps={{ sx: css }} sx={customCss} {...rest}>
+    <Drawer anchor={anchor} open={isOpen} onClose={toggle} PaperProps={{ sx: css }} sx={customCss}>
       <Box
         sx={{
           height: "100%",
@@ -44,6 +44,9 @@ const CustomDrawer = ({ anchor, children, css, toggle, isOpen, icon, customCss, 
             overflowX: "hidden",
             [theme.breakpoints.down("sm")]: {
               padding: "10px",
+            },
+            [theme.breakpoints.up("sm")]: {
+              padding: "20px",
             },
           })}
         >

@@ -839,6 +839,7 @@ const RoomDetail: React.FC = () => {
         css={content.sx}
         children={content.element}
         icon={content.icon}
+        customCss={{ zIndex: 1700 }}
       />
       <PopModal
         open={isModalOpen}
