@@ -40,6 +40,10 @@ const RoomList: React.FC = () => {
 
     footerLogoRef.current?.addEventListener("click", reFetch);
 
+    if (triggerRef.current) {
+      observer.disconnect();
+    }
+
     observer.observe(triggerRef.current);
 
     return () => {
