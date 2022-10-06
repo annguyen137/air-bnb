@@ -366,7 +366,7 @@ const Header = ({ variant }: { variant?: string }) => {
                             }
                           },
                         }}
-                        fullWidth
+                        // fullWidth
                         placeholder="Where to?"
                       />
                     )}
