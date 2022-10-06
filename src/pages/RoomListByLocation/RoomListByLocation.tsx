@@ -17,7 +17,7 @@ import { Room } from "interfaces/room";
 type Props = {};
 
 const RoomListByLocation = (props: Props) => {
-  window.scroll({ top: 0, behavior: "smooth" });
+  window.scroll({ top: 0 });
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -49,8 +49,9 @@ const RoomListByLocation = (props: Props) => {
       }
     } else {
       if (state !== null && state._id) {
+        // CHANGE LOCATION INPUT QUERY => DISPATCH TO GET NEW ROOMS DATA
+        dispatch(getRoomListByLocation({ locationId: state._id }));
       }
-      dispatch(getRoomListByLocation({ locationId: state._id }));
     }
 
     // CLEAN UP EVERY TIME CHOOSING NEW LOCATION AND PRESS FIND ROOM
@@ -133,7 +134,20 @@ const RoomListByLocation = (props: Props) => {
             <Box sx={{ width: "100%" }}>
               {state !== null && state._id && (
                 <Box marginBottom={2}>
-                  <h3>Rooms by {`${state.province}`}</h3>
+                  <h3>Location: {`${state.province}`}</h3>
+                  {roomsData.length > 0 && (
+                    <Box marginTop={2}>
+                      <Pagination
+                        variant="outlined"
+                        color="secondary"
+                        shape="rounded"
+                        count={roomsData.length >= 4 ? Math.round(roomsData.length / 4) : 1}
+                        onChange={handleChangePage}
+                        page={page}
+                        size="large"
+                      />
+                    </Box>
+                  )}
                 </Box>
               )}
               {roomsData.length > 0 ? (
@@ -170,7 +184,7 @@ const RoomListByLocation = (props: Props) => {
             </Box>
             <Box sx={{ display: { xs: "none", sm: "flex" }, position: "relative", width: "100%", flexGrow: 1 }}>
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3920737.957642287!2d107.12742662953406!3d16.572332221671275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31157a4d736a1e5f%3A0xb03bb0c9e2fe62be!2sVietnam!5e0!3m2!1sen!2s!4v1664478847252!5m2!1sen!2s"
+                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyARc0IMuYyH8f2ptq9Pj58-gkOuCMeQH4o&q=${state.label}`}
                 style={{ width: "100%", height: "80vh" }}
                 allowFullScreen
                 loading="lazy"
