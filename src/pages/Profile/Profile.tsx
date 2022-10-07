@@ -331,6 +331,14 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    if (!Boolean(Object.keys(user).length)) {
+      const id = JSON.parse(localStorage.getItem("_id") || "");
+      const token = JSON.parse(localStorage.getItem("token") || "");
+      if (id && token) {
+        dispatch(getUserDetail(id));
+      }
+    }
+
     if (userActionSuccess) {
       dispatch(resetUserActionStatus());
       setPreview(null);
