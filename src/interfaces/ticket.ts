@@ -5,7 +5,7 @@ import { User } from "./user";
 export interface Ticket {
   deleteAt: boolean;
   _id: string;
-  roomId: Room;
+  roomId: Room | Partial<Room>;
   checkIn: Date;
   checkOut: Date;
   userId: null | User;

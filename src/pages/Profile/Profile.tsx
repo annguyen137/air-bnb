@@ -45,6 +45,7 @@ import useModalHook from "utils/useModalHook";
 import { getTicketsByUser } from "redux/slices/ticketsSlice";
 import { Review } from "interfaces/review";
 import { Ticket } from "interfaces/ticket";
+import locationAPI from "services/locationAPI";
 
 interface AvataForm {
   avatar: FileList;
@@ -82,7 +83,7 @@ const Profile = () => {
   const { isModalOpen, handleOpenModal, handleCloseModal } = useModalHook();
 
   const [content, setContent] = useState<{ title: string; list: Array<Ticket | Review> }>({
-    title: "abc",
+    title: "My Tickets",
     list: [],
   });
 
@@ -141,7 +142,7 @@ const Profile = () => {
               </>
             ) : (
               <>
-                {ticketsByUser.map((ticket, index) => {
+                {ticketsByUser?.map((ticket, index) => {
                   return (
                     <Box
                       padding={{ xs: 1, sm: 2 }}
@@ -154,36 +155,50 @@ const Profile = () => {
                         direction={{ xs: "column", sm: "row" }}
                         rowGap={2}
                         columnGap={2}
-                        alignItems="center"
-                        onClick={() => ticket.roomId?._id && navigate(`/rooms/${ticket.roomId?._id}`)}
-                        sx={{ cursor: "pointer" }}
+                        justifyContent={"space-between"}
                       >
-                        <Stack rowGap={1} sx={{ width: { xs: "100%", sm: "50%" } }}>
-                          <p>Checkin date: {moment(ticket.checkIn).format("YYYY/MM/DD")}</p>
-                          <p>Checkout date: {moment(ticket.checkIn).format("YYYY/MM/DD")}</p>
-                        </Stack>
-                        <Stack
-                          direction="row"
-                          flexGrow={1}
-                          justifyContent="space-between"
-                          alignItems="center"
-                          sx={{ width: { xs: "100%", sm: "50%" } }}
+                        <Box
+                          sx={{ cursor: "pointer" }}
+                          onClick={() => ticket.roomId?._id && navigate(`/rooms/${ticket.roomId?._id}`)}
                         >
-                          <Box>
-                            <Typography color={"Highlight"} variant="body1">
-                              {ticket.roomId?.name}
-                            </Typography>
-                          </Box>
-                          <Box>
-                            <Button
-                              size="small"
-                              title="View this room"
+                          <img src={ticket.roomId?.image} alt="" />
+                        </Box>
+                        <Box
+                          sx={{
+                            width: {
+                              xs: "100%",
+                              sm: "50%",
+                            },
+                          }}
+                        >
+                          <Stack
+                            rowGap={1}
+                            sx={{
+                              "&:hover": {
+                                textDecoration: "underline",
+                              },
+                            }}
+                          >
+                            <p>Checkin date: {moment(ticket.checkIn).format("YYYY/MM/DD")}</p>
+                            <p>Checkout date: {moment(ticket.checkIn).format("YYYY/MM/DD")}</p>
+                          </Stack>
+                          <Stack flexGrow={1} marginTop={2} rowGap={1}>
+                            <Typography
+                              color={"Highlight"}
+                              variant="body1"
+                              sx={{
+                                "&:hover": {
+                                  textDecoration: "underline",
+                                },
+                                cursor: "pointer",
+                              }}
                               onClick={() => ticket.roomId?._id && navigate(`/rooms/${ticket.roomId?._id}`)}
                             >
-                              <StartIcon />
-                            </Button>
-                          </Box>
-                        </Stack>
+                              {ticket.roomId?.name}
+                            </Typography>
+                            <Typography variant="body1">Price: ${ticket.roomId?.price}</Typography>
+                          </Stack>
+                        </Box>
                       </Stack>
                     </Box>
                   );
@@ -204,12 +219,8 @@ const Profile = () => {
         },
       },
       height: {
-        sm: "60vh !important",
-        md: "70vh !important",
+        xs: "70% !important",
         lg: "80vh !important",
-        "@media (max-width: 743px)": {
-          height: "50vh !important",
-        },
       },
       position: "absolute",
       overflow: "hidden",
@@ -227,9 +238,9 @@ const Profile = () => {
   const viewAll = (): void => {
     handleOpenModal();
 
-    // if (!ticketsByUser.length) {
-    dispatch(getTicketsByUser({ userId: user._id }));
-    // }
+    if (!ticketsByUser.length) {
+      dispatch(getTicketsByUser({ userId: user._id }));
+    }
   };
 
   const {
@@ -320,12 +331,6 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    // if user refresh page (mean redux store re-init => dispatch to get userDetail again)
-    if (!Boolean(Object.keys(user).length) && token) {
-      const id = JSON.parse(localStorage.getItem("_id") || "");
-      dispatch(getUserDetail(id));
-    }
-
     if (userActionSuccess) {
       dispatch(resetUserActionStatus());
       setPreview(null);
