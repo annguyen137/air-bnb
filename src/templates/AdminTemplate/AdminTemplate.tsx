@@ -51,6 +51,14 @@ const AdminTemplate = () => {
     if (isFirstLoad) {
       setIsFirstLoad(false);
     }
+
+    if (!Boolean(Object.keys(user).length)) {
+      const id = JSON.parse(localStorage.getItem("_id") || "");
+      const token = JSON.parse(localStorage.getItem("token") || "");
+      if (id && token) {
+        dispatch(getUserDetail(id));
+      }
+    }
   }, []);
 
   if (!Object.keys(user).length) {
