@@ -5,7 +5,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import styles from "./RoomItem.module.scss";
 
@@ -107,7 +106,11 @@ const RoomItem = ({ room, mode }: Props) => {
         <Stack justifyContent={"space-between"} sx={{ height: "100%" }} flexGrow={1}>
           <h4 className={`${styles["room-name"]}`}>{room.name}</h4>
           <Typography variant="body2">
-            {room.locationId?.name}, {room.locationId?.province}, {room.locationId?.country}
+            {room.locationId !== null && typeof room.locationId !== "string" && (
+              <>
+                {room.locationId?.name}, {room.locationId?.province}, {room.locationId?.country}
+              </>
+            )}
           </Typography>
           <p className={`${styles["room-price"]}`}>
             <span>${room.price}</span> đêm

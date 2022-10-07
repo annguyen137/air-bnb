@@ -18,6 +18,7 @@ const PopModal = ({ open, onClose, children, css, icon, iconRight }: Props) => {
         onClose={onClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{ zIndex: 1600 }}
       >
         <Box sx={css}>
           <Box

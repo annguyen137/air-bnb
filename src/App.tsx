@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
-import HomeTemplate from "./templates/HomeTemplate/HomeTemplate";
 import "./App.css";
 import "./scss/style.scss";
+import { Route, Routes } from "react-router-dom";
+import HomeTemplate from "./templates/HomeTemplate/HomeTemplate";
 import Home from "pages/Home/Home";
 import Login from "pages/Login/Login";
 import SignUp from "pages/SignUp/SignUp";
@@ -15,9 +15,28 @@ import RoomListByLocationTemplate from "templates/DetailTemplate/RoomListByLocat
 import AdminTemplate from "templates/AdminTemplate/AdminTemplate";
 import LocationManagement from "pages/Admin/LocationsManagement/LocationManagement";
 import RoomManagement from "pages/Admin/RoomsManagement/RoomManagement";
+import AdminLocationForm from "pages/Admin/LocationsManagement/AdminLocationForm";
+import AdminRoomForm from "pages/Admin/RoomsManagement/AdminRoomForm";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserDetail } from "redux/slices/authSlice";
+import { AppDispatch, RootState } from "redux/store";
 
 function App() {
-  // IF USER TRY TO MANUAL CLEAR LOCALSTORAGE => TRIGGER CLEAR ALL LOCALSTORAGE AND REFRESH PAGE -> REQUIRE RE-LOGIN
+  const dispatch = useDispatch<AppDispatch>();
+
+  // const { user } = useSelector((state: RootState) => state.auth);
+
+  // useEffect(() => {
+  //   if (!Boolean(Object.keys(user).length)) {
+  //     const id = JSON.parse(localStorage.getItem("_id") || "");
+  //     const token = JSON.parse(localStorage.getItem("token") || "");
+  //     if (id && token) {
+  //       console.log("run");
+  //       dispatch(getUserDetail(id));
+  //     }
+  //   }
+  // }, [user]);
+
   useEffect(() => {
     window.addEventListener("beforeunload", scrollTop);
 
@@ -43,11 +62,16 @@ function App() {
 
       <Route path="/location" element={<RoomListByLocationTemplate />} />
 
-      <Route path="/profile" element={<ProtectedRoute component={<Profile />} />} />
+      <Route path="/profile" element={<ProtectedRoute type={"CLIENT" || "ADMIN"} component={<Profile />} />} />
 
-      <Route path="/admin" element={<ProtectedRoute component={<AdminTemplate />} />}>
-        <Route path="locations-management" element={<LocationManagement />} />
-        <Route path="rooms-management" element={<RoomManagement />} />
+      <Route path="/admin" element={<ProtectedRoute type={"CLIENT" || "ADMIN"} component={<AdminTemplate />} />}>
+        <Route path="location-list" element={<LocationManagement />} />
+        <Route path="add-location" element={<AdminLocationForm />} />
+        <Route path="edit-location/:locationId" element={<AdminLocationForm />} />
+
+        <Route path="room-list" element={<RoomManagement />} />
+        <Route path="add-room" element={<AdminRoomForm />} />
+        <Route path="edit-room/:roomId" element={<AdminRoomForm />} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />

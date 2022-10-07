@@ -115,8 +115,21 @@ const RoomDetail: React.FC = () => {
           <Box sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }}>
             <h3 className="title ">{reviewsByRoomId?.length} reviews</h3>
             <Stack direction={"row"} gap={2} alignItems={"center"}>
-              <Typography component="legend">{roomDetail.locationId?.valueate ?? "No rating given"}</Typography>
-              <Rating readOnly max={10} value={roomDetail.locationId?.valueate ?? null} />
+              <Typography component="legend">
+                {(roomDetail.locationId !== null &&
+                  typeof roomDetail.locationId !== "string" &&
+                  roomDetail.locationId?.valueate) ??
+                  "No rating given"}
+              </Typography>
+              <Rating
+                readOnly
+                max={10}
+                value={
+                  roomDetail.locationId !== null && typeof roomDetail.locationId !== "string"
+                    ? roomDetail.locationId?.valueate
+                    : null
+                }
+              />
             </Stack>
           </Box>
 
@@ -352,7 +365,11 @@ const RoomDetail: React.FC = () => {
                 <Stack direction={"row"} alignItems="center" columnGap={3}>
                   <Stack direction={"row"} alignItems="center">
                     <StarIcon />
-                    <span>{roomDetail.locationId?.valueate}</span>
+                    <span>
+                      {roomDetail.locationId !== null &&
+                        typeof roomDetail.locationId !== "string" &&
+                        roomDetail.locationId?.valueate}
+                    </span>
                   </Stack>
                   <Typography
                     variant="body1"
@@ -362,7 +379,12 @@ const RoomDetail: React.FC = () => {
                     {reviewsByRoomId.length} reviews
                   </Typography>
                   <p>
-                    {roomDetail.locationId?.name}, {roomDetail.locationId?.province}, {roomDetail.locationId?.country}
+                    {roomDetail.locationId !== null && typeof roomDetail.locationId !== "string" && (
+                      <>
+                        {roomDetail.locationId?.name}, {roomDetail.locationId?.province},{" "}
+                        {roomDetail.locationId?.country}
+                      </>
+                    )}
                   </p>
                 </Stack>
               </Box>
@@ -770,7 +792,11 @@ const RoomDetail: React.FC = () => {
                 <Stack direction={"row"} gap={2} alignItems="flex-start">
                   <Stack direction={"row"} alignItems="center">
                     <StarIcon />
-                    <Typography variant="body1">{roomDetail.locationId?.valueate}</Typography>
+                    <Typography variant="body1">
+                      {roomDetail.locationId !== null &&
+                        typeof roomDetail.locationId !== "string" &&
+                        roomDetail.locationId?.valueate}
+                    </Typography>
                   </Stack>
                   <h3 className="title --secondary-title">{reviewsByRoomId?.length} reviews</h3>
                 </Stack>
