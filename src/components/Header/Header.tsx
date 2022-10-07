@@ -23,7 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import HelpIcon from "@mui/icons-material/Help";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import LanguageIcon from "@mui/icons-material/Language";
-import { createSearchParams, Link, useNavigate } from "react-router-dom";
+import { createSearchParams, Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
 import Loading from "components/Loading/Loading";
@@ -39,12 +39,15 @@ type menuType = Array<{
   title: JSX.Element | string;
   path?: string;
   actions?: Array<ActionCreator<any>>;
+  disable?: boolean;
 }>;
 
 const Header = ({ variant }: { variant?: string }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   const { user } = useSelector((state: RootState) => state.auth);
 
@@ -103,7 +106,14 @@ const Header = ({ variant }: { variant?: string }) => {
       title: (
         <>
           <p>Profile</p>
-          <ManageAccountsIcon />
+          <ManageAccountsIcon
+            sx={{
+              transition: "all 0.2s ease-in",
+              "&:hover": {
+                transform: "scale(1.2)",
+              },
+            }}
+          />
         </>
       ),
 
@@ -113,16 +123,31 @@ const Header = ({ variant }: { variant?: string }) => {
       title: (
         <>
           <p>Management</p>
-          <BusinessCenterIcon />
+          <BusinessCenterIcon
+            sx={{
+              transition: "all 0.2s ease-in",
+              "&:hover": {
+                transform: "scale(1.2)",
+              },
+            }}
+          />
         </>
       ),
       path: "/admin",
+      // disable: user.type === "CLIENT" ? true : false,
     },
     {
       title: (
         <>
           <p>Log out</p>
-          <LogoutIcon />
+          <LogoutIcon
+            sx={{
+              transition: "all 0.2s ease-in",
+              "&:hover": {
+                transform: "scale(1.2)",
+              },
+            }}
+          />
         </>
       ),
       actions: [logout],
@@ -175,7 +200,9 @@ const Header = ({ variant }: { variant?: string }) => {
                   color="inherit"
                   size="small"
                   variant="text"
-                  onClick={(event: React.MouseEvent<HTMLElement>) => setAnchorSearch(event.currentTarget)}
+                  onClick={(event: React.MouseEvent<HTMLElement>) =>
+                    anchorSearch ? setAnchorSearch(null) : setAnchorSearch(event.currentTarget)
+                  }
                 >
                   {fetchAllLoading ? <Loading width={100} /> : "Anywhere"}
                 </Button>
@@ -187,7 +214,9 @@ const Header = ({ variant }: { variant?: string }) => {
                   color="inherit"
                   size="small"
                   variant="text"
-                  onClick={(event: React.MouseEvent<HTMLElement>) => setAnchorSearch(event.currentTarget)}
+                  onClick={(event: React.MouseEvent<HTMLElement>) =>
+                    anchorSearch ? setAnchorSearch(null) : setAnchorSearch(event.currentTarget)
+                  }
                 >
                   {fetchAllLoading ? <Loading width={100} /> : "Any week"}
                 </Button>
@@ -199,7 +228,9 @@ const Header = ({ variant }: { variant?: string }) => {
                   color="inherit"
                   size="small"
                   variant="text"
-                  onClick={(event: React.MouseEvent<HTMLElement>) => setAnchorSearch(event.currentTarget)}
+                  onClick={(event: React.MouseEvent<HTMLElement>) =>
+                    anchorSearch ? setAnchorSearch(null) : setAnchorSearch(event.currentTarget)
+                  }
                 >
                   {fetchAllLoading ? (
                     <Loading width={100} />
@@ -423,7 +454,7 @@ const Header = ({ variant }: { variant?: string }) => {
                   />
                 </Button>
                 <Menu
-                  sx={{ mt: "50px", zIndex: 1600, width: "200px" }}
+                  sx={{ mt: "50px", zIndex: 1600 }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -442,17 +473,18 @@ const Header = ({ variant }: { variant?: string }) => {
                   {(Object.keys(user).length ? LoggedInMenuItems : menuItems).map((setting, index) => (
                     <MenuItem
                       key={index}
+                      disabled={setting.disable ? true : false}
                       onClick={() => {
                         handleCloseUserMenu();
                         if (setting.path) {
-                          navigate(`${setting.path}`);
+                          navigate(`${setting.path}`, { state: location.pathname });
                         } else if (setting.actions) {
                           setting.actions.forEach((action) => dispatch(action()));
                         }
                       }}
                       sx={{
                         transition: "all 0.5s",
-                        borderBottom: "1px solid transparent",
+                        borderBottom: "1px solid rgba(0,0,0,0.1)",
                         "&:hover": {
                           backgroundColor: "rgba(0,0,0, 0.1) !important",
                           borderColor: "rgba(0,0,0, 0.1)",

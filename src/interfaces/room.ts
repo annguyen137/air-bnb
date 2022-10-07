@@ -1,3 +1,4 @@
+import { Type } from "typescript";
 import { LocationId } from "./location";
 import { Pagination } from "./pagination";
 
@@ -22,7 +23,7 @@ export interface Room {
   cableTV: boolean;
   __v: number;
   image: string;
-  locationId: null | LocationId;
+  locationId: null | LocationId | string;
 }
 
 export interface UpdateRoomImageValue {
