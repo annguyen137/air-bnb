@@ -7,6 +7,7 @@ import review from "redux/slices/reviewsSlice";
 import auth from "redux/slices/authSlice";
 import user from "redux/slices/userSlice";
 import ticket from "redux/slices/ticketsSlice";
+import admin from "redux/slices/adminSlice";
 
 const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ const store = configureStore({
     auth,
     user,
     ticket,
+    admin,
   },
   devTools: process.env.NODE_ENV !== "production",
 });

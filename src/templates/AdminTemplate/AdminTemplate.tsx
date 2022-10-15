@@ -35,7 +35,11 @@ const AdminTemplate = () => {
 
   const { isFirstLoad, setIsFirstLoad } = useIsFirstLoad();
 
-  const { user, token } = useSelector((state: RootState) => state.auth);
+  const [fakeLoading, setFakeLoading] = useState(true);
+
+  const { user, token, isDetailLoading } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const [open, setOpen] = useState<{ [key: string]: boolean }>({
     location: true,
@@ -48,9 +52,25 @@ const AdminTemplate = () => {
 
   useEffect(() => {
     window.scroll(0, 0);
+    let timer = setTimeout(() => {
+      setFakeLoading(false);
+    }, 1000);
+
     if (isFirstLoad) {
       setIsFirstLoad(false);
     }
+
+    if (!Boolean(Object.keys(user).length)) {
+      const _id = JSON.parse(localStorage.getItem("_id") || "");
+      const _token = JSON.parse(localStorage.getItem("token") || "") || token;
+      if (_id && _token) {
+        dispatch(getUserDetail(_id));
+      }
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   if (!Object.keys(user).length) {
@@ -105,12 +125,17 @@ const AdminTemplate = () => {
             >
               <Box sx={{ overflow: "auto" }}>
                 <List>
-                  <ListItemButton key={"location"} onClick={() => handleClick("location")}>
+                  <ListItemButton
+                    key={"location"}
+                    onClick={() => handleClick("location")}
+                  >
                     <ListItemIcon>
                       <LocationOnIcon />
                     </ListItemIcon>
                     <ListItemText primary="Location management" />
-                    <ListItemIcon>{open.location ? <ExpandLess /> : <ExpandMore />}</ListItemIcon>
+                    <ListItemIcon>
+                      {open.location ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemIcon>
                   </ListItemButton>
                   <Collapse in={open.location} timeout="auto" unmountOnExit>
                     <List component="div">
@@ -118,26 +143,37 @@ const AdminTemplate = () => {
                         <ListItemIcon>
                           <SummarizeIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Location List" onClick={() => navigate("/admin/location-list")} />
+                        <ListItemText
+                          primary="Location List"
+                          onClick={() => navigate("/admin/location-list")}
+                        />
                       </ListItemButton>
                       {/*  */}
                       <ListItemButton sx={{ pl: 4 }}>
                         <ListItemIcon>
                           <AddLocationAltIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Add Location" onClick={() => navigate("/admin/add-location")} />
+                        <ListItemText
+                          primary="Add Location"
+                          onClick={() => navigate("/admin/add-location")}
+                        />
                       </ListItemButton>
                     </List>
                   </Collapse>
                   {/*  */}
                   <Divider />
                   {/*  */}
-                  <ListItemButton key={"room"} onClick={() => handleClick("room")}>
+                  <ListItemButton
+                    key={"room"}
+                    onClick={() => handleClick("room")}
+                  >
                     <ListItemIcon>
                       <LocalHotelIcon />
                     </ListItemIcon>
                     <ListItemText primary="Room management" />
-                    <ListItemIcon>{open.room ? <ExpandLess /> : <ExpandMore />}</ListItemIcon>
+                    <ListItemIcon>
+                      {open.room ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemIcon>
                   </ListItemButton>
                   <Collapse in={open.room} timeout="auto" unmountOnExit>
                     <List component="div">
@@ -145,24 +181,61 @@ const AdminTemplate = () => {
                         <ListItemIcon>
                           <SummarizeIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Room List" onClick={() => navigate("/admin/room-list")} />
+                        <ListItemText
+                          primary="Room List"
+                          onClick={() => navigate("/admin/room-list")}
+                        />
                       </ListItemButton>
                       {/*  */}
                       <ListItemButton sx={{ pl: 4 }}>
                         <ListItemIcon>
                           <AddBusinessIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Add Room" onClick={() => navigate("/admin/add-room")} />
+                        <ListItemText
+                          primary="Add Room"
+                          onClick={() => navigate("/admin/add-room")}
+                        />
                       </ListItemButton>
                     </List>
                   </Collapse>
                 </List>
               </Box>
             </Drawer>
-            <Box flexGrow={1}>
-              <Box padding={{ xs: 1, sm: 2 }}>
+            <Box
+              padding={{ xs: 1, sm: 2 }}
+              sx={{ height: "100%", flexGrow: 1 }}
+            >
+              {location.pathname === "/admin" ? (
+                <Box width={"100%"} height={"100%"}>
+                  {fakeLoading || isDetailLoading ? (
+                    <Box
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        position: "relative",
+                      }}
+                    >
+                      <Loading css={{ width: "100%", height: "100%" }} />
+                      <CircularProgress
+                        thickness={6}
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%,-50%)",
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <Box>
+                      <h1>All your management items are here!</h1>
+                      <h3>Begin by choosing any on the left menu</h3>
+                    </Box>
+                  )}
+                </Box>
+              ) : (
                 <Outlet />
-              </Box>
+              )}
             </Box>
           </Box>
         </Stack>

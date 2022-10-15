@@ -184,7 +184,7 @@ const RoomListByLocation = (props: Props) => {
             </Box>
             <Box sx={{ display: { xs: "none", sm: "flex" }, position: "relative", width: "100%", flexGrow: 1 }}>
               <iframe
-                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyARc0IMuYyH8f2ptq9Pj58-gkOuCMeQH4o&q=${state.label}`}
+                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyARc0IMuYyH8f2ptq9Pj58-gkOuCMeQH4o&q=${state.label}&zoom=17`}
                 style={{ width: "100%", height: "80vh" }}
                 allowFullScreen
                 loading="lazy"

@@ -17,12 +17,12 @@ import LocationManagement from "pages/Admin/LocationsManagement/LocationManageme
 import RoomManagement from "pages/Admin/RoomsManagement/RoomManagement";
 import AdminLocationForm from "pages/Admin/LocationsManagement/AdminLocationForm";
 import AdminRoomForm from "pages/Admin/RoomsManagement/AdminRoomForm";
-import { useDispatch, useSelector } from "react-redux";
-import { getUserDetail } from "redux/slices/authSlice";
+import { useDispatch } from "react-redux";
+
 import { AppDispatch, RootState } from "redux/store";
 
 function App() {
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
 
   // const { user } = useSelector((state: RootState) => state.auth);
 
@@ -62,16 +62,38 @@ function App() {
 
       <Route path="/location" element={<RoomListByLocationTemplate />} />
 
-      <Route path="/profile" element={<ProtectedRoute type={"CLIENT" || "ADMIN"} component={<Profile />} />} />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute type={"CLIENT" || "ADMIN"} component={<Profile />} />
+        }
+      />
 
-      <Route path="/admin" element={<ProtectedRoute type={"CLIENT" || "ADMIN"} component={<AdminTemplate />} />}>
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute
+            type={"CLIENT" || "ADMIN"}
+            component={<AdminTemplate />}
+          />
+        }
+      >
         <Route path="location-list" element={<LocationManagement />} />
-        <Route path="add-location" element={<AdminLocationForm />} />
-        <Route path="edit-location/:locationId" element={<AdminLocationForm />} />
+        <Route
+          path="add-location"
+          element={<AdminLocationForm title="Add location" mode="add" />}
+        />
+        <Route
+          path="edit-location/:locationId"
+          element={<AdminLocationForm title="Edit location" mode="edit" />}
+        />
 
         <Route path="room-list" element={<RoomManagement />} />
-        <Route path="add-room" element={<AdminRoomForm />} />
-        <Route path="edit-room/:roomId" element={<AdminRoomForm />} />
+        <Route path="add-room" element={<AdminRoomForm title="Add room" />} />
+        <Route
+          path="edit-room/:roomId"
+          element={<AdminRoomForm title="Edit room" />}
+        />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
