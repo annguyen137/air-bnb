@@ -1,9 +1,16 @@
+import { Box } from "@mui/material";
 import React from "react";
 
-type Props = {};
+type Props = {
+  title: string;
+};
 
 const AdminRoomForm = (props: Props) => {
-  return <div>AdminRoomForm</div>;
+  return (
+    <Box>
+      <h1>{props.title}</h1>
+    </Box>
+  );
 };
 
 export default AdminRoomForm;

@@ -26,29 +26,6 @@ export const getTicketsByUser = createAsyncThunk(
     try {
       const data = await ticketAPI.getTicketsByUser({ userId });
 
-      // TEST
-      // data.map((item) => {
-      //   if (item.roomId === null) {
-      //     return item;
-      //   } else if (typeof item.roomId.locationId === "string") {
-      //     (async () => {
-      //       try {
-      //         const locationid = item.roomId?.locationId as string;
-
-      //         const data = await locationAPI.getLocationDetail(locationid);
-      //         const temp = {
-      //           ...item,
-      //           roomId: { ...item.roomId, locationId: data as LocationId } as Partial<Room>,
-      //         } as Ticket;
-      //         console.log(temp);
-      //         return temp;
-      //       } catch (error) {
-      //         throw error;
-      //       }
-      //     })();
-      //   }
-      // }) as Ticket[];
-
       return data;
     } catch (error) {
       throw error;
@@ -65,7 +42,37 @@ const ticketsSlice = createSlice({
       return { ...state, isTicketLoading: true };
     });
     builder.addCase(getTicketsByUser.fulfilled, (state, { payload }) => {
-      console.log(payload);
+      // TEST
+      // const test = payload.map((item) => {
+      //   if (item.roomId === null) {
+      //     return item;
+      //   } else if (item.roomId && typeof item.roomId.locationId === "string") {
+      //     return (async () => {
+      //       try {
+      //         const locationid = item.roomId?.locationId as string;
+      //         const data = await locationAPI.getLocationDetail(locationid);
+      //         // console.log({
+      //         //   ...item,
+      //         //   roomId: { ...item.roomId, locationId: { ...data } },
+      //         // } as Ticket);
+
+      //         return {
+      //           ...item,
+      //           roomId: { ...item.roomId, locationId: { ...data } },
+      //         } as Ticket;
+      //       } catch (error) {
+      //         throw error;
+      //       }
+      //     })();
+      //   }
+      //   // return item;
+      // });
+
+      // return {
+      //   ...state,
+      //   isTicketLoading: false,
+      //   ticketsByUser: test as Ticket[],
+      // };
       return { ...state, isTicketLoading: false, ticketsByUser: payload };
     });
     builder.addCase(getTicketsByUser.rejected, (state, { error }) => {

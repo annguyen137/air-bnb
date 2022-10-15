@@ -26,7 +26,12 @@ import Footer from "components/Footer/Footer";
 import Header from "components/Header/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
-import { useForm, SubmitHandler, SubmitErrorHandler, Controller } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  SubmitErrorHandler,
+  Controller,
+} from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import styles from "./Profile.module.scss";
@@ -68,11 +73,17 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
-  const { user, token, isDetailLoading } = useSelector((state: RootState) => state.auth);
+  const { user, token, isDetailLoading } = useSelector(
+    (state: RootState) => state.auth
+  );
 
-  const { userActionSuccess, userActionPending, error } = useSelector((state: RootState) => state.user);
+  const { userActionSuccess, userActionPending, error } = useSelector(
+    (state: RootState) => state.user
+  );
 
-  const { ticketsByUser, isTicketLoading } = useSelector((state: RootState) => state.ticket);
+  const { ticketsByUser, isTicketLoading } = useSelector(
+    (state: RootState) => state.ticket
+  );
 
   const [preview, setPreview] = useState(null);
 
@@ -82,12 +93,19 @@ const Profile = () => {
 
   const { isModalOpen, handleOpenModal, handleCloseModal } = useModalHook();
 
-  const [content, setContent] = useState<{ title: string; list: Array<Ticket | Review> }>({
+  const [content, setContent] = useState<{
+    title: string;
+    list: Array<Ticket | Review>;
+  }>({
     title: "My Tickets",
     list: [],
   });
 
-  const modalProperties: { element: JSX.Element; sx: SxProps; icon: JSX.Element } = {
+  const modalProperties: {
+    element: JSX.Element;
+    sx: SxProps;
+    icon: JSX.Element;
+  } = {
     element: (
       <Stack
         gap={2}
@@ -96,8 +114,15 @@ const Profile = () => {
         paddingX={{ xs: 2, sm: 5, md: 8 }}
         sx={{ maxHeight: "100%", height: "100%" }}
       >
-        <Box sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }} paddingBottom={1}>
-          {isTicketLoading ? <Loading width={200} /> : <h3 className="title ">{content.title}</h3>}
+        <Box
+          sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }}
+          paddingBottom={1}
+        >
+          {isTicketLoading ? (
+            <Loading width={200} />
+          ) : (
+            <h3 className="title ">{content.title}</h3>
+          )}
         </Box>
         <Box sx={{ height: "100%", overflowY: "scroll" }} paddingY={1}>
           <Stack gap={{ xs: 2, sm: 3 }}>
@@ -159,7 +184,10 @@ const Profile = () => {
                       >
                         <Box
                           sx={{ cursor: "pointer" }}
-                          onClick={() => ticket.roomId?._id && navigate(`/rooms/${ticket.roomId?._id}`)}
+                          onClick={() =>
+                            ticket.roomId?._id &&
+                            navigate(`/rooms/${ticket.roomId?._id}`)
+                          }
                         >
                           <img src={ticket.roomId?.image} alt="" />
                         </Box>
@@ -179,8 +207,14 @@ const Profile = () => {
                               },
                             }}
                           >
-                            <p>Checkin date: {moment(ticket.checkIn).format("YYYY/MM/DD")}</p>
-                            <p>Checkout date: {moment(ticket.checkIn).format("YYYY/MM/DD")}</p>
+                            <p>
+                              Checkin date:{" "}
+                              {moment(ticket.checkIn).format("YYYY/MM/DD")}
+                            </p>
+                            <p>
+                              Checkout date:{" "}
+                              {moment(ticket.checkIn).format("YYYY/MM/DD")}
+                            </p>
                           </Stack>
                           <Stack flexGrow={1} marginTop={2} rowGap={1}>
                             <Typography
@@ -192,11 +226,16 @@ const Profile = () => {
                                 },
                                 cursor: "pointer",
                               }}
-                              onClick={() => ticket.roomId?._id && navigate(`/rooms/${ticket.roomId?._id}`)}
+                              onClick={() =>
+                                ticket.roomId?._id &&
+                                navigate(`/rooms/${ticket.roomId?._id}`)
+                              }
                             >
                               {ticket.roomId?.name}
                             </Typography>
-                            <Typography variant="body1">Price: ${ticket.roomId?.price}</Typography>
+                            <Typography variant="body1">
+                              Price: ${ticket.roomId?.price}
+                            </Typography>
                           </Stack>
                         </Box>
                       </Stack>
@@ -276,19 +315,29 @@ const Profile = () => {
         "Name must contains only letters"
       )
       .default(user.name),
-    email: yup.string().required("Please fill in email!").email("Wrong email format!").default(user.email),
+    email: yup
+      .string()
+      .required("Please fill in email!")
+      .email("Wrong email format!")
+      .default(user.email),
     phone: yup
       .string()
       .required("Please fill in the phone number!")
       .matches(/^[0-9]+$/, "Phone must contains only number")
       .default(user.phone),
-    address: yup.string().required("Please fill in the address!").default(user.address),
+    address: yup
+      .string()
+      .required("Please fill in the address!")
+      .default(user.address),
     birthday: yup
       .date()
       .required("Please fill your birthday!")
       .typeError("Invalid birthday!")
       .min(new Date("1990/01/01"), "DOB cannot be before 1990")
-      .max(new Date(), `DOB cannot be greater than ${moment(new Date()).format("YYYY/MM/DD")}`)
+      .max(
+        new Date(),
+        `DOB cannot be greater than ${moment(new Date()).format("YYYY/MM/DD")}`
+      )
       .default(user.birthday),
     gender: yup.boolean().default(user.gender),
     type: yup.string().required().default(user.type),
@@ -317,7 +366,12 @@ const Profile = () => {
 
   const onSubmitUpdateInfo: SubmitHandler<UpdateInfoForm> = (value) => {
     // console.log(value);
-    dispatch(updateUserInfo({ userId: user._id, value: { ...value, birthday: moment(value.birthday).toISOString() } }));
+    dispatch(
+      updateUserInfo({
+        userId: user._id,
+        value: { ...value, birthday: moment(value.birthday).toISOString() },
+      })
+    );
   };
 
   const onErrorUpdateInfo: SubmitErrorHandler<UpdateInfoForm> = (error) => {
@@ -332,10 +386,10 @@ const Profile = () => {
 
   useEffect(() => {
     if (!Boolean(Object.keys(user).length)) {
-      const id = JSON.parse(localStorage.getItem("_id") || "");
-      const token = JSON.parse(localStorage.getItem("token") || "");
-      if (id && token) {
-        dispatch(getUserDetail(id));
+      const _id = JSON.parse(localStorage.getItem("_id") || "");
+      const _token = JSON.parse(localStorage.getItem("token") || "") || token;
+      if (_id && _token) {
+        dispatch(getUserDetail(_id));
       }
     }
 
@@ -366,7 +420,12 @@ const Profile = () => {
             }}
           >
             <Container>
-              <Stack direction={{ xs: "column", sm: "row" }} gap={2} paddingTop={2} paddingBottom={2}>
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                gap={2}
+                paddingTop={2}
+                paddingBottom={2}
+              >
                 <Box sx={{ width: "100%" }}>
                   <Loading css={{ height: "50vh" }} />
                 </Box>
@@ -416,7 +475,10 @@ const Profile = () => {
                   padding={{ xs: "12px", sm: "25px 25px 40px" }}
                   sx={{ border: "1px solid #DDDDDD", borderRadius: "12px" }}
                 >
-                  <Box sx={{ width: "100%", textAlign: "center" }} paddingBottom={1}>
+                  <Box
+                    sx={{ width: "100%", textAlign: "center" }}
+                    paddingBottom={1}
+                  >
                     {isDetailLoading || userActionPending ? (
                       <Loading
                         css={{
@@ -438,8 +500,16 @@ const Profile = () => {
                     )}
 
                     <Box marginTop={2}>
-                      <form autoComplete="off" noValidate onSubmit={handleSubmit(onSubmitUpdateAvatar)}>
-                        <Button size="small" component="label" disabled={isDetailLoading}>
+                      <form
+                        autoComplete="off"
+                        noValidate
+                        onSubmit={handleSubmit(onSubmitUpdateAvatar)}
+                      >
+                        <Button
+                          size="small"
+                          component="label"
+                          disabled={isDetailLoading}
+                        >
                           Change avatar
                           <input
                             hidden
@@ -450,7 +520,10 @@ const Profile = () => {
                               onChange: (e) => {
                                 if (e.target.files?.length !== 0) {
                                   const preview =
-                                    e.currentTarget.files.length && URL.createObjectURL(e.currentTarget.files[0]);
+                                    e.currentTarget.files.length &&
+                                    URL.createObjectURL(
+                                      e.currentTarget.files[0]
+                                    );
                                   setPreview(preview);
                                   setIsChangeAvatar(true);
                                 } else {
@@ -462,7 +535,11 @@ const Profile = () => {
                         </Button>
                         {isChangeAvatar && (
                           <>
-                            <Button size="small" type="submit" variant="outlined">
+                            <Button
+                              size="small"
+                              type="submit"
+                              variant="outlined"
+                            >
                               Update
                             </Button>
                             <IconButton onClick={clearFile}>
@@ -470,24 +547,45 @@ const Profile = () => {
                             </IconButton>
                           </>
                         )}
-                        <FormHelperText error={!!avataError.avatar} children={avataError.avatar?.message} />
+                        <FormHelperText
+                          error={!!avataError.avatar}
+                          children={avataError.avatar?.message}
+                        />
                       </form>
                     </Box>
                   </Box>
                   <Box
-                    sx={{ width: "100%", textAlign: "left", paddingBottom: "32px", borderBottom: "1px solid #DDDDDD" }}
+                    sx={{
+                      width: "100%",
+                      textAlign: "left",
+                      paddingBottom: "32px",
+                      borderBottom: "1px solid #DDDDDD",
+                    }}
                   >
                     <Stack rowGap={"17px"}>
                       <VerifiedUserOutlinedIcon />
-                      {isDetailLoading ? <Loading /> : <h3>Identity verification</h3>}
+                      {isDetailLoading ? (
+                        <Loading />
+                      ) : (
+                        <h3>Identity verification</h3>
+                      )}
                       {isDetailLoading ? (
                         <Loading height={40} />
                       ) : (
-                        <p>Show others you’re really you with the identity verification badge.</p>
+                        <p>
+                          Show others you’re really you with the identity
+                          verification badge.
+                        </p>
                       )}
                     </Stack>
                   </Box>
-                  <Box sx={{ width: "100%", textAlign: "left", paddingTop: "23px" }}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      textAlign: "left",
+                      paddingTop: "23px",
+                    }}
+                  >
                     <h3>
                       {isDetailLoading ? (
                         <Loading />
@@ -537,9 +635,16 @@ const Profile = () => {
                         component={"form"}
                         autoComplete="off"
                         noValidate
-                        onSubmit={handleSubmitUpdateInfo(onSubmitUpdateInfo, onErrorUpdateInfo)}
+                        onSubmit={handleSubmitUpdateInfo(
+                          onSubmitUpdateInfo,
+                          onErrorUpdateInfo
+                        )}
                       >
-                        <Stack rowGap={{ xs: 1, md: 2 }} columnGap={2} direction={{ md: "row" }}>
+                        <Stack
+                          rowGap={{ xs: 1, md: 2 }}
+                          columnGap={2}
+                          direction={{ md: "row" }}
+                        >
                           <Stack
                             sx={{
                               width: {
@@ -623,13 +728,20 @@ const Profile = () => {
                               )}
                             />
                           </Stack>
-                          <Stack sx={{ xs: "100%", md: "50%" }} rowGap={{ xs: 1, md: 2 }}>
+                          <Stack
+                            sx={{ xs: "100%", md: "50%" }}
+                            rowGap={{ xs: 1, md: 2 }}
+                          >
                             <Controller
                               name="birthday"
                               control={control}
                               defaultValue={user.birthday}
-                              render={({ field: { onChange, value, ref, ...rest } }) => (
-                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                              render={({
+                                field: { onChange, value, ref, ...rest },
+                              }) => (
+                                <LocalizationProvider
+                                  dateAdapter={AdapterMoment}
+                                >
                                   <DatePicker
                                     inputFormat="YYYY/MM/DD"
                                     label="Birthday"
@@ -646,7 +758,9 @@ const Profile = () => {
                                         margin="dense"
                                         required
                                         size="medium"
-                                        helperText={errorsUpdateInfo.birthday?.message}
+                                        helperText={
+                                          errorsUpdateInfo.birthday?.message
+                                        }
                                         error={!!errorsUpdateInfo?.birthday}
                                         InputLabelProps={{ shrink: true }}
                                       />
@@ -663,20 +777,38 @@ const Profile = () => {
                                   name="gender"
                                   control={control}
                                   defaultValue={user.gender}
-                                  render={({ field: { value, ...rest } }) => <Checkbox checked={value} {...rest} />}
+                                  render={({ field: { value, ...rest } }) => (
+                                    <Checkbox checked={value} {...rest} />
+                                  )}
                                 />
                               </Box>
-                              <Stack flexGrow={1} direction={"row"} alignItems="center" gap={1}>
+                              <Stack
+                                flexGrow={1}
+                                direction={"row"}
+                                alignItems="center"
+                                gap={1}
+                              >
                                 <FormLabel children={"Type"} />
                                 <Controller
                                   name="type"
                                   control={control}
                                   render={({ field }) => (
-                                    <Select {...field} size="small" fullWidth label="Type" defaultValue={user.type}>
-                                      <MenuItem disabled={user.type === "CLIENT"} value={"ADMIN"}>
+                                    <Select
+                                      {...field}
+                                      size="small"
+                                      fullWidth
+                                      label="Type"
+                                      defaultValue={user.type}
+                                    >
+                                      <MenuItem
+                                        disabled={user.type === "CLIENT"}
+                                        value={"ADMIN"}
+                                      >
                                         ADMIN
                                       </MenuItem>
-                                      <MenuItem value={"CLIENT"}>CLIENT</MenuItem>
+                                      <MenuItem value={"CLIENT"}>
+                                        CLIENT
+                                      </MenuItem>
                                     </Select>
                                   )}
                                 />
@@ -722,7 +854,10 @@ const Profile = () => {
                             sx={{
                               color: "white !important",
                               backgroundColor: "#ff385c",
-                              "&:hover": { backgroundColor: "#ff385c !important", opacity: 0.9 },
+                              "&:hover": {
+                                backgroundColor: "#ff385c !important",
+                                opacity: 0.9,
+                              },
                             }}
                           >
                             Update
@@ -746,8 +881,17 @@ const Profile = () => {
                     </Box>
                   </Box>
                 </Box>
-                <Stack direction={{ xs: "column", sm: "row" }} columnGap={3} rowGap={3} marginTop={3}>
-                  <Box borderTop={"1px solid rgba(0,0,0,0.1)"} paddingTop={2} paddingBottom={2}>
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  columnGap={3}
+                  rowGap={3}
+                  marginTop={3}
+                >
+                  <Box
+                    borderTop={"1px solid rgba(0,0,0,0.1)"}
+                    paddingTop={2}
+                    paddingBottom={2}
+                  >
                     <h3>My tickets</h3>
                     <Box marginTop={3}>
                       <Button variant="outlined" onClick={viewAll}>
@@ -755,7 +899,11 @@ const Profile = () => {
                       </Button>
                     </Box>
                   </Box>
-                  <Box borderTop={"1px solid rgba(0,0,0,0.1)"} paddingTop={2} paddingBottom={2}>
+                  <Box
+                    borderTop={"1px solid rgba(0,0,0,0.1)"}
+                    paddingTop={2}
+                    paddingBottom={2}
+                  >
                     <h3>My reviews</h3>
                     <Box marginTop={3}>
                       <Button disabled variant="outlined" onClick={viewAll}>
