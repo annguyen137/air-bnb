@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -9,7 +9,9 @@ import {
   FormHelperText,
   CircularProgress,
   Tooltip,
+  IconButton,
 } from "@mui/material";
+import CancelIcon from "@mui/icons-material/Cancel";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import Loading from "components/Loading/Loading";
 import * as yup from "yup";
@@ -47,6 +49,10 @@ const AdminLocationForm = (props: Props) => {
     location: { isLocationLoading, locationDetail },
   } = useSelector((state: RootState) => state.admin);
 
+  const [preview, setPreview] = useState(null);
+
+  const [isChangeAvatar, setIsChangeAvatar] = useState(false);
+
   const { locationId } = useParams();
 
   const locationSchema = yup.object().shape({
@@ -79,35 +85,53 @@ const AdminLocationForm = (props: Props) => {
   });
 
   const onSubmit = (values: LocationForm) => {
-    console.log(values);
+    // console.log(values);
+  };
+
+  const {
+    register: registerImg,
+    handleSubmit: handleSubmitImg,
+    reset: resetImg,
+    resetField: resetFieldImg,
+  } = useForm({
+    mode: "onSubmit",
+  });
+
+  const onSubmitImg = () => {};
+
+  const clearFile = () => {
+    setPreview(null);
+    setIsChangeAvatar(false);
+    // clearErrorsAvatar("avatar");
+    resetFieldImg("location");
   };
 
   useEffect(() => {
-    reset({}, { keepDefaultValues: true, keepValues: false });
-
-    if (Object.keys(locationDetail).length) {
-      dispatch(clearDetailLocation());
-    }
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (locationId) {
-      dispatch(getEditLocationDetail(locationId));
-    }
-
     return () => {
       dispatch(clearAdminLocationState());
     };
   }, []);
 
   useEffect(() => {
-    if (Object.keys(locationDetail).length) {
+    if (locationId && !Object.keys(locationDetail).length) {
+      dispatch(getEditLocationDetail(locationId));
+    }
+
+    if (locationId === undefined) {
+      reset();
+    }
+
+    if (locationId && Object.keys(locationDetail).length) {
+      if (Object.keys(errors).length) {
+        reset();
+      }
+
       setValue("name", locationDetail?.name);
       setValue("province", locationDetail?.province);
       setValue("country", locationDetail?.country);
       setValue("valueate", locationDetail?.valueate);
     }
-  }, [locationDetail]);
+  }, [locationId, Object.keys(locationDetail).length]);
 
   if (isLocationLoading) {
     return (
@@ -136,7 +160,9 @@ const AdminLocationForm = (props: Props) => {
     <Box>
       <h1>{props.title}</h1>
       <Box marginTop={2}>
-        <Stack direction="row" columnGap={2}>
+        <Box
+          sx={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 2 }}
+        >
           <Box
             padding={{ xs: 1, sm: 2, md: 3 }}
             sx={{
@@ -281,8 +307,8 @@ const AdminLocationForm = (props: Props) => {
               </Button>
             </Box>
           </Box>
-          <Box flexGrow={1}>
-            {locationDetail?.name && (
+          <Box>
+            {locationId && Object.keys(locationDetail).length && (
               <Box
                 padding={{ xs: 1, sm: 2, md: 3 }}
                 sx={{
@@ -291,40 +317,81 @@ const AdminLocationForm = (props: Props) => {
                   height: "100%",
                 }}
               >
-                <Stack gap={2} direction="row">
-                  <Box width="60%">
+                <Stack gap={2}>
+                  <Box>
                     <LazyLoadImage
                       effect="opacity"
                       delayMethod="throttle"
                       delayTime={300}
-                      src={locationDetail?.image}
+                      src={preview ?? locationDetail?.image}
                       width={"100%"}
-                      height={"100%"}
+                      height={250}
+                      style={{ objectFit: "fill" }}
                     />
                   </Box>
-                  <Box>
+                  <Box component={"form"}>
                     <Stack>
-                      <Box marginBottom={5}>
+                      <Box marginBottom={2}>
                         <Tooltip title={"Click here to choose location image"}>
-                          <p>Click here to choose location image</p>
+                          <Button
+                            size="small"
+                            component="label"
+                            variant="outlined"
+                            // disabled={isDetailLoading}
+                          >
+                            Change location image
+                            <input
+                              hidden
+                              accept="image/png, image/gif, image/jpeg, image/jpg"
+                              type="file"
+                              {...registerImg("location", {
+                                required: true,
+                                onChange: (e) => {
+                                  if (e.target.files?.length !== 0) {
+                                    const preview =
+                                      e.currentTarget.files.length &&
+                                      URL.createObjectURL(
+                                        e.currentTarget.files[0]
+                                      );
+                                    setPreview(preview);
+                                    setIsChangeAvatar(true);
+                                  } else {
+                                    clearFile();
+                                  }
+                                },
+                              })}
+                            />
+                          </Button>
                         </Tooltip>
                       </Box>
                       <Box>
-                        <Button
-                          variant="contained"
-                          type="submit"
-                          size="large"
-                          sx={{
-                            color: "white !important",
-                            backgroundColor: "#ff385c",
-                            "&:hover": {
-                              backgroundColor: "#ff385c !important",
-                              opacity: 0.9,
-                            },
-                          }}
-                        >
-                          {locationDetail?.name ? "Update" : "Add"}
-                        </Button>
+                        {isChangeAvatar && (
+                          <>
+                            <Tooltip title="Update">
+                              <Button
+                                variant="contained"
+                                type="submit"
+                                size="large"
+                                sx={{
+                                  color: "white !important",
+                                  backgroundColor: "#ff385c",
+                                  "&:hover": {
+                                    backgroundColor: "#ff385c !important",
+                                    opacity: 0.9,
+                                  },
+                                }}
+                              >
+                                Update
+                              </Button>
+                            </Tooltip>
+
+                            <Tooltip title="Cancel">
+                              <IconButton onClick={clearFile}>
+                                <CancelIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </>
+                        )}
                       </Box>
                     </Stack>
                   </Box>
@@ -332,7 +399,7 @@ const AdminLocationForm = (props: Props) => {
               </Box>
             )}
           </Box>
-        </Stack>
+        </Box>
       </Box>
     </Box>
   );
