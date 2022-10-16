@@ -33,7 +33,7 @@ export const getLocationList = createAsyncThunk(
 );
 
 export const getEditLocationDetail = createAsyncThunk(
-  "admin/getLocationDetail",
+  "admin/getEditLocationDetail",
   async (locationId: LocationId["_id"]) => {
     try {
       const data = await adminAPI.getEditLocation(locationId);
