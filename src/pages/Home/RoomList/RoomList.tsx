@@ -21,7 +21,9 @@ const RoomList: React.FC = () => {
 
   const { fetchAllLoading } = useSelector((state: RootState) => state.all);
 
-  const { roomsData, roomsPagination, isRoomsLoading } = useSelector((state: RootState) => state.rooms);
+  const { roomsData, roomsPagination, isRoomsLoading } = useSelector(
+    (state: RootState) => state.rooms
+  );
 
   const reFetch = () => {
     window.scroll({ top: 0, behavior: "smooth" });
@@ -64,16 +66,22 @@ const RoomList: React.FC = () => {
       <Container>
         <Box className={`${styles["room-list"]}`}>
           {/* show loading at first load */}
-          {fetchAllLoading && [...Array(LIMIT)].map((item, index) => <Loading key={index} variant="card" />)}
+          {fetchAllLoading &&
+            [...Array(LIMIT)].map((item, index) => (
+              <Loading key={index} variant="card" />
+            ))}
           {/*  */}
           {roomsData.map((room, index) => (
-            <Box key={index}>
+            <Box key={room._id}>
               <RoomItem room={room} />
             </Box>
           ))}
           {/*  */}
           {/* show loading next trigger load */}
-          {isRoomsLoading && [...Array(LIMIT)].map((item, index) => <Loading key={index} variant="card" />)}
+          {isRoomsLoading &&
+            [...Array(LIMIT)].map((item, index) => (
+              <Loading key={index} variant="card" />
+            ))}
         </Box>
         <Box
           ref={triggerRef}
