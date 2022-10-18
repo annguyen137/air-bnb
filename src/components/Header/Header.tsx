@@ -225,6 +225,8 @@ const Header = ({ variant }: { variant?: string }) => {
                   variant === "detail"
                     ? "none !important"
                     : "inherit",
+                transition: "all 0.2s ease-in",
+                transform: Boolean(anchorSearch) ? "scale(0)" : "unset",
               }}
             >
               <div>
@@ -295,7 +297,7 @@ const Header = ({ variant }: { variant?: string }) => {
                     : "inherit",
                 flexGrow: 1,
                 marginX: { sm: 10, md: 15, lg: 20, xl: "0 auto" },
-                maxWidth: { xl: "500px" },
+                maxWidth: { lg: "500px" },
                 "@media (max-width: 500px)": {
                   marginRight: 1,
                 },
@@ -517,7 +519,8 @@ const Header = ({ variant }: { variant?: string }) => {
                   />
                 </Button>
                 <Menu
-                  sx={{ mt: "50px", zIndex: 1600 }}
+                  sx={{ zIndex: 1600 }}
+                  PaperProps={{ sx: { marginTop: "50px" } }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -591,26 +594,50 @@ const Header = ({ variant }: { variant?: string }) => {
           anchor="top"
           isOpen={Boolean(anchorSearch)}
           toggle={() => setAnchorSearch(null)}
-          customCss={{ marginTop: "80px" }}
+          customCss={{ zIndex: 1600 }}
           css={{
+            height: "80px",
             position: "absolute",
             paddingX: 3,
             paddingY: 1,
             width: {
-              sm: "70%",
-              md: "50%",
+              sm: "50%",
+              md: "60%",
+              lg: "70%",
             },
-            margin: "5px auto 0",
-            borderRadius: "15px",
+            maxWidth: {
+              sm: 500,
+              md: 600,
+              lg: 700,
+            },
+            margin: "0 auto",
           }}
           children={
-            <Stack direction={"row"} gap={2}>
+            <Stack
+              direction={"row"}
+              gap={2}
+              sx={{ height: "100%", alignItems: "center" }}
+            >
               <Autocomplete
                 clearOnEscape
                 forcePopupIcon={true}
                 size="medium"
                 loading={isLocationsLoading}
                 loadingText={"Getting location...!"}
+                componentsProps={{
+                  popper: {
+                    sx: { zIndex: 1600 },
+                    modifiers: [
+                      {
+                        name: "offset",
+                        enabled: true,
+                        options: {
+                          offset: [0, 20],
+                        },
+                      },
+                    ],
+                  },
+                }}
                 options={locationsData.map(
                   ({ _id, name, province, country }) => ({
                     label: `${name}, ${province}, ${country}`,
