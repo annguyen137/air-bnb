@@ -14,8 +14,10 @@ interface Props {
   mode?: string;
 }
 
-const RoomItem = ({ room, mode }: Props) => {
+const RoomItem = React.memo(({ room, mode }: Props) => {
   const navigate = useNavigate();
+
+  // console.log("re-render");
 
   return (
     <Box className={`${styles["room-card"]}`}>
@@ -166,6 +168,6 @@ const RoomItem = ({ room, mode }: Props) => {
       <FavoriteIcon className={styles["favourite"]} />
     </Box>
   );
-};
+});
 
 export default RoomItem;
