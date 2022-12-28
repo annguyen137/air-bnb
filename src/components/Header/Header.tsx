@@ -183,6 +183,21 @@ const Header = ({ variant }: { variant?: string }) => {
     };
   }, []);
 
+  const lockBody = () => {
+    let body = document.querySelector("body");
+    if (body) {
+      if (Boolean(anchorSearch)) {
+        body.style.overflowY = "hidden";
+      } else {
+        body.style.overflowY = "inherit";
+      }
+    }
+  };
+
+  useEffect(() => {
+    lockBody();
+  }, [anchorSearch]);
+
   return (
     <>
       <header
@@ -661,9 +676,9 @@ const Header = ({ variant }: { variant?: string }) => {
                 isOptionEqualToValue={(option, value) =>
                   option.label === value.label
                 }
-                onOpen={() =>
-                  !locationsData.length && dispatch(getLocationList({}))
-                }
+                onOpen={() => {
+                  !locationsData.length && dispatch(getLocationList({}));
+                }}
                 onInputChange={(e: React.SyntheticEvent, value, reason) => {
                   // DEBOUND SETSTATE INPUT VALUE
                   if (reason === "input") {

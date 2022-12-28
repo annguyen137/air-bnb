@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -19,7 +19,6 @@ import {
 import CancelIcon from "@mui/icons-material/Cancel";
 import HomeIcon from "@mui/icons-material/Home";
 import CloseIcon from "@mui/icons-material/Close";
-import StartIcon from "@mui/icons-material/Start";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import Footer from "components/Footer/Footer";
@@ -44,13 +43,11 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import CustomDrawer from "components/CustomDrawer/CustomDrawer";
 import PopModal from "components/PopModal/PopModal";
 import useModalHook from "utils/useModalHook";
 import { getTicketsByUser } from "redux/slices/ticketsSlice";
 import { Review } from "interfaces/review";
 import { Ticket } from "interfaces/ticket";
-import locationAPI from "services/locationAPI";
 
 interface AvataForm {
   avatar: FileList;
