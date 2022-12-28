@@ -71,10 +71,8 @@ const RoomList: React.FC = () => {
               <Loading key={index} variant="card" />
             ))}
           {/*  */}
-          {roomsData.map((room, index) => (
-            <Box key={room._id}>
-              <RoomItem room={room} />
-            </Box>
+          {roomsData?.map((room) => (
+            <RoomItem key={room._id} room={room} />
           ))}
           {/*  */}
           {/* show loading next trigger load */}

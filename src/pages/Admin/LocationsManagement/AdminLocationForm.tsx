@@ -168,6 +168,7 @@ const AdminLocationForm = (props: Props) => {
             sx={{
               border: "1px solid rgba(0,0,0,0.2)",
               borderRadius: "12px",
+              minWidth: "500px",
             }}
           >
             <Box

@@ -1,6 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LocationId } from "interfaces/location";
-import { Room } from "interfaces/room";
 import { Ticket } from "interfaces/ticket";
 import { User } from "interfaces/user";
 import locationAPI from "services/locationAPI";
@@ -43,40 +41,31 @@ const ticketsSlice = createSlice({
     });
     builder.addCase(getTicketsByUser.fulfilled, (state, { payload }) => {
       // TEST
-      // const test = payload.map((item) => {
-      //   if (item.roomId === null) {
-      //     return item;
-      //   } else if (item.roomId && typeof item.roomId.locationId === "string") {
-      //     return (async () => {
-      //       try {
-      //         const locationid = item.roomId?.locationId as string;
-      //         const data = await locationAPI.getLocationDetail(locationid);
-      //         // console.log({
-      //         //   ...item,
-      //         //   roomId: { ...item.roomId, locationId: { ...data } },
-      //         // } as Ticket);
+      payload.forEach(async (ticket) => {
+        if (ticket.roomId != null) {
+          const location = await locationAPI.getLocationDetail(
+            ticket.roomId?.locationId as string
+          );
 
-      //         return {
-      //           ...item,
-      //           roomId: { ...item.roomId, locationId: { ...data } },
-      //         } as Ticket;
-      //       } catch (error) {
-      //         throw error;
-      //       }
-      //     })();
-      //   }
-      //   // return item;
-      // });
+          ticket = {
+            ...ticket,
+            roomId: {
+              ...ticket.roomId,
+              locationId: location,
+            },
+          };
+        }
+      });
 
-      // return {
-      //   ...state,
-      //   isTicketLoading: false,
-      //   ticketsByUser: test as Ticket[],
-      // };
       return { ...state, isTicketLoading: false, ticketsByUser: payload };
     });
     builder.addCase(getTicketsByUser.rejected, (state, { error }) => {
-      return { ...state, isTicketLoading: false, ticketsByUser: [], error: error.message as string };
+      return {
+        ...state,
+        isTicketLoading: false,
+        ticketsByUser: [],
+        error: error.message as string,
+      };
     });
   },
 });
